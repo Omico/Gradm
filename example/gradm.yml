@@ -1,0 +1,27 @@
+gradm:
+  version: 1.0.0-SNAPSHOT
+  rule-version: 1
+
+versions:
+  androidx:
+    appcompat: 1.4.1
+    compose: 1.2.0-alpha02
+
+repositories:
+  - id: google
+    url: https://maven.google.com/
+  - id: mavenCentral
+    url: https://repo1.maven.org/maven2/
+
+dependencies:
+  - name: Androidx
+    repository: google
+    libraries:
+      - module: androidx.compose.animation:animation
+        alias: compose.animation
+        version: ${versions.androidx.compose}
+      - group: androidx.compose.ui
+        artifact: ui
+        alias: compose.ui
+      - group: androidx.appcompat
+        artifact: appcompat
