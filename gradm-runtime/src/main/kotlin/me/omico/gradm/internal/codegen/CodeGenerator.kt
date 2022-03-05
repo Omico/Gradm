@@ -1,9 +1,12 @@
 package me.omico.gradm.internal.codegen
 
 import me.omico.gradm.internal.VersionsMeta
+import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.Library
 import me.omico.gradm.internal.config.alias
+import me.omico.gradm.internal.config.dependencies
+import me.omico.gradm.internal.config.gradmVersion
 import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.internal.path.RootProjectPaths
 import java.nio.file.FileVisitResult
@@ -15,15 +18,11 @@ import java.util.Locale
 import me.omico.gradm.internal.codegen.Dependency as CodegenDependency
 import me.omico.gradm.internal.codegen.Library as CodegenLibrary
 
-internal fun generateDependenciesProjectFiles(
-    gradmVersion: String,
-    dependencies: List<Dependency>,
-    versionsMeta: VersionsMeta,
-) {
+internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
     RootProjectPaths.copyTo(GradmPaths.GeneratedDependenciesProject)
-    writeGradleBuildScript(gradmVersion)
+    writeGradleBuildScript(document.gradmVersion)
     clearDir(GradmPaths.GeneratedDependenciesProject.sourceDir)
-    createCodegenDependencies(dependencies, versionsMeta).values.forEach { dependency ->
+    createCodegenDependencies(document.dependencies, versionsMeta).values.forEach { dependency ->
         dependency.toFileSpec().writeTo(GradmPaths.GeneratedDependenciesProject.sourceDir)
         dependency.toDslFileSpec().writeTo(GradmPaths.GeneratedDependenciesProject.sourceDir)
     }

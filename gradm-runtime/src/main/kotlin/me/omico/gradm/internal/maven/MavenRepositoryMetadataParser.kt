@@ -5,10 +5,13 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.omico.gradm.internal.ProjectConfig
 import me.omico.gradm.internal.VersionsMeta
+import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.Repository
+import me.omico.gradm.internal.config.dependencies
 import me.omico.gradm.internal.config.metadataLocalPath
 import me.omico.gradm.internal.config.metadataUrl
+import me.omico.gradm.internal.config.repositories
 import me.omico.gradm.internal.config.repositoryUrl
 import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.internal.store
@@ -27,13 +30,14 @@ internal object MavenRepositoryMetadataParser {
 
     private val documentBuilder: DocumentBuilder by lazy { DocumentBuilderFactory.newInstance().newDocumentBuilder() }
 
-    fun updateVersionsMeta(dependencies: List<Dependency>, repositories: List<Repository>): VersionsMeta =
+    fun updateVersionsMeta(document: YamlDocument): VersionsMeta =
         hashMapOf<String, String>()
-            .apply { if (!ProjectConfig.isOffline) downloadAllMetadata(dependencies, repositories) }
+            .apply { if (!ProjectConfig.isOffline) downloadAllMetadata(document.dependencies, document.repositories) }
             .apply { loadAllMetadata().forEach { this[it.module] = it.latestVersion } }
+            .also { updateLastVersionsMetaHash() }
             .also(VersionsMeta::store)
 
-    fun updateLastVersionsMetaHash() {
+    private fun updateLastVersionsMetaHash() {
         lastVersionsMetaHash = when {
             GradmPaths.Metadata.versionsMetaHash.exists() -> versionsMetaHash
             else -> null
