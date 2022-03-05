@@ -14,9 +14,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly(androidx.compose.ui)
-    compileOnly(androidx.compose.animation)
-    compileOnly(androidx.appcompat)
+    compileOnly(square.okhttp3.okhttp)
 }
 
 tasks.withType<KotlinCompile> {

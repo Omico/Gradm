@@ -6,6 +6,7 @@ versions:
   androidx:
     appcompat: 1.4.1
     compose: 1.2.0-alpha02
+  okhttp: 4.9.3
 
 repositories:
   - id: google
@@ -25,3 +26,9 @@ dependencies:
         alias: compose.ui
       - group: androidx.appcompat
         artifact: appcompat
+  - name: Square
+    repository: mavenCentral
+    libraries:
+      - module: com.squareup.okhttp3:okhttp
+        alias: okhttp3.okhttp
+        version: ${versions.okhttp}
