@@ -4,6 +4,7 @@ import me.omico.gradm.internal.YamlArray
 import me.omico.gradm.internal.YamlObject
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.require
+import java.net.URL
 import java.nio.file.Path
 
 internal fun Versions.createLibraries(dependencyObject: DependencyObject): List<Library> =
@@ -20,8 +21,8 @@ data class Library(
 
 fun Library.alias(): String = alias ?: artifact
 
-internal fun Library.metadataUrl(repositoryUrl: String): String =
-    "$repositoryUrl/${group.replace(".", "/")}/$artifact/maven-metadata.xml"
+internal fun Library.metadataUrl(repositoryUrl: String): URL =
+    URL("$repositoryUrl/${group.replace(".", "/")}/$artifact/maven-metadata.xml")
 
 internal fun Library.metadataLocalPath(metadataRootDir: Path): Path =
     metadataRootDir.resolve(group).resolve(artifact).resolve("maven-metadata.xml")

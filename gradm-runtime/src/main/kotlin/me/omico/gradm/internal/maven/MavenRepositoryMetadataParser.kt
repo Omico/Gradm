@@ -13,7 +13,6 @@ import me.omico.gradm.internal.config.repositoryUrl
 import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.internal.store
 import me.omico.gradm.internal.versionsMetaHash
-import java.net.URL
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.util.stream.Stream
@@ -47,7 +46,7 @@ internal object MavenRepositoryMetadataParser {
                 val repositoryUrl = dependency.repositoryUrl(repositories)
                 dependency.libraries.forEach { libraryMeta ->
                     val stream = withContext(Dispatchers.IO) {
-                        URL(libraryMeta.metadataUrl(repositoryUrl)).openStream()
+                        libraryMeta.metadataUrl(repositoryUrl.fixedUrl()).openStream()
                     }
                     val metadataPath = libraryMeta.metadataLocalPath(GradmPaths.Metadata.rootDir)
                     Files.createDirectories(metadataPath.parent)
@@ -60,4 +59,10 @@ internal object MavenRepositoryMetadataParser {
         Files.walk(GradmPaths.Metadata.rootDir)
             .filter { it.isRegularFile() && it.fileName.endsWith("maven-metadata.xml") }
             .map(documentBuilder::MavenMetadata)
+
+    private fun String.fixedUrl(): String =
+        when {
+            endsWith("/") -> removeSuffix("/")
+            else -> this
+        }
 }
