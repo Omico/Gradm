@@ -118,7 +118,7 @@ private fun Library.toCodegenLibrary(versionsMeta: VersionsMeta): CodegenLibrary
     CodegenLibrary(
         module = module,
         artifact = artifact,
-        version = versionsMeta[module]!!,
+        version = version ?: versionsMeta[module]!!,
     )
 
 private fun HashMap<String, CodegenDependency>.getOrCreate(
