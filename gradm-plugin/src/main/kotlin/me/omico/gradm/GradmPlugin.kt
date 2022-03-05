@@ -41,9 +41,6 @@ class GradmPlugin : Plugin<Settings> {
                     delete(gradmGeneratedDependenciesSourceDir)
                     delete(gradmGeneratedDependenciesBuildDir)
                 }
-                tasks.named("clean") {
-                    dependsOn("gradmClean")
-                }
             }
         }
     }
