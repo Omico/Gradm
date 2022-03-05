@@ -116,7 +116,7 @@ private fun CodegenDependency.addLibrary(
 private fun Library.toCodegenLibrary(versionsMeta: VersionsMeta): CodegenLibrary =
     CodegenLibrary(
         module = module,
-        artifact = artifact,
+        alias = alias(),
         version = version ?: versionsMeta[module]!!,
     )
 
