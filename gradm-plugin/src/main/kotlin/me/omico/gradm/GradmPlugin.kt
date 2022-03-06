@@ -28,6 +28,7 @@ class GradmPlugin : Plugin<Settings> {
                 }
             }
             beforeProject {
+                if (this != rootProject) return@beforeProject
                 buildscript.dependencies.add(
                     "classpath",
                     "me.omico.gradm:gradm-generated-dependencies",
