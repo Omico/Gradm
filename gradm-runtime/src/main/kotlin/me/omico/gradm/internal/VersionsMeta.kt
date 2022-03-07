@@ -10,7 +10,7 @@ typealias VersionsMeta = Map<String, String>
 fun VersionsMeta.store() {
     Files.write(
         GradmPaths.Metadata.versionsMeta,
-        buildString { this@store.forEach { (key, value) -> appendLine("$key=$value") } }.toByteArray(),
+        buildString { this@store.toSortedMap().forEach { (key, value) -> appendLine("$key=$value") } }.toByteArray(),
     )
     Files.write(
         GradmPaths.Metadata.versionsMetaHash,
