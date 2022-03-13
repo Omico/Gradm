@@ -5,7 +5,7 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import me.omico.gradm.GRADM_PACKAGE_NAME
+import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
 import me.omico.gradm.GradmDependency
 import java.util.Locale
 
@@ -16,7 +16,7 @@ internal data class Dependency(
 )
 
 internal fun Dependency.toFileSpec(): FileSpec =
-    FileSpec.builder(GRADM_PACKAGE_NAME, name)
+    FileSpec.builder(GRADM_DEPENDENCY_PACKAGE_NAME, name)
         .addHeader()
         .apply { createDependencyObjects(this@toFileSpec) }
         .build()
@@ -26,11 +26,11 @@ internal fun Dependency.toDslFileSpec(): FileSpec =
         .apply {
             addHeader()
             PropertySpec
-                .builder(name.lowercase(Locale.getDefault()), ClassName(GRADM_PACKAGE_NAME, name))
+                .builder(name.lowercase(Locale.getDefault()), ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, name))
                 .receiver(ClassName("org.gradle.kotlin.dsl", "DependencyHandlerScope"))
                 .getter(
                     FunSpec.getterBuilder()
-                        .addStatement("return $name", ClassName(GRADM_PACKAGE_NAME, name))
+                        .addStatement("return $name", ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, name))
                         .build()
                 )
                 .build()
@@ -57,7 +57,7 @@ private fun FileSpec.Builder.createDependencyObjects(dependency: Dependency) {
 }
 
 private fun TypeSpec.Builder.addSubDependencyProperty(propertyName: String, dependencyName: String): TypeSpec.Builder =
-    PropertySpec.builder(propertyName, ClassName(GRADM_PACKAGE_NAME, dependencyName))
+    PropertySpec.builder(propertyName, ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, dependencyName))
         .initializer(dependencyName)
         .build()
         .let(::addProperty)

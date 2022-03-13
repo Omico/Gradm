@@ -5,7 +5,7 @@ import me.omico.gradm.internal.path.RootProjectPaths
 import java.nio.file.Path
 import kotlin.io.path.exists
 
-const val GRADM_PACKAGE_NAME = "me.omico.gradm"
+const val GRADM_DEPENDENCY_PACKAGE_NAME = "me.omico.gradm.dependency"
 
 val hasGradmConfig: Boolean
     get() = RootProjectPaths.gradmConfig.exists()
