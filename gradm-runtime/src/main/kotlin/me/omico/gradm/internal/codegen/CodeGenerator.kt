@@ -54,6 +54,7 @@ private fun gradleBuildScriptContent(gradmVersion: String): String =
     dependencies {
         compileOnly(gradleApi())
         compileOnly(gradleKotlinDsl())
+        compileOnly(embeddedKotlin("gradle-plugin-api"))
         implementation("me.omico.gradm:gradm-runtime:$gradmVersion")
     }
 

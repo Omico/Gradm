@@ -26,18 +26,13 @@ internal fun Dependency.toDslFileSpec(): FileSpec =
     FileSpec.builder("", name)
         .addSuppressWarningTypes()
         .addGradmComment()
-        .apply {
-            PropertySpec
-                .builder(name.lowercase(Locale.getDefault()), ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, name))
-                .receiver(ClassName("org.gradle.kotlin.dsl", "DependencyHandlerScope"))
-                .getter(
-                    FunSpec.getterBuilder()
-                        .addStatement("return $name", ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, name))
-                        .build()
-                )
-                .build()
-                .also(::addProperty)
-        }
+        .addDslProperty(
+            propertyName = name,
+            receivers = arrayOf(
+                ClassName("org.gradle.api.artifacts.dsl", "DependencyHandler"),
+                ClassName("org.jetbrains.kotlin.gradle.plugin", "KotlinDependencyHandler"),
+            )
+        )
         .build()
 
 private fun FileSpec.Builder.createDependencyObjects(dependency: Dependency) {
@@ -54,3 +49,22 @@ private fun TypeSpec.Builder.addSubDependencyProperty(propertyName: String, depe
         .initializer(dependencyName)
         .build()
         .let(::addProperty)
+
+private fun FileSpec.Builder.addDslProperty(propertyName: String, receivers: Array<ClassName>): FileSpec.Builder =
+    apply {
+        receivers.forEach { className ->
+            PropertySpec
+                .builder(
+                    propertyName.lowercase(Locale.getDefault()),
+                    ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, propertyName)
+                )
+                .receiver(className)
+                .getter(
+                    FunSpec.getterBuilder()
+                        .addStatement("return $propertyName", ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, propertyName))
+                        .build()
+                )
+                .build()
+                .also(::addProperty)
+        }
+    }
