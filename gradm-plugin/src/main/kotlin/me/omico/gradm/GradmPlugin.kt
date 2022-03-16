@@ -19,8 +19,7 @@ class GradmPlugin : Plugin<Settings> {
         }
         target.gradle.run {
             settingsEvaluated {
-                // Only for the first run.
-                if (!isGradmGeneratedDependenciesSourcesExists) GradmParser.execute()
+                GradmParser.execute(updateDependencies = !isGradmGeneratedDependenciesSourcesExists)
                 includeBuild(gradmGeneratedDependenciesDir) {
                     dependencySubstitution {
                         substitute(module("me.omico.gradm:gradm-generated-dependencies")).using(project(":"))

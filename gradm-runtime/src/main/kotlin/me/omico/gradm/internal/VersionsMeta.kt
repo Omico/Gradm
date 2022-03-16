@@ -18,8 +18,8 @@ fun VersionsMeta.store() {
     )
 }
 
-fun Path.asVersionsMeta(): VersionsMeta =
-    Files.readAllLines(this)
+val localVersionsMeta: VersionsMeta
+    get() = Files.readAllLines(GradmPaths.Metadata.versionsMeta)
         .associate {
             val strings = it.split("=")
             strings.first() to strings.last()

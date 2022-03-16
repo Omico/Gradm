@@ -99,12 +99,12 @@ private fun CodegenDependency.addLibrary(
     library: Library,
     versionsMeta: VersionsMeta,
 ) {
-    val strings = library.alias().split(".", limit = 2)
-    val subName = strings.first()
-    val subAlias = strings.last()
-    when (subName) {
-        subAlias -> libraries.add(library.toCodegenLibrary(versionsMeta))
+    when {
+        !library.alias().contains(".") -> libraries.add(library.toCodegenLibrary(versionsMeta))
         else -> {
+            val strings = library.alias().split(".")
+            val subName = strings.first()
+            val subAlias = strings.drop(1).joinToString(".")
             val subDependencyName = "${dependencyName.capitalize()}${subName.capitalize()}"
             subDependencies
                 .getOrCreate(subName, subDependencyName)

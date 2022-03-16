@@ -3,10 +3,19 @@ gradm:
   rule-version: 1
 
 versions:
+  accompanist: "0.24.3-alpha"
   androidx:
-    appcompat: 1.4.1
-    compose: 1.2.0-alpha02
-  okhttp: 4.9.3
+    activity: "1.5.0-alpha02"
+    annotation: "1.4.0-alpha02"
+    appcompat: "1.4.1"
+    browser: "1.4.0"
+    camera: "1.1.0-beta01"
+    compose: "1.2.0-alpha03"
+    core: "1.8.0-alpha04"
+    datastore: "1.0.0"
+    lifecycle: "2.5.0-alpha02"
+    navigation: "2.5.0-alpha02"
+  okhttp: "4.9.3"
 
 repositories:
   - id: google
@@ -15,17 +24,93 @@ repositories:
     url: https://repo1.maven.org/maven2/
 
 dependencies:
+  - name: Accompanist
+    repository: mavenCentral
+    libraries:
+      - module: com.google.accompanist:accompanist-insets
+        alias: insets
+        version: ${versions.accompanist}
+      - module: com.google.accompanist:accompanist-insets-ui
+        alias: insetsUi
+        version: ${versions.accompanist}
+      - module: com.google.accompanist:accompanist-permissions
+        alias: permissions
+        version: ${versions.accompanist}
+      - module: com.google.accompanist:accompanist-swiperefresh
+        alias: swipeRefresh
+        version: ${versions.accompanist}
+      - module: com.google.accompanist:accompanist-systemuicontroller
+        alias: systemUiController
+        version: ${versions.accompanist}
   - name: Androidx
     repository: google
     libraries:
+      - module: androidx.activity:activity-compose
+        alias: activity.activityCompose
+        version: ${versions.androidx.activity}
+      - module: androidx.activity:activity-ktx
+        alias: activity.activityKtx
+        version: ${versions.androidx.activity}
+      - module: androidx.annotation:annotation
+        alias: annotation.annotation
+        version: ${versions.androidx.annotation}
+      - module: androidx.appcompat:appcompat
+        alias: appcompat
+        version: ${versions.androidx.appcompat}
+      - module: androidx.camera:camera-camera2
+        alias: camera.camera2
+        version: ${versions.androidx.camera}
+      - module: androidx.camera:camera-lifecycle
+        alias: camera.lifecycle
+        version: ${versions.androidx.camera}
+      - module: androidx.camera:camera-view
+        alias: camera.view
+        version: ${versions.androidx.camera}
       - module: androidx.compose.animation:animation
         alias: compose.animation
         version: ${versions.androidx.compose}
-      - group: androidx.compose.ui
-        artifact: ui
+      - module: androidx.compose.foundation:foundation
+        alias: compose.foundation
+        version: ${versions.androidx.compose}
+      - module: androidx.compose.material:material
+        alias: compose.material
+        version: ${versions.androidx.compose}
+      - module: androidx.compose.material:material-icons-core
+        alias: compose.materialIconsCore
+        version: ${versions.androidx.compose}
+      - module: androidx.compose.material:material-icons-extended
+        alias: compose.materialIconsExtended
+        version: ${versions.androidx.compose}
+      - module: androidx.compose.runtime:runtime
+        alias: compose.runtime
+        version: ${versions.androidx.compose}
+      - module: androidx.compose.ui:ui
         alias: compose.ui
-      - group: androidx.appcompat
-        artifact: appcompat
+        version: ${versions.androidx.compose}
+      - module: androidx.compose.ui:ui-tooling
+        alias: compose.uiTooling
+        version: ${versions.androidx.compose}
+      - module: androidx.compose.ui:ui-tooling-preview
+        alias: compose.uiToolingPreview
+        version: ${versions.androidx.compose}
+      - module: androidx.compose.ui:ui-util
+        alias: compose.uiUtil
+        version: ${versions.androidx.compose}
+      - module: androidx.core:core-ktx
+        alias: core.coreKtx
+        version: ${versions.androidx.core}
+      - module: androidx.datastore:datastore
+        alias: datastore.datastore
+        version: ${versions.androidx.datastore}
+      - module: androidx.lifecycle:lifecycle-runtime-ktx
+        alias: lifecycle.runtimeKtx
+        version: ${versions.androidx.lifecycle}
+      - module: androidx.navigation:navigation-compose
+        alias: navigation.compose
+        version: ${versions.androidx.navigation}
+      - module: androidx.navigation:navigation-runtime-ktx
+        alias: navigation.runtimeKtx
+        version: ${versions.androidx.navigation}
   - name: Square
     repository: mavenCentral
     libraries:
@@ -36,4 +121,5 @@ dependencies:
         alias: okhttp3.interceptor.logging
         version: ${versions.okhttp}
       - module: com.squareup.okhttp3:okhttp-dnsoverhttps
+        alias: okhttp3.dnsOverHttps
         version: ${versions.okhttp}

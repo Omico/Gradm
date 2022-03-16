@@ -8,5 +8,5 @@ import org.gradle.work.DisableCachingByDefault
 @DisableCachingByDefault(because = "Not worth caching")
 abstract class GradmUpdateDependencies : DefaultTask() {
     @TaskAction
-    protected fun execute() = GradmParser.execute()
+    protected fun execute() = GradmParser.execute(updateDependencies = true)
 }
