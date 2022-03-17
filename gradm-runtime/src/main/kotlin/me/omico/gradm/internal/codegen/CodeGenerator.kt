@@ -19,6 +19,7 @@ internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMe
     generateGradleBuildScript(document.gradmVersion)
     clearDir(GradmPaths.GeneratedDependenciesProject.sourceDir)
     generateDependenciesSourceFiles(document, versionsMeta)
+    generateVersionsSourceFile(document)
 }
 
 internal fun clearDir(dir: Path) {
