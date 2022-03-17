@@ -3,15 +3,25 @@ package me.omico.gradm.internal.codegen
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import me.omico.gradm.internal.VersionsMeta
+import me.omico.gradm.internal.config.Library
+import me.omico.gradm.internal.config.alias
 import java.util.Locale
 
-internal data class Library(
+internal data class CodegenLibrary(
     val module: String,
     val alias: String,
     val version: String,
 )
 
-internal fun TypeSpec.Builder.addLibrary(library: Library): TypeSpec.Builder =
+internal fun Library.toCodegenLibrary(versionsMeta: VersionsMeta): CodegenLibrary =
+    CodegenLibrary(
+        module = module,
+        alias = alias(),
+        version = version ?: versionsMeta[module]!!,
+    )
+
+internal fun TypeSpec.Builder.addLibrary(library: CodegenLibrary): TypeSpec.Builder =
     apply {
         PropertySpec.builder(library.alias.camelCase(), String::class)
             .initializer("${library.alias.camelCase()}(\"${library.version}\")")
