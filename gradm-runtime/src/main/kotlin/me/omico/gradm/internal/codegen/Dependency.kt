@@ -22,17 +22,21 @@ internal fun Dependency.toFileSpec(): FileSpec =
         .apply { createDependencyObjects(this@toFileSpec) }
         .build()
 
-internal fun Dependency.toDslFileSpec(): FileSpec =
-    FileSpec.builder("", name)
+internal fun List<Dependency>.toDslFileSpec(): FileSpec =
+    FileSpec.builder("", "Dependencies")
         .addSuppressWarningTypes()
         .addGradmComment()
-        .addDslProperty(
-            propertyName = name,
-            receivers = arrayOf(
-                ClassName("org.gradle.api.artifacts.dsl", "DependencyHandler"),
-                ClassName("org.jetbrains.kotlin.gradle.plugin", "KotlinDependencyHandler"),
-            )
-        )
+        .apply {
+            forEach { dependency ->
+                addDslProperty(
+                    propertyName = dependency.name,
+                    receivers = arrayOf(
+                        ClassName("org.gradle.api.artifacts.dsl", "DependencyHandler"),
+                        ClassName("org.jetbrains.kotlin.gradle.plugin", "KotlinDependencyHandler"),
+                    )
+                )
+            }
+        }
         .build()
 
 private fun FileSpec.Builder.createDependencyObjects(dependency: Dependency) {

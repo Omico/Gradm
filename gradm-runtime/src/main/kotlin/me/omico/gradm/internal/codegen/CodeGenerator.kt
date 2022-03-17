@@ -22,10 +22,11 @@ internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMe
     RootProjectPaths.copyTo(GradmPaths.GeneratedDependenciesProject)
     writeGradleBuildScript(document.gradmVersion)
     clearDir(GradmPaths.GeneratedDependenciesProject.sourceDir)
-    createCodegenDependencies(document.dependencies, versionsMeta).values.forEach { dependency ->
+    val codegenDependencies = createCodegenDependencies(document.dependencies, versionsMeta)
+    codegenDependencies.forEach { dependency ->
         dependency.toFileSpec().writeTo(GradmPaths.GeneratedDependenciesProject.sourceDir)
-        dependency.toDslFileSpec().writeTo(GradmPaths.GeneratedDependenciesProject.sourceDir)
     }
+    codegenDependencies.toDslFileSpec().writeTo(GradmPaths.GeneratedDependenciesProject.sourceDir)
 }
 
 private fun gradleBuildScriptContent(gradmVersion: String): String =
@@ -85,15 +86,17 @@ private fun clearDir(dir: Path) {
 private fun createCodegenDependencies(
     dependencies: List<Dependency>,
     versionsMeta: VersionsMeta,
-): Map<String, CodegenDependency> {
-    return hashMapOf<String, CodegenDependency>().apply {
-        dependencies.forEach { dependency ->
-            dependency.libraries.forEach { library ->
-                getOrCreate(dependency.name).addLibrary(dependency.name, library, versionsMeta)
+): List<CodegenDependency> =
+    hashMapOf<String, CodegenDependency>()
+        .apply {
+            dependencies.forEach { dependency ->
+                dependency.libraries.forEach { library ->
+                    getOrCreate(dependency.name).addLibrary(dependency.name, library, versionsMeta)
+                }
             }
         }
-    }
-}
+        .values
+        .toList()
 
 private fun CodegenDependency.addLibrary(
     dependencyName: String,
