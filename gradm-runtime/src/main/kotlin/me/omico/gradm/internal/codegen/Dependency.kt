@@ -81,7 +81,7 @@ private fun FileSpec.Builder.createDependencyObjects(dependency: CodegenDependen
         .apply { dependency.subDependencies.forEach { addSubDependencyProperty(it.key, it.value.name) } }
         .build()
         .also(::addType)
-    dependency.subDependencies.values.forEach(::createDependencyObjects)
+    dependency.subDependencies.values.sortedBy { it.name }.forEach(::createDependencyObjects)
 }
 
 private fun TypeSpec.Builder.addSubDependencyProperty(propertyName: String, dependencyName: String): TypeSpec.Builder =
