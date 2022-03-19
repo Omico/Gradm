@@ -2,7 +2,6 @@ import me.omico.age.spotless.androidXml
 import me.omico.age.spotless.configureSpotless
 import me.omico.age.spotless.gradleVersionCatalogs
 import me.omico.age.spotless.intelliJIDEARunConfiguration
-import me.omico.age.spotless.kotlin
 import me.omico.age.spotless.kotlinGradle
 
 plugins {
@@ -24,7 +23,16 @@ allprojects {
         androidXml()
         gradleVersionCatalogs()
         intelliJIDEARunConfiguration()
-        kotlin(ktLintVersion = "0.43.2")
+        kotlin {
+            target("src/**/*.kt")
+            ktlint("0.43.2")
+            indentWithSpaces()
+            trimTrailingWhitespace()
+            endWithNewline()
+            licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
+                .updateYearWithLatest(true)
+                .yearSeparator("-")
+        }
         kotlinGradle(ktLintVersion = "0.43.2")
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Omico
+ * Copyright $YEAR Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.internal.path
-
-import me.omico.gradm.internal.ProjectConfig
-import java.nio.file.Path
-
-internal object RootProjectPaths : ProjectPaths(
-    rootDir = ProjectConfig.rootDirPath,
-) {
-    val gradmConfig: Path by lazy { rootDir.resolve("gradm.yml") }
-}
