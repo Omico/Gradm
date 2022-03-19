@@ -55,16 +55,13 @@ dependencies:
         alias: annotation.annotation
         version: ${versions.androidx.annotation}
       - module: androidx.appcompat:appcompat
-        alias: appcompat
+        alias: appcompat.appcompat
         version: ${versions.androidx.appcompat}
       - module: androidx.camera:camera-camera2
-        alias: camera.camera2
         version: ${versions.androidx.camera}
       - module: androidx.camera:camera-lifecycle
-        alias: camera.lifecycle
         version: ${versions.androidx.camera}
       - module: androidx.camera:camera-view
-        alias: camera.view
         version: ${versions.androidx.camera}
       - module: androidx.compose.animation:animation
         alias: compose.animation
@@ -106,7 +103,6 @@ dependencies:
         alias: lifecycle.runtimeKtx
         version: ${versions.androidx.lifecycle}
       - module: androidx.navigation:navigation-compose
-        alias: navigation.compose
         version: ${versions.androidx.navigation}
       - module: androidx.navigation:navigation-runtime-ktx
         alias: navigation.runtimeKtx

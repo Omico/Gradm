@@ -5,6 +5,7 @@ rootProject.name = "gradm-example"
 pluginManagement {
     repositories {
         gradlePluginPortal()
+        google()
         mavenCentral()
         mavenLocal()
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
