@@ -13,7 +13,7 @@ plugins {
 
 allprojects {
     group = "me.omico.gradm"
-    version = "1.0.0-SNAPSHOT"
+    version = "1.0.0"
     configureDependencyUpdates(
         stableGroups = listOf(
             "org.jetbrains.kotlin",
