@@ -19,7 +19,7 @@ data class Library(
     val artifact: String by lazy { module.split(':').last() }
 }
 
-fun Library.alias(): String = alias ?: artifact
+fun Library.alias(): String = alias ?: artifact.replace("-", ".")
 
 internal fun Library.metadataUrl(repositoryUrl: String): URL =
     URL("$repositoryUrl/${group.replace(".", "/")}/$artifact/maven-metadata.xml")
