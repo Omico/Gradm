@@ -43,10 +43,13 @@ dependencies:
   - name: Libs # create your own dependency name
     repository: google # from repositories' id
     libraries:
-      - module: my.company.lib:artifact # create your own library
+      - # for final use, libs.company.artifact
+        module: my.company.lib:artifact # create your own library
         alias: company.artifact # create your own alias, optional
-        # for final use, libs.company.artifact
-        version: ${versions.something} # from versions
+        # You can use either specific version like "1.0.0" or use version variables.
+        # It will use the latest version, if you don't specify version.
+        # version: "1.0.0"
+        version: ${versions.something}
 ```
 
 For more information, please see the [example project](./example).
