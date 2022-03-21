@@ -22,11 +22,8 @@ import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.gradmVersion
 import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.internal.path.RootProjectPaths
-import java.nio.file.FileVisitResult
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.SimpleFileVisitor
-import java.nio.file.attribute.BasicFileAttributes
 import java.util.Locale
 
 internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
@@ -38,17 +35,7 @@ internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMe
 }
 
 internal fun clearDir(dir: Path) {
-    if (Files.exists(dir)) {
-        Files.walkFileTree(
-            dir,
-            object : SimpleFileVisitor<Path>() {
-                override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
-                    Files.deleteIfExists(file)
-                    return FileVisitResult.CONTINUE
-                }
-            }
-        )
-    }
+    if (Files.exists(dir)) Files.walk(dir).sorted(Comparator.reverseOrder()).forEach(Files::delete)
     Files.createDirectories(dir)
 }
 
