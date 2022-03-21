@@ -27,13 +27,13 @@ typealias YamlDocument = YamlObject
 fun InputStream.asYamlDocument(builder: LoadSettingsBuilder.() -> Unit = {}): YamlDocument =
     loadDocument(this, builder)
 
-inline fun <reified T> YamlDocument.find(key: String): T? = this[key] as T
+inline fun <reified T> YamlObject.find(key: String): T? = this[key] as? T
 
-inline fun <reified T> YamlDocument.find(key: String, defaultValue: T): T = find<T>(key) ?: defaultValue
+inline fun <reified T> YamlObject.find(key: String, defaultValue: T): T = find<T>(key) ?: defaultValue
 
-inline fun <reified T> YamlDocument.find(key: String, orElse: () -> T): T = find<T>(key) ?: orElse()
+inline fun <reified T> YamlObject.find(key: String, orElse: () -> T): T = find<T>(key) ?: orElse()
 
-inline fun <reified T> YamlDocument.require(key: String): T = find<T>(key) ?: error("$key not found.")
+inline fun <reified T> YamlObject.require(key: String): T = find<T>(key) ?: error("$key not found.")
 
 private inline fun <reified T> loadDocument(
     inputStream: InputStream,
