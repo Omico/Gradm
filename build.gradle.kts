@@ -1,6 +1,6 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import me.omico.age.spotless.androidXml
 import me.omico.age.spotless.configureSpotless
-import me.omico.age.spotless.gradleVersionCatalogs
 import me.omico.age.spotless.intelliJIDEARunConfiguration
 import me.omico.age.spotless.kotlinGradle
 
@@ -11,57 +11,48 @@ plugins {
     id("me.omico.age.spotless")
 }
 
+val ktLintVersion = "0.43.2"
+val kotlinDslVersion = "2.1.7"
+
 allprojects {
     group = "me.omico.gradm"
     version = "1.1.0-SNAPSHOT"
     configureDependencyUpdates(
-        stableGroups = listOf(
-            "org.jetbrains.kotlin",
+        pinnedGroups = mapOf(
+            "org.jetbrains.kotlin" to embeddedKotlinVersion,
+            "org.gradle.kotlin.kotlin-dsl" to kotlinDslVersion,
+        ),
+        pinnedModules = mapOf(
+            "org.gradle.kotlin.embedded-kotlin.gradle.plugin" to kotlinDslVersion,
+            "kotlinx-coroutines-core" to "1.5.2", // https://github.com/Kotlin/kotlinx.coroutines
         ),
     )
     configureSpotless {
         androidXml()
-        gradleVersionCatalogs()
         intelliJIDEARunConfiguration()
         kotlin {
             target("src/**/*.kt")
-            ktlint("0.43.2")
+            ktlint(ktLintVersion)
             indentWithSpaces()
             trimTrailingWhitespace()
             endWithNewline()
-            licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
-                .updateYearWithLatest(true)
-                .yearSeparator("-")
+            licenseHeaderFile(rootProject.file("spotless/copyright.kt")).updateYearWithLatest(true).yearSeparator("-")
         }
-        kotlinGradle(ktLintVersion = "0.43.2")
+        kotlinGradle(ktLintVersion = ktLintVersion)
     }
 }
 
 fun Project.configureDependencyUpdates(
-    forcedArtifacts: List<String> = emptyList(),
-    stableGroups: List<String> = emptyList(),
-    stableModules: List<String> = emptyList(),
-    stableArtifacts: List<String> = emptyList(),
-    reservedGroups: Map<String, String> = emptyMap(),
-    rejectedArtifacts: List<String> = emptyList(),
-    rejectVersionIf: com.github.benmanes.gradle.versions.updates.resolutionstrategy.ComponentSelectionWithCurrent.() -> Boolean = { false },
+    pinnedGroups: Map<String, String> = emptyMap(),
+    pinnedModules: Map<String, String> = emptyMap(),
 ) {
-    configurations.all {
-        resolutionStrategy.force(forcedArtifacts)
-    }
     apply(plugin = "com.github.ben-manes.versions")
-    tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
+    tasks.withType<DependencyUpdatesTask> {
         rejectVersionIf {
             if (candidate.version == "") return@rejectVersionIf true
-            if (rejectVersionIf(this)) return@rejectVersionIf true
             when {
-                stableGroups.contains(candidate.group) -> isNonStable(candidate.version)
-                stableModules.contains(candidate.module) -> isNonStable(candidate.version)
-                stableArtifacts.contains("${candidate.group}:${candidate.module}") ->
-                    isNonStable(candidate.version)
-                reservedGroups.keys.contains(candidate.group) ->
-                    candidate.version != reservedGroups[candidate.group]
-                rejectedArtifacts.contains("${candidate.group}:${candidate.module}:${candidate.version}") -> true
+                pinnedGroups.keys.contains(candidate.group) -> candidate.version != pinnedGroups[candidate.group]
+                pinnedModules.keys.contains(candidate.module) -> candidate.version != pinnedModules[candidate.module]
                 else -> false
             }
         }
