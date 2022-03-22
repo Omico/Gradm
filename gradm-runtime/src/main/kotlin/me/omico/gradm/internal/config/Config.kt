@@ -17,11 +17,12 @@ package me.omico.gradm.internal.config
 
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.YamlObject
+import me.omico.gradm.internal.find
 import me.omico.gradm.internal.require
 
 typealias Gradm = YamlObject
 
-private val YamlDocument.gradm: Gradm
+val YamlDocument.gradm: Gradm
     get() = require("gradm")
 
 val YamlDocument.gradmVersion: String
@@ -29,3 +30,9 @@ val YamlDocument.gradmVersion: String
 
 val YamlDocument.gradmRuleVersion: Int
     get() = gradm.require("rule-version")
+
+val Gradm.format: Boolean
+    get() = find("format", false)
+
+val Gradm.indent: Int
+    get() = find("indent", 2)

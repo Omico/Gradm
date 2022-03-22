@@ -17,6 +17,7 @@ package me.omico.gradm
 
 import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.codegen.generateDependenciesProjectFiles
+import me.omico.gradm.internal.config.format.formatGradmConfig
 import me.omico.gradm.internal.config.gradmRuleVersion
 import me.omico.gradm.internal.config.gradmVersion
 import me.omico.gradm.internal.localVersionsMeta
@@ -29,6 +30,7 @@ object GradmParser {
         val document = RootProjectPaths.gradmConfig.toFile().inputStream().asYamlDocument()
         println("Gradm version: ${document.gradmVersion}")
         println("Gradm rule version: ${document.gradmRuleVersion}")
+        formatGradmConfig(document)
         val versionsMeta = when {
             updateDependencies -> MavenRepositoryMetadataParser.updateVersionsMeta(document)
             else -> localVersionsMeta

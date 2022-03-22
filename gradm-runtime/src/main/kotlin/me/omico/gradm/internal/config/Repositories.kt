@@ -30,7 +30,7 @@ data class Repository(
     val url: String,
 )
 
-private fun Repository(repository: YamlObject): Repository =
+internal fun Repository(repository: YamlObject): Repository =
     Repository(
         id = repository.require("id"),
         url = repository.require("url"),
