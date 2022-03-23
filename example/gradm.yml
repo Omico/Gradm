@@ -120,4 +120,3 @@ dependencies:
       - module: com.squareup.okhttp3:okhttp-dnsoverhttps
         alias: okhttp3.dnsOverHttps
         version: ${versions.okhttp}
-

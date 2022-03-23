@@ -36,8 +36,11 @@ internal fun formatGradmConfig(document: YamlDocument) {
         RootProjectPaths.gradmConfig,
         buildString {
             appendGradmBlock(document, formatSettings)
+            appendLine()
             appendVersionsBlock(document, formatSettings)
+            appendLine()
             appendRepositoriesBlock(document, formatSettings)
+            appendLine()
             appendDependenciesBlock(document, formatSettings)
         }.toByteArray(),
     )
@@ -52,7 +55,6 @@ private fun StringBuilder.appendGradmBlock(document: YamlDocument, formatterSett
             appendFormatLine("format", true)
             if (document.gradm.indent != 2) appendFormatLine("indent", document.gradm.indent)
         }
-        appendLine()
     }
 }
 
@@ -63,7 +65,6 @@ private fun StringBuilder.appendVersionsBlock(document: YamlDocument, formatterS
         with(nested()) {
             appendFormatMap(versions)
         }
-        appendLine()
     }
 }
 
@@ -88,7 +89,6 @@ private fun StringBuilder.appendRepositoriesBlock(document: YamlDocument, format
                     )
                 }
         }
-        appendLine()
     }
 }
 
@@ -135,6 +135,5 @@ private fun StringBuilder.appendDependenciesBlock(document: YamlDocument, format
                     }
                 }
         }
-        appendLine()
     }
 }
