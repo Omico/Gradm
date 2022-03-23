@@ -4,6 +4,15 @@
 
 Gradm (**Gra**dle **d**ependencies **m**anager) is a new way to manage dependencies easier and more efficient.
 
+## Why Gradm?
+
+The Gradle version catalog is an excellent move for us. But it also brings a lot of problems, and becomes more and more painful:
+
+* The Generated code is fully Java. Useable, and that's it. Not good for reading.
+* Terrible restrictions on naming, see [here](https://github.com/gradle/gradle/issues/18208).
+* No official dependencies update support.
+* And more...?
+
 ## Getting Started
 
 In settings.gradle.kts, add the following:
@@ -29,6 +38,8 @@ Create a file named `gradm.yml` in your root project directory, and add the foll
 gradm:
   version: <version> # Gradm version
   rule-version: 1 # Gradm rule version, currently has no effect on this
+  format: true # default is false, if you haven't specify
+  indent: 4 # default is 2, won't take effect if format is false
 
 versions:
   something: "1.0.0" # create your own version
@@ -50,6 +61,12 @@ dependencies:
         # It will use the latest version, if you don't specify version.
         # version: "1.0.0"
         version: ${versions.something}
+      - # This style is also acceptable
+        # note: if your enable format, it will be override by the "module" style above
+        group: my.company.lib
+        artifact: artifact2
+        version: "1.0.0"
+        alias: company.artifact2
 ```
 
 For more information, please see the [example project](./example).
