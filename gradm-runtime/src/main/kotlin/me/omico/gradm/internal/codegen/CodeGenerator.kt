@@ -19,7 +19,6 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import me.omico.gradm.internal.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
-import me.omico.gradm.internal.config.gradmVersion
 import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.internal.path.RootProjectPaths
 import java.nio.file.Files
@@ -28,7 +27,7 @@ import java.util.Locale
 
 internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
     RootProjectPaths.copyTo(GradmPaths.GeneratedDependenciesProject)
-    generateGradleBuildScript(document.gradmVersion)
+    generateGradleBuildScript()
     clearDir(GradmPaths.GeneratedDependenciesProject.sourceDir)
     generateDependenciesSourceFiles(document, versionsMeta)
     generateVersionsSourceFile(document)

@@ -13,23 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.internal.config
+package me.omico.gradm
 
-import me.omico.gradm.internal.YamlDocument
-import me.omico.gradm.internal.YamlObject
-import me.omico.gradm.internal.find
-import me.omico.gradm.internal.require
-
-typealias Gradm = YamlObject
-
-val YamlDocument.gradm: Gradm
-    get() = require("gradm")
-
-val YamlDocument.gradmRuleVersion: Int
-    get() = gradm.require("rule-version")
-
-val Gradm.format: Boolean
-    get() = find("format", false)
-
-val Gradm.indent: Int
-    get() = find("indent", 2)
+const val GRADM_VERSION = "$version"

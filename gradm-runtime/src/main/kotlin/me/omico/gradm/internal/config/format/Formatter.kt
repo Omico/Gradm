@@ -23,7 +23,6 @@ import me.omico.gradm.internal.config.Repository
 import me.omico.gradm.internal.config.format
 import me.omico.gradm.internal.config.gradm
 import me.omico.gradm.internal.config.gradmRuleVersion
-import me.omico.gradm.internal.config.gradmVersion
 import me.omico.gradm.internal.config.indent
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.path.RootProjectPaths
@@ -50,7 +49,6 @@ private fun StringBuilder.appendGradmBlock(document: YamlDocument, formatterSett
     with(formatterSettings) {
         appendLine("gradm:")
         with(nested()) {
-            appendFormatLine("version", document.gradmVersion, style = FormatLineStyle.DOUBLE_QUOTES)
             appendFormatLine("rule-version", document.gradmRuleVersion)
             appendFormatLine("format", true)
             if (document.gradm.indent != 2) appendFormatLine("indent", document.gradm.indent)

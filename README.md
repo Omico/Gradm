@@ -36,7 +36,6 @@ Create a file named `gradm.yml` in your root project directory, and add the foll
 
 ```yaml
 gradm:
-  version: <version> # Gradm version
   rule-version: 1 # Gradm rule version, currently has no effect on this
   format: true # default is false, if you haven't specify
   indent: 4 # default is 2, won't take effect if format is false
