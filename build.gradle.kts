@@ -16,7 +16,7 @@ val kotlinDslVersion = "2.1.7"
 
 allprojects {
     group = "me.omico.gradm"
-    version = "1.1.0-SNAPSHOT"
+    version = "1.1.0"
     configureDependencyUpdates(
         pinnedGroups = mapOf(
             "org.jetbrains.kotlin" to embeddedKotlinVersion,
