@@ -65,3 +65,20 @@ fun isNonStable(version: String): Boolean {
     val isStable = stableKeyword || regex.matches(version)
     return isStable.not()
 }
+
+val updateGradleWrapper by tasks.registering(Copy::class) {
+    from(
+        "gradle/wrapper/gradle-wrapper.jar",
+        "gradle/wrapper/gradle-wrapper.properties",
+    )
+    into("example/gradle/wrapper")
+    dependsOn(updateGradleWrapperScripts)
+}
+
+val updateGradleWrapperScripts by tasks.registering(Copy::class) {
+    from(
+        "gradlew",
+        "gradlew.bat",
+    )
+    into("example")
+}
