@@ -35,6 +35,7 @@ dependencyResolutionManagement {
     }
 }
 
+include(":gradm-codegen")
 include(":gradm-plugin")
 include(":gradm-runtime")
 

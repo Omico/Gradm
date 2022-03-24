@@ -11,6 +11,7 @@
       <option name="taskNames">
         <list>
           <option value=":gradm-runtime:publishToMavenLocal" />
+          <option value=":gradm-codegen:publishToMavenLocal" />
           <option value=":gradm-plugin:publishGradlePluginPublicationToMavenLocal" />
         </list>
       </option>

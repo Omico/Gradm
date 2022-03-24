@@ -28,7 +28,7 @@ import me.omico.gradm.internal.find
 import me.omico.gradm.internal.path.RootProjectPaths
 import java.nio.file.Files
 
-internal fun formatGradmConfig(document: YamlDocument) {
+fun formatGradmConfig(document: YamlDocument) {
     if (!document.gradm.format) return
     val formatSettings = FormatSettings(document)
     Files.write(

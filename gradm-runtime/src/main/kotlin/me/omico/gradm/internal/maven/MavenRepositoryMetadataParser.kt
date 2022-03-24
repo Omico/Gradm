@@ -39,7 +39,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
 
-internal object MavenRepositoryMetadataParser {
+object MavenRepositoryMetadataParser {
 
     var lastVersionsMetaHash: String? = null
 

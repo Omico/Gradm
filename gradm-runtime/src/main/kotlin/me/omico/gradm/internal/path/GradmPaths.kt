@@ -17,7 +17,7 @@ package me.omico.gradm.internal.path
 
 import java.nio.file.Path
 
-internal object GradmPaths {
+object GradmPaths {
 
     val rootDir: Path by lazy { RootProjectPaths.rootDir.resolve(".gradm") }
 

@@ -19,7 +19,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 
-internal abstract class ProjectPaths(
+abstract class ProjectPaths(
     val rootDir: Path,
 ) {
     val buildDir = rootDir.resolve("build")

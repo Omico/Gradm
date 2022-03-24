@@ -19,6 +19,7 @@
     <method v="2">
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="gradm.spotlessApply" run_configuration_type="GradleRunConfiguration" />
       <option name="Gradle.BeforeRunTask" enabled="true" tasks="publishMavenPublicationToMavenRepository" externalProjectPath="$PROJECT_DIR$/gradm-runtime" vmOptions="" scriptParameters="" />
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="publishMavenPublicationToMavenRepository" externalProjectPath="$PROJECT_DIR$/gradm-codegen" vmOptions="" scriptParameters="" />
       <option name="Gradle.BeforeRunTask" enabled="true" tasks="publishGradlePluginPublicationToMavenRepository" externalProjectPath="$PROJECT_DIR$/gradm-plugin" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
