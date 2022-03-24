@@ -26,7 +26,7 @@ import me.omico.gradm.internal.path.RootProjectPaths
 object GradmParser {
 
     fun execute(updateDependencies: Boolean = false) {
-        val document = RootProjectPaths.gradmConfig.toFile().inputStream().asYamlDocument()
+        val document = RootProjectPaths.gradmConfig.asYamlDocument()
         println("Gradm version: $GRADM_VERSION")
         println("Gradm rule version: ${document.gradmRuleVersion}")
         formatGradmConfig(document)

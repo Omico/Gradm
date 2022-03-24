@@ -18,14 +18,19 @@ package me.omico.gradm.internal
 import org.snakeyaml.engine.v2.api.Load
 import org.snakeyaml.engine.v2.api.LoadSettings
 import org.snakeyaml.engine.v2.api.LoadSettingsBuilder
-import java.io.InputStream
+import java.nio.file.Path
+import kotlin.io.path.isRegularFile
+import kotlin.io.path.readText
 
 typealias YamlObject = Map<String, Any>
 typealias YamlArray = List<YamlObject>
 typealias YamlDocument = YamlObject
 
-fun InputStream.asYamlDocument(builder: LoadSettingsBuilder.() -> Unit = {}): YamlDocument =
-    loadDocument(this, builder)
+fun Path.asYamlDocument(builder: LoadSettingsBuilder.() -> Unit = {}): YamlDocument =
+    run {
+        require(isRegularFile()) { "Path must be a regular file." }
+        loadDocument(readText(), builder)
+    }
 
 inline fun <reified T> YamlObject.find(key: String): T? = this[key] as? T
 
@@ -36,6 +41,9 @@ inline fun <reified T> YamlObject.find(key: String, orElse: () -> T): T = find<T
 inline fun <reified T> YamlObject.require(key: String): T = find<T>(key) ?: error("$key not found.")
 
 private inline fun <reified T> loadDocument(
-    inputStream: InputStream,
+    content: String,
     builder: LoadSettingsBuilder.() -> Unit = {},
-): T = LoadSettings.builder().apply(builder).build().let(::Load).loadFromInputStream(inputStream) as T
+): T = load(builder).loadFromString(content) as T
+
+private inline fun load(builder: LoadSettingsBuilder.() -> Unit = {}): Load =
+    LoadSettings.builder().apply(builder).build().let(::Load)
