@@ -18,94 +18,35 @@ package me.omico.gradm.internal.codegen
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
-import me.omico.gradm.GradmDependency
 import me.omico.gradm.internal.VersionsMeta
-import me.omico.gradm.internal.config.Library
+import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.alias
+import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
 import java.util.Locale
+
+internal typealias SubDependencies = HashMap<String, CodegenDependency>
 
 internal data class CodegenDependency(
     val name: String,
-    val libraries: ArrayList<CodegenLibrary>,
-    val subDependencies: HashMap<String, CodegenDependency>,
+    var library: CodegenLibrary?,
+    val subDependencies: SubDependencies,
 )
 
-internal fun CodegenDependency.addLibrary(
-    dependencyName: String,
-    library: Library,
-    versionsMeta: VersionsMeta,
-) {
-    when {
-        !library.alias().contains(".") -> libraries.add(library.toCodegenLibrary(versionsMeta))
-        else -> {
-            val strings = library.alias().split(".")
-            val subName = strings.first()
-            val subAlias = strings.drop(1).joinToString(".")
-            val subDependencyName = "${dependencyName.capitalize()}${subName.capitalize()}"
-            subDependencies
-                .getOrCreate(subName, subDependencyName)
-                .addLibrary(
-                    dependencyName = subDependencyName,
-                    library = library.copy(alias = subAlias),
-                    versionsMeta = versionsMeta,
-                )
-        }
-    }
-}
-
-internal fun HashMap<String, CodegenDependency>.getOrCreate(
-    key: String,
-    dependencyName: String = key,
-): CodegenDependency =
-    this[key] ?: CodegenDependency(
-        name = dependencyName,
-        libraries = arrayListOf(),
-        subDependencies = hashMapOf(),
-    ).also { this[key] = it }
+internal val CodegenDependency.hasSubDependencies: Boolean
+    get() = subDependencies.isNotEmpty()
 
 internal fun CodegenDependency.toFileSpec(): FileSpec =
     FileSpec.builder(GRADM_DEPENDENCY_PACKAGE_NAME, name)
         .addSuppressWarningTypes()
         .addGradmComment()
-        .apply { createDependencyObjects(this@toFileSpec) }
+        .addDependencyObjects(this@toFileSpec)
         .build()
 
-internal fun List<CodegenDependency>.toDslFileSpec(): FileSpec =
-    FileSpec.builder("", "Dependencies")
-        .addSuppressWarningTypes()
-        .addGradmComment()
-        .apply {
-            forEach { dependency ->
-                addDslProperty(
-                    propertyName = dependency.name,
-                    receivers = arrayOf(
-                        ClassName("org.gradle.api.artifacts.dsl", "DependencyHandler"),
-                        ClassName("org.jetbrains.kotlin.gradle.plugin", "KotlinDependencyHandler"),
-                    )
-                )
-            }
-        }
-        .build()
-
-private fun FileSpec.Builder.createDependencyObjects(dependency: CodegenDependency) {
-    TypeSpec.objectBuilder(dependency.name).addSuperinterface(GradmDependency::class)
-        .apply { dependency.libraries.forEach(::addLibrary) }
-        .apply { dependency.subDependencies.forEach { addSubDependencyProperty(it.key, it.value.name) } }
-        .build()
-        .also(::addType)
-    dependency.subDependencies.values.sortedBy { it.name }.forEach(::createDependencyObjects)
-}
-
-private fun TypeSpec.Builder.addSubDependencyProperty(propertyName: String, dependencyName: String): TypeSpec.Builder =
-    PropertySpec.builder(propertyName, ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, dependencyName))
-        .initializer(dependencyName)
-        .build()
-        .let(::addProperty)
-
-private fun FileSpec.Builder.addDslProperty(propertyName: String, receivers: Array<ClassName>): FileSpec.Builder =
+internal fun FileSpec.Builder.addDslProperty(propertyName: String, receivers: Array<ClassName>): FileSpec.Builder =
     apply {
         receivers.forEach { className ->
             PropertySpec
@@ -123,3 +64,81 @@ private fun FileSpec.Builder.addDslProperty(propertyName: String, receivers: Arr
                 .also(::addProperty)
         }
     }
+
+internal fun VersionsMeta.toCodegenDependency(dependency: Dependency): CodegenDependency =
+    CodegenDependency(dependency.name).apply {
+        dependency.libraries.forEach { library ->
+            addLibrary(library.alias(), library.toCodegenLibrary(this@toCodegenDependency))
+        }
+    }
+
+private fun CodegenDependency.addLibrary(alias: String, library: CodegenLibrary): Unit =
+    when {
+        alias.contains(".") -> {
+            val subName = alias.substringBefore(".")
+            val subAlias = alias.substringAfter(".")
+            val subDependencyName = "${name.capitalize()}${subName.capitalize()}"
+            getOrCreateSubDependency(subName, subDependencyName).addLibrary(subAlias, library)
+        }
+        else -> getOrCreateSubDependency(alias, "${name.capitalize()}${alias.capitalize()}").library = library
+    }
+
+private fun CodegenDependency.getOrCreateSubDependency(
+    name: String,
+    subDependencyName: String,
+    library: CodegenLibrary? = null,
+): CodegenDependency =
+    subDependencies[name] ?: CodegenDependency(subDependencyName, library).also { subDependencies[name] = it }
+
+private fun CodegenDependency(name: String, library: CodegenLibrary? = null): CodegenDependency =
+    CodegenDependency(
+        name = name,
+        library = library,
+        subDependencies = hashMapOf(),
+    )
+
+private fun FileSpec.Builder.addDependencyObjects(dependency: CodegenDependency): FileSpec.Builder =
+    apply {
+        if (!dependency.hasSubDependencies) return@apply
+        TypeSpec.objectBuilder(dependency.name)
+            .addDependencySuperClass(dependency)
+            .addSubDependencies(dependency)
+            .build()
+            .also(::addType)
+        dependency.subDependencies.values.sortedBy { it.name }.forEach { subDependency ->
+            addDependencyObjects(subDependency)
+        }
+    }
+
+private fun TypeSpec.Builder.addDependencySuperClass(dependency: CodegenDependency): TypeSpec.Builder =
+    apply {
+        if (!dependency.hasSubDependencies) return@apply
+        val library = dependency.library ?: return@apply
+        superclass(DefaultExternalModuleDependency::class)
+        addSuperclassConstructorParameter("%S", library.group)
+        addSuperclassConstructorParameter("%S", library.artifact)
+        addSuperclassConstructorParameter("%S", library.version)
+        FunSpec.builder("invoke")
+            .addModifiers(KModifier.OPERATOR)
+            .addParameter("version", String::class)
+            .returns(String::class)
+            .addStatement("return \"${library.module}:\$version\"", String::class)
+            .build()
+            .also(::addFunction)
+    }
+
+private fun TypeSpec.Builder.addSubDependencies(dependency: CodegenDependency): TypeSpec.Builder =
+    apply {
+        dependency.subDependencies.toSortedMap().forEach { (propertyName, subDependency) ->
+            when {
+                subDependency.hasSubDependencies -> addSubDependencyProperty(propertyName, subDependency.name)
+                else -> addLibrary(propertyName, subDependency.library)
+            }
+        }
+    }
+
+private fun TypeSpec.Builder.addSubDependencyProperty(propertyName: String, dependencyName: String): TypeSpec.Builder =
+    PropertySpec.builder(propertyName, ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, dependencyName))
+        .initializer(dependencyName)
+        .build()
+        .let(::addProperty)

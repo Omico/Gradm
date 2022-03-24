@@ -20,40 +20,33 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import me.omico.gradm.internal.VersionsMeta
 import me.omico.gradm.internal.config.Library
-import me.omico.gradm.internal.config.alias
-import java.util.Locale
 
 internal data class CodegenLibrary(
-    val module: String,
-    val alias: String,
+    val group: String,
+    val artifact: String,
     val version: String,
-)
+) {
+    val module: String by lazy { "$group:$artifact" }
+}
 
 internal fun Library.toCodegenLibrary(versionsMeta: VersionsMeta): CodegenLibrary =
     CodegenLibrary(
-        module = module,
-        alias = alias(),
-        version = version ?: versionsMeta[module]!!,
+        group = group,
+        artifact = artifact,
+        version = version ?: versionsMeta[module]!!
     )
 
-internal fun TypeSpec.Builder.addLibrary(library: CodegenLibrary): TypeSpec.Builder =
+internal fun TypeSpec.Builder.addLibrary(propertyName: String, library: CodegenLibrary?): TypeSpec.Builder =
     apply {
-        PropertySpec.builder(library.alias.camelCase(), String::class)
-            .initializer("${library.alias.camelCase()}(\"${library.version}\")")
+        if (library == null) return@apply
+        PropertySpec.builder(propertyName.camelCase(), String::class)
+            .initializer("${propertyName.camelCase()}(\"${library.version}\")")
             .build()
             .also(::addProperty)
-        FunSpec.builder(library.alias.camelCase())
+        FunSpec.builder(propertyName.camelCase())
             .addParameter("version", String::class)
             .returns(String::class)
-            .addStatement("return \"${library.module}:\$version\"", String::class)
+            .addStatement("return \"${library.group}:${library.artifact}:\$version\"", String::class)
             .build()
             .also(::addFunction)
     }
-
-private fun String.camelCase() =
-    split("-", "_")
-        .mapIndexed { index, s ->
-            if (index == 0) s
-            else s.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-        }
-        .joinToString("")

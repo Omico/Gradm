@@ -61,3 +61,11 @@ internal fun FileSpec.Builder.addGradmComment(): FileSpec.Builder =
 
 internal fun String.capitalize() =
     replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+
+internal fun String.camelCase() =
+    split("-", "_")
+        .mapIndexed { index, s ->
+            if (index == 0) s
+            else s.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+        }
+        .joinToString("")
