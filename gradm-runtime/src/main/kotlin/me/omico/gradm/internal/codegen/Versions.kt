@@ -22,50 +22,16 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import me.omico.gradm.internal.YamlDocument
+import me.omico.gradm.internal.config.TreeVersions
+import me.omico.gradm.internal.config.toTreeVersions
 import me.omico.gradm.internal.config.versions
 import me.omico.gradm.internal.path.GradmPaths
 
-internal data class CodegenVersions(
-    val name: String,
-    var version: String?,
-    val subVersions: HashMap<String, CodegenVersions>,
-)
-
 internal fun generateVersionsSourceFile(document: YamlDocument) {
-    createCodegenVersions(document).toFileSpec().writeTo(GradmPaths.GeneratedDependenciesProject.sourceDir)
+    document.versions.toTreeVersions().toFileSpec().writeTo(GradmPaths.GeneratedDependenciesProject.sourceDir)
 }
 
-private fun createCodegenVersions(document: YamlDocument): CodegenVersions =
-    CodegenVersions(
-        name = "Versions",
-        version = null,
-        subVersions = HashMap<String, CodegenVersions>()
-            .apply {
-                document.versions.forEach {
-                    addVersion(it.key.removePrefix("versions."), it.value)
-                }
-            }
-    )
-
-private fun HashMap<String, CodegenVersions>.addVersion(key: String, version: String): Unit =
-    when {
-        key.contains(".") -> {
-            val strings = key.split(".")
-            val name = strings.first()
-            val subKey = strings.drop(1).joinToString(".")
-            getOrCreate(name).subVersions.addVersion(subKey, version)
-        }
-        else -> getOrCreate(key).version = version
-    }
-
-private fun HashMap<String, CodegenVersions>.getOrCreate(name: String): CodegenVersions =
-    this[name] ?: CodegenVersions(
-        name = name,
-        version = null,
-        subVersions = hashMapOf(),
-    ).also { this[name] = it }
-
-private fun CodegenVersions.toFileSpec(): FileSpec =
+private fun TreeVersions.toFileSpec(): FileSpec =
     FileSpec.builder("", "Versions")
         .addSuppressWarningTypes()
         .addGradmComment()
@@ -73,7 +39,7 @@ private fun CodegenVersions.toFileSpec(): FileSpec =
         .addVersionsObjects(this)
         .build()
 
-private fun FileSpec.Builder.addVersionsObjects(versions: CodegenVersions): FileSpec.Builder =
+private fun FileSpec.Builder.addVersionsObjects(versions: TreeVersions): FileSpec.Builder =
     apply {
         TypeSpec.objectBuilder("Versions")
             .addSubVersionsProperties(versions)
@@ -81,12 +47,12 @@ private fun FileSpec.Builder.addVersionsObjects(versions: CodegenVersions): File
             .also(::addType)
     }
 
-private fun TypeSpec.Builder.addSubVersionsProperties(versions: CodegenVersions): TypeSpec.Builder =
+private fun TypeSpec.Builder.addSubVersionsProperties(versions: TreeVersions): TypeSpec.Builder =
     apply {
-        versions.subVersions.toSortedMap().forEach { (name, subVersions) ->
+        versions.subTreeVersions.toSortedMap().forEach { (name, subVersions) ->
             addVersionProperty(name, subVersions.version)
             addSubVersionsProperty(name, subVersions)
-            if (subVersions.subVersions.isNotEmpty()) {
+            if (subVersions.subTreeVersions.isNotEmpty()) {
                 TypeSpec.objectBuilder("${name.capitalize()}Versions")
                     .addSubVersionsProperties(subVersions)
                     .build()
@@ -107,10 +73,10 @@ private fun TypeSpec.Builder.addVersionProperty(propertyName: String, version: S
 
 private fun TypeSpec.Builder.addSubVersionsProperty(
     propertyName: String,
-    subVersions: CodegenVersions,
+    subVersions: TreeVersions,
 ): TypeSpec.Builder =
     apply {
-        if (subVersions.subVersions.isEmpty()) return this
+        if (subVersions.subTreeVersions.isEmpty()) return this
         PropertySpec.builder(propertyName, ClassName("", "${propertyName.capitalize()}Versions"))
             .initializer("${propertyName.capitalize()}Versions")
             .build()

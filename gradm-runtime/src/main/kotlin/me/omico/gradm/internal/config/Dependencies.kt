@@ -23,7 +23,7 @@ import me.omico.gradm.internal.require
 
 val YamlDocument.dependencies: List<Dependency>
     get() = find<YamlArray>("dependencies", emptyList())
-        .map { Dependency(it, versions) }
+        .map { Dependency(it, versions.toFlatVersions()) }
 
 data class Dependency(
     val name: String,
@@ -43,11 +43,11 @@ internal fun Dependency(dependencyObject: DependencyObject): Dependency =
         libraries = dependencyObject.find<YamlArray>("libraries", emptyList()).map(::Library).sortedBy { it.module },
     )
 
-private fun Dependency(dependencyObject: DependencyObject, versions: Versions): Dependency =
+private fun Dependency(dependencyObject: DependencyObject, versions: FlatVersions): Dependency =
     Dependency(dependencyObject).let { dependency ->
         dependency.copy(
             libraries = dependency.libraries.map { library ->
-                library.copy(version = fixedVersion(library.version, versions))
+                library.copy(version = versions.resolveVariable(library.version))
             },
         )
     }

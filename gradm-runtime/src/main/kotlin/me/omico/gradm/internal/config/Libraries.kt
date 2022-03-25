@@ -47,12 +47,3 @@ internal fun Library(library: YamlObject): Library =
         alias = library.find("alias"),
         version = library.find("version"),
     )
-
-private val fixedVersionRegex = Regex("(\\\$\\{(.*)})")
-
-internal fun fixedVersion(version: String?, versions: Versions): String? =
-    version
-        ?.let { fixedVersionRegex.matchEntire(it) }
-        ?.let { it.groupValues[2] }
-        ?.let { versions[it] }
-        ?: version
