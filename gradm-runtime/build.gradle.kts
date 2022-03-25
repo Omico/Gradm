@@ -36,3 +36,7 @@ val copyKotlinTemplates by tasks.registering(Copy::class) {
 tasks.withType<KotlinCompile> {
     dependsOn(copyKotlinTemplates)
 }
+
+val sourcesJar by tasks.named("sourcesJar") {
+    dependsOn(copyKotlinTemplates)
+}
