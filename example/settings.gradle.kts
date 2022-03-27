@@ -11,7 +11,7 @@ pluginManagement {
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
     }
     plugins {
-        id("me.omico.gradm") version "1.2.0-SNAPSHOT"
+        id("me.omico.gradm") version "1.3.0-SNAPSHOT"
     }
 }
 
