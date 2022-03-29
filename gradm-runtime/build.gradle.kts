@@ -20,9 +20,8 @@ kotlin {
 
 dependencies {
     compileOnly(gradleApi())
-    implementation("org.snakeyaml:snakeyaml-engine:2.3")
-    @Suppress("GradlePackageUpdate") // Keep version compatible with built-in kotlin version.
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation(libs.snakeyaml)
+    implementation(libs.kotlinx.coroutines)
 }
 
 val copyKotlinTemplates by tasks.registering(Copy::class) {

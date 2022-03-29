@@ -19,6 +19,5 @@ kotlin {
 
 dependencies {
     compileOnly(projects.gradmIntegration.api)
-    @Suppress("GradlePackageUpdate") // Keep version compatible with built-in kotlin version.
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
+    implementation(libs.kotlinx.serialization)
 }
