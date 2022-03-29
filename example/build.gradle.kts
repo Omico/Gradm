@@ -11,6 +11,7 @@ repositories {
 }
 
 android {
+    namespace = "me.omico.gradm.example"
     compileSdk = 32
     defaultConfig {
         minSdk = 26
