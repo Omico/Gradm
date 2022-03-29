@@ -19,12 +19,14 @@ allprojects {
     version = "1.3.0-SNAPSHOT"
     configureDependencyUpdates(
         pinnedGroups = mapOf(
-            "org.jetbrains.kotlin" to embeddedKotlinVersion,
             "org.gradle.kotlin.kotlin-dsl" to kotlinDslVersion,
+            "org.jetbrains.kotlin" to embeddedKotlinVersion,
+            "org.jetbrains.kotlin.plugin.serialization" to embeddedKotlinVersion,
         ),
         pinnedModules = mapOf(
-            "org.gradle.kotlin.embedded-kotlin.gradle.plugin" to kotlinDslVersion,
+            "kotlinpoet" to "1.10.2", // https://github.com/square/kotlinpoet
             "kotlinx-coroutines-core" to "1.5.2", // https://github.com/Kotlin/kotlinx.coroutines
+            "org.gradle.kotlin.embedded-kotlin.gradle.plugin" to kotlinDslVersion,
         ),
     )
     configureSpotless {
