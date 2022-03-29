@@ -21,14 +21,20 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import me.omico.gradm.integration.gradmIntegrations
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.TreeVersions
+import me.omico.gradm.internal.config.toFlatVersions
 import me.omico.gradm.internal.config.toTreeVersions
 import me.omico.gradm.internal.config.versions
 import me.omico.gradm.internal.path.GradmPaths
 
 internal fun generateVersionsSourceFile(document: YamlDocument) {
-    document.versions.toTreeVersions().toFileSpec().writeTo(GradmPaths.GeneratedDependenciesProject.sourceDir)
+    val treeVersions = mutableMapOf<String, String>()
+        .apply { putAll(document.versions.toFlatVersions()) }
+        .apply { gradmIntegrations.forEach { it.applyVersions(this) } }
+        .toTreeVersions()
+    treeVersions.toFileSpec().writeTo(GradmPaths.GeneratedDependenciesProject.sourceDir)
 }
 
 private fun TreeVersions.toFileSpec(): FileSpec =

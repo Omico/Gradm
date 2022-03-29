@@ -26,6 +26,7 @@ allprojects {
         pinnedModules = mapOf(
             "kotlinpoet" to "1.10.2", // https://github.com/square/kotlinpoet
             "kotlinx-coroutines-core" to "1.5.2", // https://github.com/Kotlin/kotlinx.coroutines
+            "kotlinx-serialization-json" to "1.3.1", // https://github.com/Kotlin/kotlinx.serialization
             "org.gradle.kotlin.embedded-kotlin.gradle.plugin" to kotlinDslVersion,
         ),
     )

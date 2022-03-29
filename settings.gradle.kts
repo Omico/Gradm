@@ -23,6 +23,7 @@ pluginManagement {
         id("com.gradle.enterprise") version versions.gradleEnterprisePlugin
         id("me.omico.age.project") version versions.agePlugin
         id("me.omico.age.spotless") version versions.agePlugin
+        kotlin("plugin.serialization") version embeddedKotlinVersion
     }
 }
 
@@ -36,6 +37,9 @@ dependencyResolutionManagement {
 }
 
 include(":gradm-codegen")
+include(":gradm-integration")
+include(":gradm-integration:api")
+include(":gradm-integration:github")
 include(":gradm-plugin")
 include(":gradm-runtime")
 

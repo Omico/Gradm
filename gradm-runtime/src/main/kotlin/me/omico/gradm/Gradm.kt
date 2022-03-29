@@ -22,6 +22,9 @@ import kotlin.io.path.exists
 
 const val GRADM_DEPENDENCY_PACKAGE_NAME = "me.omico.gradm.dependency"
 
+val projectRootDir: Path
+    get() = RootProjectPaths.rootDir
+
 val hasGradmConfig: Boolean
     get() = RootProjectPaths.gradmConfig.exists()
 

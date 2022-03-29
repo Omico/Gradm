@@ -3,6 +3,7 @@ import me.omico.age.dsl.withKotlinMavenPublication
 
 plugins {
     `embedded-kotlin`
+    kotlin("plugin.serialization")
 }
 
 javaCompatibility(all = JavaVersion.VERSION_11)
@@ -17,9 +18,7 @@ kotlin {
 }
 
 dependencies {
-    compileOnly(gradleApi())
-    compileOnly(projects.gradmRuntime)
-    compileOnly(projects.gradmIntegration)
+    compileOnly(projects.gradmIntegration.api)
     @Suppress("GradlePackageUpdate") // Keep version compatible with built-in kotlin version.
-    implementation("com.squareup:kotlinpoet:1.10.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
 }

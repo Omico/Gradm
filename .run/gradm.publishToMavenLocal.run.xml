@@ -12,6 +12,9 @@
         <list>
           <option value=":gradm-runtime:publishToMavenLocal" />
           <option value=":gradm-codegen:publishToMavenLocal" />
+          <option value=":gradm-integration:api:publishToMavenLocal" />
+          <option value=":gradm-integration:github:publishToMavenLocal" />
+          <option value=":gradm-integration:publishToMavenLocal" />
           <option value=":gradm-plugin:publishGradlePluginPublicationToMavenLocal" />
         </list>
       </option>

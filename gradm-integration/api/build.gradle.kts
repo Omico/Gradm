@@ -17,9 +17,6 @@ kotlin {
 }
 
 dependencies {
-    compileOnly(gradleApi())
-    compileOnly(projects.gradmRuntime)
-    compileOnly(projects.gradmIntegration)
-    @Suppress("GradlePackageUpdate") // Keep version compatible with built-in kotlin version.
-    implementation("com.squareup:kotlinpoet:1.10.2")
+    api(gradleApi())
+    api(projects.gradmRuntime)
 }
