@@ -11,8 +11,7 @@ plugins {
     id("me.omico.age.spotless")
 }
 
-val ktLintVersion = "0.43.2"
-val kotlinDslVersion = "2.1.7"
+val kotlinDslVersion = "2.1.7" // From embedded Kotlin
 
 allprojects {
     group = "me.omico.gradm"
@@ -24,9 +23,9 @@ allprojects {
             "org.jetbrains.kotlin.plugin.serialization" to embeddedKotlinVersion,
         ),
         pinnedModules = mapOf(
-            "kotlinpoet" to "1.10.2", // https://github.com/square/kotlinpoet
-            "kotlinx-coroutines-core" to "1.5.2", // https://github.com/Kotlin/kotlinx.coroutines
-            "kotlinx-serialization-json" to "1.3.1", // https://github.com/Kotlin/kotlinx.serialization
+            "kotlinpoet" to versions.kotlinpoet,
+            "kotlinx-coroutines-core" to versions.kotlinx.coroutines,
+            "kotlinx-serialization-json" to versions.kotlinx.serialization,
             "org.gradle.kotlin.embedded-kotlin.gradle.plugin" to kotlinDslVersion,
         ),
     )
@@ -35,13 +34,13 @@ allprojects {
         intelliJIDEARunConfiguration()
         kotlin {
             target("src/**/*.kt")
-            ktlint(ktLintVersion)
+            ktlint(versions.ktlint)
             indentWithSpaces()
             trimTrailingWhitespace()
             endWithNewline()
             licenseHeaderFile(rootProject.file("spotless/copyright.kt")).updateYearWithLatest(true).yearSeparator("-")
         }
-        kotlinGradle(ktLintVersion = ktLintVersion)
+        kotlinGradle(versions.ktlint)
     }
 }
 
