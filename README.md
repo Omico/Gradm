@@ -10,9 +10,7 @@ The Gradle version catalogs is an excellent move for us. But it also brings a lo
 
 * The Generated code is fully Java. Usable, and that's it. Not good for reading.
 * No official dependencies update support.
-* No customized space, it may reject all better possibilities.
-* Terrible restrictions, like naming: https://github.com/gradle/gradle/issues/18208, https://github.com/gradle/gradle/issues/18201.
-* The configuration quickly fell into chaos as the project grew.
+* Terrible restrictions, like naming: <https://github.com/gradle/gradle/issues/18208>, <https://github.com/gradle/gradle/issues/18201>.
 * And more...?
 
 **Gradm** was born for the above problems. It has an excellent ability of dependencies management and versions update.
