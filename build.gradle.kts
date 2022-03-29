@@ -69,19 +69,22 @@ fun isNonStable(version: String): Boolean {
     return isStable.not()
 }
 
+val wrapper: Wrapper by tasks.named("wrapper") {
+    finalizedBy(updateGradleWrapper, updateGradleWrapperScripts)
+}
+
 val updateGradleWrapper by tasks.registering(Copy::class) {
     from(
-        "gradle/wrapper/gradle-wrapper.jar",
-        "gradle/wrapper/gradle-wrapper.properties",
+        wrapper.jarFile,
+        wrapper.propertiesFile,
     )
     into("example/gradle/wrapper")
-    dependsOn(updateGradleWrapperScripts)
 }
 
 val updateGradleWrapperScripts by tasks.registering(Copy::class) {
     from(
-        "gradlew",
-        "gradlew.bat",
+        wrapper.scriptFile,
+        wrapper.batchScript,
     )
     into("example")
 }
