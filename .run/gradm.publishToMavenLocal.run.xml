@@ -10,6 +10,8 @@
       </option>
       <option name="taskNames">
         <list>
+          <option value="clean" />
+          <option value="build" />
           <option value=":gradm-runtime:publishToMavenLocal" />
           <option value=":gradm-codegen:publishToMavenLocal" />
           <option value=":gradm-integration:api:publishToMavenLocal" />
