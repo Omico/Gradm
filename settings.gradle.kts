@@ -28,7 +28,7 @@ pluginManagement {
 }
 
 plugins {
-    id("me.omico.gradm") version "1.4.0"
+    id("me.omico.gradm") version "1.5.0"
 }
 
 dependencyResolutionManagement {
