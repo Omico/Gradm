@@ -20,6 +20,7 @@ import java.nio.file.Path
 object GradmPaths {
 
     val rootDir: Path by lazy { RootProjectPaths.rootDir.resolve(".gradm") }
+    val integrationDir: Path by lazy { rootDir.resolve("integration") }
 
     object Metadata {
         val rootDir: Path by lazy { GradmPaths.rootDir.resolve("metadata") }
