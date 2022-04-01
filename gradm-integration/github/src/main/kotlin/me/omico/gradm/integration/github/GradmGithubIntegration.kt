@@ -15,19 +15,44 @@
  */
 package me.omico.gradm.integration.github
 
+import me.omico.gradm.GradmConfigs
 import me.omico.gradm.integration.GradmIntegration
 import me.omico.gradm.integration.github.internal.parseGithubIntegration
-import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.config.MutableFlatVersions
 import me.omico.gradm.projectRootDir
 import kotlin.io.path.exists
 
 object GradmGithubIntegration : GradmIntegration() {
 
+    private val githubIntegrationConfig = projectRootDir.resolve("gradm.integration.github.yml")
+
     override fun applyVersions(versions: MutableFlatVersions) {
-        val githubIntegrationConfig = projectRootDir.resolve("gradm.integration.github.yml")
         if (!githubIntegrationConfig.exists()) return
-        val document = githubIntegrationConfig.asYamlDocument()
-        parseGithubIntegration(document, versions)
+        when {
+            GradmConfigs.offline -> {
+                println("[Gradm]: Github integration config found, but the offline mode is enabled.")
+                applyVersionsByCache(versions)
+            }
+            else -> applyVersionsIfNeeded(versions)
+        }
+    }
+
+    private fun applyVersionsByCache(versions: MutableFlatVersions) =
+        when (val versionsMeta = GradmGithubIntegrationConfigs.localVersionsMeta) {
+            null -> println("[Gradm]: versions-meta.txt for Github integration is not found, skipping.")
+            else -> versionsMeta.forEach { (key, value) ->
+                when {
+                    versions.containsKey(key) -> println("[Gradm]: $key is already in the versions, skipping.")
+                    else -> versions[key] = value
+                }
+            }
+        }
+
+    private fun applyVersionsIfNeeded(versions: MutableFlatVersions) {
+        when {
+            GradmConfigs.updateDependencies || GradmGithubIntegrationConfigs.localVersionsMeta == null ->
+                githubIntegrationConfig.parseGithubIntegration(versions)
+            else -> applyVersionsByCache(versions)
+        }
     }
 }

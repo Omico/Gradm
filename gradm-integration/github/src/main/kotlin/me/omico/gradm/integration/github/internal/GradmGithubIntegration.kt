@@ -15,12 +15,15 @@
  */
 package me.omico.gradm.integration.github.internal
 
+import me.omico.gradm.integration.github.GradmGithubIntegrationConfigs
 import me.omico.gradm.internal.YamlArray
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.YamlObject
+import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.config.MutableFlatVersions
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.require
+import java.nio.file.Path
 
 internal typealias Github = YamlObject
 internal typealias GithubVersions = YamlArray
@@ -59,23 +62,33 @@ internal fun GithubVersionConfiguration(configuration: GithubVersion): GithubVer
         group = configuration.group,
     )
 
-internal fun parseGithubIntegration(document: YamlDocument, versions: MutableFlatVersions) =
-    document.github?.versions
+internal fun Path.parseGithubIntegration(versions: MutableFlatVersions) =
+    asYamlDocument().github?.versions
         ?.map(::GithubVersionConfiguration)
-        ?.forEach { configuration ->
+        ?.mapNotNull { configuration ->
             val tag = configuration.latestReleaseTag
             val result = configuration.regex.matchEntire(tag)
-                ?: return@forEach println("[${configuration.repository}]: Unable to match regex ${configuration.regex} with tag $tag")
-            val key = "versions.${configuration.alias}"
-            when {
-                versions.contains(key) -> println("[${configuration.repository}]: Duplicate with $key, skipping.")
-                else -> runCatching { result.groupValues[configuration.group] }
-                    .fold(
-                        onSuccess = { versions[key] = it },
-                        onFailure = { println("[${configuration.repository}]: Unable to parse version from regex ${configuration.regex} with tag $tag.") },
-                    )
+            if (result == null) {
+                println("[${configuration.repository}]: Unable to match regex ${configuration.regex} with tag $tag")
+                return@mapNotNull null
             }
+            val key = "versions.${configuration.alias}"
+            if (versions.contains(key)) {
+                println("[${configuration.repository}]: Duplicate with $key, skipping.")
+                return@mapNotNull null
+            }
+            runCatching { result.groupValues[configuration.group] }
+                .fold(
+                    onSuccess = { key to it },
+                    onFailure = {
+                        println("[${configuration.repository}]: Unable to parse version from regex ${configuration.regex} with tag $tag.")
+                        null
+                    },
+                )
         }
+        ?.toMap()
+        ?.also(GradmGithubIntegrationConfigs::updateLocalVersionsMeta)
+        ?.forEach { (key, value) -> versions[key] = value }
 
 private val GithubVersionConfiguration.latestReleaseTag
     get() = latestReleaseTag(repository)
