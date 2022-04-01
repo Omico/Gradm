@@ -18,7 +18,7 @@ package me.omico.gradm.internal.codegen
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import me.omico.gradm.internal.VersionsMeta
+import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.config.Library
 
 internal data class CodegenLibrary(

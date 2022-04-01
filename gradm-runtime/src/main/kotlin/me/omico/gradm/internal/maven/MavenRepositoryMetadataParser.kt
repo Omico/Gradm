@@ -19,7 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import me.omico.gradm.GradmConfigs
-import me.omico.gradm.internal.VersionsMeta
+import me.omico.gradm.VersionsMeta
+import me.omico.gradm.asVersionsMetaHash
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.Repository
@@ -29,14 +30,12 @@ import me.omico.gradm.internal.config.metadataUrl
 import me.omico.gradm.internal.config.repositories
 import me.omico.gradm.internal.config.repositoryUrl
 import me.omico.gradm.internal.path.GradmPaths
-import me.omico.gradm.internal.store
-import me.omico.gradm.internal.versionsMetaHash
+import me.omico.gradm.store
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.util.stream.Stream
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
-import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
 
 object MavenRepositoryMetadataParser {
@@ -50,13 +49,10 @@ object MavenRepositoryMetadataParser {
             .apply { if (!GradmConfigs.offline) downloadAllMetadata(document.dependencies, document.repositories) }
             .apply { loadAllMetadata().forEach { this[it.module] = it.latestVersion } }
             .also { updateLastVersionsMetaHash() }
-            .also(VersionsMeta::store)
+            .also(::store)
 
     private fun updateLastVersionsMetaHash() {
-        lastVersionsMetaHash = when {
-            GradmPaths.Metadata.versionsMetaHash.exists() -> versionsMetaHash
-            else -> null
-        }
+        lastVersionsMetaHash = GradmPaths.Metadata.versionsMetaHash.asVersionsMetaHash()
     }
 
     private fun downloadAllMetadata(dependencies: List<Dependency>, repositories: List<Repository>) =
@@ -84,4 +80,10 @@ object MavenRepositoryMetadataParser {
             endsWith("/") -> removeSuffix("/")
             else -> this
         }
+
+    private fun store(versionsMeta: VersionsMeta) =
+        versionsMeta.store(
+            versionsMeta = GradmPaths.Metadata.versionsMeta,
+            versionsMetaHash = GradmPaths.Metadata.versionsMetaHash,
+        )
 }

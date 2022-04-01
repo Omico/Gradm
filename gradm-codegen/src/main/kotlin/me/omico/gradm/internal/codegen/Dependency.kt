@@ -22,7 +22,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
-import me.omico.gradm.internal.VersionsMeta
+import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.alias
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
