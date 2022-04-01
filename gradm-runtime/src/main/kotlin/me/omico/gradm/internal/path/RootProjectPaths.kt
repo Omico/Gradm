@@ -15,11 +15,11 @@
  */
 package me.omico.gradm.internal.path
 
-import me.omico.gradm.internal.ProjectConfig
+import me.omico.gradm.GradmConfigs
 import java.nio.file.Path
 
 object RootProjectPaths : ProjectPaths(
-    rootDir = ProjectConfig.rootDirPath,
+    rootDir = GradmConfigs.projectRootDir,
 ) {
     val gradmConfig: Path by lazy { rootDir.resolve("gradm.yml") }
 }

@@ -25,13 +25,13 @@ import me.omico.gradm.internal.path.RootProjectPaths
 
 object GradmParser {
 
-    fun execute(updateDependencies: Boolean = false) {
+    fun execute() {
         val document = RootProjectPaths.gradmConfig.asYamlDocument()
         println("Gradm version: $GRADM_VERSION")
         println("Gradm rule version: ${document.gradmRuleVersion}")
         formatGradmConfig(document)
         val versionsMeta = when {
-            updateDependencies -> MavenRepositoryMetadataParser.updateVersionsMeta(document)
+            GradmConfigs.updateDependencies -> MavenRepositoryMetadataParser.updateVersionsMeta(document)
             else -> localVersionsMeta
         }
         generateDependenciesProjectFiles(document, versionsMeta)

@@ -18,7 +18,7 @@ package me.omico.gradm.internal.maven
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import me.omico.gradm.internal.ProjectConfig
+import me.omico.gradm.GradmConfigs
 import me.omico.gradm.internal.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
@@ -47,7 +47,7 @@ object MavenRepositoryMetadataParser {
 
     fun updateVersionsMeta(document: YamlDocument): VersionsMeta =
         hashMapOf<String, String>()
-            .apply { if (!ProjectConfig.isOffline) downloadAllMetadata(document.dependencies, document.repositories) }
+            .apply { if (!GradmConfigs.offline) downloadAllMetadata(document.dependencies, document.repositories) }
             .apply { loadAllMetadata().forEach { this[it.module] = it.latestVersion } }
             .also { updateLastVersionsMetaHash() }
             .also(VersionsMeta::store)

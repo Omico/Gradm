@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.internal
+package me.omico.gradm
 
-import org.gradle.api.initialization.Settings
 import java.nio.file.Path
 
-object ProjectConfig {
+object GradmConfigs {
 
-    lateinit var rootDirPath: Path
+    lateinit var projectRootDir: Path
 
-    var isOffline: Boolean = false
+    var offline: Boolean = false
 
-    fun initialize(settings: Settings) {
-        this.rootDirPath = settings.rootDir.toPath()
-        this.isOffline = settings.startParameter.isOffline
-    }
+    var updateDependencies: Boolean = false
 }
