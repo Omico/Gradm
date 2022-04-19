@@ -64,8 +64,5 @@ internal fun String.capitalize() =
 
 internal fun String.camelCase() =
     split("-", "_")
-        .mapIndexed { index, s ->
-            if (index == 0) s
-            else s.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-        }
+        .mapIndexed { index, s -> if (index == 0) s else s.capitalize() }
         .joinToString("")
