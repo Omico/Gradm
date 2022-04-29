@@ -13,9 +13,10 @@ pluginManagement {
     }
     val versions = object {
         val agePlugin = "1.0.0-SNAPSHOT"
-        val gradleEnterprisePlugin = "3.8.1"
+        val gradleEnterprisePlugin = "3.10"
         val gradleVersionsPlugin = "0.42.0"
-        val spotlessPlugin = "6.4.2"
+        val gradmPlugin = "1.5.0"
+        val spotlessPlugin = "6.5.1"
     }
     plugins {
         id("com.diffplug.spotless") version versions.spotlessPlugin
@@ -23,12 +24,22 @@ pluginManagement {
         id("com.gradle.enterprise") version versions.gradleEnterprisePlugin
         id("me.omico.age.project") version versions.agePlugin
         id("me.omico.age.spotless") version versions.agePlugin
+        id("me.omico.gradm") version versions.gradmPlugin
         kotlin("plugin.serialization") version embeddedKotlinVersion
     }
 }
 
 plugins {
-    id("me.omico.gradm") version "1.5.0"
+    id("com.gradle.enterprise")
+    id("me.omico.gradm")
+}
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+        publishAlwaysIf(!gradle.startParameter.isOffline)
+    }
 }
 
 dependencyResolutionManagement {
