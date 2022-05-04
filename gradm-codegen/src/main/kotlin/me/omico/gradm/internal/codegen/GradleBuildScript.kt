@@ -17,13 +17,10 @@ package me.omico.gradm.internal.codegen
 
 import me.omico.gradm.GRADM_VERSION
 import me.omico.gradm.internal.path.GradmPaths
-import java.nio.file.Files
+import kotlin.io.path.writeText
 
 internal fun generateGradleBuildScript() {
-    Files.write(
-        GradmPaths.GeneratedDependenciesProject.gradleBuildScript,
-        gradleBuildScriptContent.toByteArray(),
-    )
+    GradmPaths.GeneratedDependenciesProject.gradleBuildScript.writeText(gradleBuildScriptContent)
 }
 
 private val gradleBuildScriptContent: String =
@@ -56,4 +53,4 @@ private val gradleBuildScriptContent: String =
         implementation("me.omico.gradm:gradm-runtime:$GRADM_VERSION")
     }
 
-    """.trimIndent()
+    """.trimIndent().replace("\n", System.lineSeparator())

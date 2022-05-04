@@ -2,7 +2,6 @@ import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import me.omico.age.spotless.androidXml
 import me.omico.age.spotless.configureSpotless
 import me.omico.age.spotless.intelliJIDEARunConfiguration
-import me.omico.age.spotless.kotlinGradle
 
 plugins {
     id("com.diffplug.spotless")
@@ -40,7 +39,15 @@ allprojects {
             endWithNewline()
             licenseHeaderFile(rootProject.file("spotless/copyright.kt")).updateYearWithLatest(true).yearSeparator("-")
         }
-        kotlinGradle(versions.ktlint)
+        kotlinGradle {
+            target("**/*.gradle.kts")
+            // TODO: Workaround before new version released.
+            targetExclude(".gradm/**/*.gradle.kts")
+            ktlint(versions.ktlint)
+            indentWithSpaces()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
     }
 }
 
