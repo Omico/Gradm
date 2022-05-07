@@ -15,7 +15,6 @@
  */
 package me.omico.gradm
 
-import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.internal.sha1
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -26,7 +25,7 @@ typealias VersionsMeta = Map<String, String>
 
 fun VersionsMeta.store(versionsMeta: Path, versionsMetaHash: Path) {
     versionsMeta.writeText(versionsMetaContent)
-    versionsMetaHash.writeText(GradmPaths.Metadata.versionsMeta.sha1())
+    versionsMetaHash.writeText(versionsMeta.sha1())
 }
 
 fun Path.asVersionsMeta(): VersionsMeta? =
