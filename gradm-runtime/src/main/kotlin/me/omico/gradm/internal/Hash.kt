@@ -42,3 +42,5 @@ fun Iterable<ByteArray>.hash(algorithm: String): String = hash(algorithm) { forE
 fun ByteArray.hex(): String = fold("") { str, it -> str + "%02x".format(it) }
 
 fun Path.sha1(): String = hash("SHA-1")
+
+fun Iterable<ByteArray>.sha1(): String = hash("SHA-1")

@@ -15,23 +15,34 @@
  */
 package me.omico.gradm.internal.maven
 
+import org.w3c.dom.Node
+import org.w3c.dom.NodeList
 import java.nio.file.Path
 import javax.xml.parsers.DocumentBuilder
+import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.io.path.absolutePathString
 
 data class MavenMetadata(
     val group: String,
     val artifact: String,
     val latestVersion: String,
+    val versions: List<String>,
 ) {
     val module: String by lazy { "$group:$artifact" }
 }
 
-internal fun DocumentBuilder.MavenMetadata(metadataPath: Path): MavenMetadata =
-    parse(metadataPath.toFile())
+internal fun MavenMetadata(metadataPath: Path): MavenMetadata =
+    documentBuilder.parse(metadataPath.absolutePathString())
         .let { document ->
             MavenMetadata(
                 group = document.getElementsByTagName("groupId").item(0).textContent,
                 artifact = document.getElementsByTagName("artifactId").item(0).textContent,
                 latestVersion = document.getElementsByTagName("latest").item(0).textContent,
+                versions = document.getElementsByTagName("version").map { it.textContent },
             )
         }
+
+private val documentBuilder: DocumentBuilder by lazy { DocumentBuilderFactory.newInstance().newDocumentBuilder() }
+
+private fun <T> NodeList.map(transform: (Node) -> T): List<T> =
+    (0 until length).map { transform(item(it)) }

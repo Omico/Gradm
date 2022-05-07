@@ -34,6 +34,9 @@ val isGradmGeneratedDependenciesSourcesExists: Boolean
 val gradmMetadataDir: Path
     get() = GradmPaths.Metadata.rootDir
 
+val gradmUpdatesDir: Path
+    get() = GradmPaths.Updates.rootDir
+
 val gradmGeneratedDependenciesDir: Path
     get() = GradmPaths.GeneratedDependenciesProject.rootDir
 

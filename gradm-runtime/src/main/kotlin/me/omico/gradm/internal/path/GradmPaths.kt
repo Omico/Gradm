@@ -28,6 +28,11 @@ object GradmPaths {
         val versionsMetaHash: Path by lazy { rootDir.resolve("versions-meta.hash") }
     }
 
+    object Updates {
+        val rootDir: Path by lazy { GradmPaths.rootDir.resolve("updates") }
+        val available: Path by lazy { rootDir.resolve("available.yml") }
+    }
+
     object GeneratedDependenciesProject : ProjectPaths(
         rootDir = rootDir.resolve("generated-dependencies"),
     ) {
