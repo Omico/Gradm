@@ -71,8 +71,7 @@ data class FormatterSettings(
     }.sortedBy { it.first.toString() }.toMap()
 }
 
-@Suppress("FunctionName")
-fun FormatSettings(document: YamlDocument): FormatterSettings =
+fun FormatterSettings(document: YamlDocument): FormatterSettings =
     FormatterSettings(
         depth = 0,
         indent = document.gradm.indent,

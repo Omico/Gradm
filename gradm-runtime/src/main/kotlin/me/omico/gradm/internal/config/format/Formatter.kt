@@ -30,17 +30,17 @@ import java.nio.file.Files
 
 fun formatGradmConfig(document: YamlDocument) {
     if (!document.gradm.format) return
-    val formatSettings = FormatSettings(document)
+    val formatterSettings = FormatterSettings(document)
     Files.write(
         RootProjectPaths.gradmConfig,
         buildString {
-            appendGradmBlock(document, formatSettings)
+            appendGradmBlock(document, formatterSettings)
             appendLine()
-            appendVersionsBlock(document, formatSettings)
+            appendVersionsBlock(document, formatterSettings)
             appendLine()
-            appendRepositoriesBlock(document, formatSettings)
+            appendRepositoriesBlock(document, formatterSettings)
             appendLine()
-            appendDependenciesBlock(document, formatSettings)
+            appendDependenciesBlock(document, formatterSettings)
         }.toByteArray(),
     )
 }
