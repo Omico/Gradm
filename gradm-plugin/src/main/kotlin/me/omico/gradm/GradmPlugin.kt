@@ -49,6 +49,7 @@ class GradmPlugin : Plugin<Settings> {
                 tasks.register("gradmUpdateDependencies", GradmUpdateDependencies::class)
                 tasks.register("gradmClean", Delete::class) {
                     delete(gradmMetadataDir)
+                    delete(gradmUpdatesDir)
                     delete(gradmGeneratedDependenciesSourceDir)
                     delete(gradmGeneratedDependenciesBuildDir)
                 }
