@@ -45,15 +45,18 @@ object MavenRepositoryMetadataParser {
     fun updateVersionsMeta(document: YamlDocument): VersionsMeta =
         hashMapOf<String, String>()
             .apply { document.downloadAllMetadata() }
-            .apply { collectAllMetadata().forEach { this[it.module] = it.latestVersion } }
+            .apply { putAll(localVersionsMeta) }
             .also { updateLastVersionsMetaHash() }
             .also { document.storeAvailableUpdates(collectAllMetadata()) }
+
+    val localVersionsMeta: VersionsMeta
+        get() = collectAllMetadata().associate { it.module to it.latestVersion }
 
     private fun updateLastVersionsMetaHash() {
         lastVersionsMetaHash = GradmPaths.Metadata.versionsMetaHash.asVersionsMetaHash()
     }
 
-    internal fun YamlDocument.downloadAllMetadata() =
+    private fun YamlDocument.downloadAllMetadata() =
         runBlocking {
             if (GradmConfigs.offline) return@runBlocking
             val byteArrays = ArrayList<ByteArray>()
@@ -79,7 +82,7 @@ object MavenRepositoryMetadataParser {
             .filter { it.isRegularFile() && it.fileName.endsWith("maven-metadata.xml") }
             .toList()
 
-    internal fun collectAllMetadata(): List<MavenMetadata> =
+    private fun collectAllMetadata(): List<MavenMetadata> =
         collectAllMetadataFile().map(::MavenMetadata)
 
     private fun String.fixedUrl(): String =
