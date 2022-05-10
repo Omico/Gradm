@@ -15,29 +15,7 @@
  */
 package me.omico.gradm.internal.config.format
 
-data class FormatLineStyle(
-    val doubleQuotes: Boolean,
-    val inSequence: Boolean,
-    val firstKey: Boolean,
-) {
-    companion object {
-
-        val DEFAULT = FormatLineStyle(
-            doubleQuotes = false,
-            inSequence = false,
-            firstKey = false,
-        )
-
-        val DOUBLE_QUOTES = FormatLineStyle(
-            doubleQuotes = true,
-            inSequence = false,
-            firstKey = false,
-        )
-
-        val IN_SEQUENCE = FormatLineStyle(
-            doubleQuotes = false,
-            inSequence = true,
-            firstKey = false,
-        )
-    }
-}
+data class Comment(
+    val block: List<String> = emptyList(),
+    val inline: String = "",
+)

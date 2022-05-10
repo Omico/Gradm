@@ -24,6 +24,15 @@ dependencies {
     implementation(libs.kotlinx.coroutines)
 }
 
+dependencies {
+    testImplementation(platform("org.junit:junit-bom:5.8.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
 val copyKotlinTemplates by tasks.registering(Copy::class) {
     from("src/main/kotlinTemplates")
     into("$buildDir/generated/sources/kotlinTemplates")

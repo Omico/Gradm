@@ -1,0 +1,21 @@
+# Top comment
+
+test1: normal
+test2: "with quotes"
+# comment1
+# comment2
+test3:
+  one: 1
+  two:
+    three: 3
+    two:
+      three: 3
+  four:
+    - aaaa
+    - xxx: xx
+      yyy: yy
+    - # comment
+      xxx: xx # comment
+      yyy: yy
+      aa: yy
+# End comment

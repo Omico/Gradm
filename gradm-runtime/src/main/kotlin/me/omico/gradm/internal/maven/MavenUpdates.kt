@@ -18,8 +18,10 @@ package me.omico.gradm.internal.maven
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Library
 import me.omico.gradm.internal.config.dependencies
-import me.omico.gradm.internal.config.format.FormatLineStyle
-import me.omico.gradm.internal.config.format.FormatterSettings
+import me.omico.gradm.internal.config.format.node.mapping
+import me.omico.gradm.internal.config.format.node.scalar
+import me.omico.gradm.internal.config.format.node.sequence
+import me.omico.gradm.internal.config.format.yaml
 import me.omico.gradm.internal.path.GradmPaths
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
@@ -50,30 +52,16 @@ internal sealed interface UpdateStatus {
 }
 
 internal fun YamlDocument.storeAvailableUpdates(metadataList: List<MavenMetadata>) {
-    val formatterSettings = FormatterSettings(this)
     val treeMavenUpdates = dependencies
         .flatMap { it.libraries }
         .map { MavenUpdates(it, metadataList) }
         .filter { it.availableVersions.isNotEmpty() }
         .toTreeMavenUpdates()
-    val mavenUpdatesContent = buildString {
-        with(formatterSettings) {
-            treeMavenUpdates.forEach { (group, artifactUpdates) ->
-                appendLine("$group:")
-                with(nested()) {
-                    artifactUpdates.forEach { (artifact, versions) ->
-                        appendFormatLine("$artifact:")
-                        with(nested()) {
-                            val formatLineStyle = FormatLineStyle(
-                                doubleQuotes = true,
-                                firstKey = true,
-                                inSequence = true,
-                            )
-                            versions.forEach {
-                                appendFormatLine(it, formatLineStyle)
-                            }
-                        }
-                    }
+    val mavenUpdatesContent = yaml {
+        treeMavenUpdates.forEach { (group, artifactUpdates) ->
+            mapping(group) {
+                artifactUpdates.forEach { (artifact, versions) ->
+                    sequence(artifact) { versions.forEach { scalar(it) } }
                 }
             }
         }
