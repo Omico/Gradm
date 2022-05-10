@@ -15,9 +15,11 @@
  */
 package me.omico.gradm.test.config.format
 
+import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.config.format.Comment
 import me.omico.gradm.internal.config.format.ScalarStyle
 import me.omico.gradm.internal.config.format.comments
+import me.omico.gradm.internal.config.format.createFormattedGradmConfigContent
 import me.omico.gradm.internal.config.format.node.mapping
 import me.omico.gradm.internal.config.format.node.scalar
 import me.omico.gradm.internal.config.format.node.sequence
@@ -68,5 +70,11 @@ class FormatterTest {
             comment("End comment")
         }
         assert(content == testResourcesPath.resolve("format-test.yml").readText())
+    }
+
+    @Test
+    fun formatGradmConfig() {
+        val config = Paths.get("..", "gradm.yml")
+        assert(createFormattedGradmConfigContent(config.asYamlDocument()) == config.readText())
     }
 }
