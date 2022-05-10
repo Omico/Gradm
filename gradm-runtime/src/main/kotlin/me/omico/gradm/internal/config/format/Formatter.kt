@@ -38,7 +38,7 @@ fun formatGradmConfig(document: YamlDocument) {
 }
 
 fun createFormattedGradmConfigContent(document: YamlDocument): String =
-    yaml(formatterScope = FormatterSettings(document)) {
+    yaml(formatterScope = FormatterScope(document)) {
         mapping("gradm") {
             scalar("rule-version", document.gradmRuleVersion)
             scalar("format", true)

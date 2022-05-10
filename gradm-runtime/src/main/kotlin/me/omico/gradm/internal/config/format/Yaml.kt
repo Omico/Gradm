@@ -24,7 +24,7 @@ interface YamlScope : MappingNodeScope {
 }
 
 class YamlBuilder(
-    private val formatterScope: FormatterScope = FormatterSettings(),
+    private val formatterScope: FormatterScope = FormatterScope(),
 ) : YamlScope, FormatterScope by formatterScope, Builder<String> {
 
     private val stringBuilder = StringBuilder()
@@ -48,6 +48,6 @@ fun YamlBuilder.comments(vararg comments: String) = comments.forEach { comment(i
 fun YamlBuilder.comments(comments: List<String>) = comments.forEach { comment(it) }
 
 fun yaml(
-    formatterScope: FormatterScope = FormatterSettings(),
+    formatterScope: FormatterScope = FormatterScope(),
     block: YamlBuilder.() -> Unit,
 ): String = YamlBuilder(formatterScope).apply(block).build()

@@ -23,54 +23,34 @@ import me.omico.gradm.internal.config.format.node.SequenceNode
 import me.omico.gradm.internal.config.gradm
 import me.omico.gradm.internal.config.indent
 
-data class FormatterSettings(
+interface FormatterScope {
+    fun nested(): FormatterScope
+    fun StringBuilder.appendComment(comment: String): StringBuilder
+    fun StringBuilder.appendNode(key: String, node: Node): StringBuilder
+}
+
+fun FormatterScope(document: YamlDocument): FormatterScope =
+    FormatterScopeImpl(
+        depth = 0,
+        indent = document.gradm.indent,
+    )
+
+fun FormatterScope(): FormatterScope =
+    FormatterScopeImpl(
+        depth = 0,
+        indent = 2,
+    )
+
+data class FormatterScopeImpl(
     val depth: Int,
     val indent: Int,
 ) : FormatterScope {
 
     private val actualIndent: Int = indent * depth
 
-    override fun nested(): FormatterSettings = copy(depth = depth + 1)
-
-    fun StringBuilder.appendFormatLine(value: String, style: FormatLineStyle = FormatLineStyle.DEFAULT) {
-        appendIndent(actualIndent)
-        with(style) {
-            when {
-                inSequence -> when {
-                    firstKey -> append("-" + " ".repeat(indent - 1))
-                    else -> appendIndent(indent)
-                }
-                else -> return@with
-            }
-        }
-        appendLine(value)
-    }
-
-    fun StringBuilder.appendFormatLine(key: String, value: Any?, style: FormatLineStyle = FormatLineStyle.DEFAULT) {
-        value ?: return
-        appendFormatLine("$key: ${if (style.doubleQuotes) "\"$value\"" else value}", style)
-    }
-
-    fun StringBuilder.appendFormatMap(map: Map<*, *>): Unit =
-        map.sortByKey()
-            .forEach { (key, value) ->
-                when (value) {
-                    is Map<*, *> -> {
-                        appendFormatLine("$key:")
-                        with(nested()) { appendFormatMap(value) }
-                    }
-                    else -> appendFormatLine(key.toString(), value.toString(), style = FormatLineStyle.DOUBLE_QUOTES)
-                }
-            }
+    override fun nested(): FormatterScopeImpl = copy(depth = depth + 1)
 
     private fun StringBuilder.appendIndent(indent: Int) = append(" ".repeat(indent))
-
-    private fun Map<*, *>.sortByKey(): Map<*, *> = map { (key, value) ->
-        when (value) {
-            is Map<*, *> -> key to value.sortByKey()
-            else -> key to value
-        }
-    }.sortedBy { it.first.toString() }.toMap()
 
     override fun StringBuilder.appendComment(comment: String): StringBuilder = appendLine("# $comment")
 
@@ -142,21 +122,3 @@ data class FormatterSettings(
     private fun StringBuilder.appendInlineComment(comment: String): StringBuilder =
         apply { if (comment.isNotEmpty()) append(" # $comment") }
 }
-
-interface FormatterScope {
-    fun nested(): FormatterScope
-    fun StringBuilder.appendComment(comment: String): StringBuilder
-    fun StringBuilder.appendNode(key: String, node: Node): StringBuilder
-}
-
-fun FormatterSettings(document: YamlDocument): FormatterSettings =
-    FormatterSettings(
-        depth = 0,
-        indent = document.gradm.indent,
-    )
-
-fun FormatterSettings(): FormatterSettings =
-    FormatterSettings(
-        depth = 0,
-        indent = 2,
-    )
