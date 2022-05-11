@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("com.android.library") version "7.1.2"
-    kotlin("android") version "1.6.10"
+    id("com.android.library")
+    kotlin("android")
 }
 
 repositories {
