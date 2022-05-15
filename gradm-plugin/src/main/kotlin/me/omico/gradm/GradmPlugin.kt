@@ -46,8 +46,15 @@ class GradmPlugin : Plugin<Settings> {
                     "classpath",
                     "me.omico.gradm:gradm-generated-dependencies",
                 )
+                tasks.register("gradmCheckGitIgnore") {
+                    group = "gradm"
+                    if (shouldIgnoredByGit) doLast {
+                        logger.warn("The generated directory \".gradm\" should be ignored by Git.")
+                    }
+                }
                 tasks.register("gradmUpdateDependencies", GradmUpdateDependencies::class) {
                     group = "gradm"
+                    finalizedBy("gradmCheckGitIgnore")
                 }
                 tasks.register("gradmClean", Delete::class) {
                     group = "gradm"
