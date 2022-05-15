@@ -46,8 +46,11 @@ class GradmPlugin : Plugin<Settings> {
                     "classpath",
                     "me.omico.gradm:gradm-generated-dependencies",
                 )
-                tasks.register("gradmUpdateDependencies", GradmUpdateDependencies::class)
+                tasks.register("gradmUpdateDependencies", GradmUpdateDependencies::class) {
+                    group = "gradm"
+                }
                 tasks.register("gradmClean", Delete::class) {
+                    group = "gradm"
                     delete(gradmMetadataDir)
                     delete(gradmUpdatesDir)
                     delete(gradmGeneratedDependenciesSourceDir)
