@@ -52,10 +52,10 @@ dependencyResolutionManagement {
 }
 
 include(":gradm-codegen")
+include(":gradm-gradle-plugin")
 include(":gradm-integration")
 include(":gradm-integration:api")
 include(":gradm-integration:github")
-include(":gradm-plugin")
 include(":gradm-runtime")
 
 FeaturePreviews.Feature.values()

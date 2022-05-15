@@ -25,7 +25,7 @@
       <option name="Gradle.BeforeRunTask" enabled="true" tasks="publishMavenPublicationToMavenRepository" externalProjectPath="$PROJECT_DIR$/gradm-integration/api" vmOptions="" scriptParameters="" />
       <option name="Gradle.BeforeRunTask" enabled="true" tasks="publishMavenPublicationToMavenRepository" externalProjectPath="$PROJECT_DIR$/gradm-integration/github" vmOptions="" scriptParameters="" />
       <option name="Gradle.BeforeRunTask" enabled="true" tasks="publishMavenPublicationToMavenRepository" externalProjectPath="$PROJECT_DIR$/gradm-integration" vmOptions="" scriptParameters="" />
-      <option name="Gradle.BeforeRunTask" enabled="true" tasks="publishGradlePluginPublicationToMavenRepository" externalProjectPath="$PROJECT_DIR$/gradm-plugin" vmOptions="" scriptParameters="" />
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks="publishGradlePluginPublicationToMavenRepository" externalProjectPath="$PROJECT_DIR$/gradm-gradle-plugin" vmOptions="" scriptParameters="" />
     </method>
   </configuration>
 </component>

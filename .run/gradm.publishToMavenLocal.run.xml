@@ -17,7 +17,7 @@
           <option value=":gradm-integration:api:publishToMavenLocal" />
           <option value=":gradm-integration:github:publishToMavenLocal" />
           <option value=":gradm-integration:publishToMavenLocal" />
-          <option value=":gradm-plugin:publishGradlePluginPublicationToMavenLocal" />
+          <option value=":gradm-gradle-plugin:publishGradlePluginPublicationToMavenLocal" />
         </list>
       </option>
       <option name="vmOptions" />
