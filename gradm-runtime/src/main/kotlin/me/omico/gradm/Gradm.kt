@@ -19,6 +19,7 @@ import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.internal.path.RootProjectPaths
 import java.nio.file.Path
 import kotlin.io.path.exists
+import kotlin.io.path.readText
 
 const val GRADM_DEPENDENCY_PACKAGE_NAME = "me.omico.gradm.dependency"
 
@@ -27,6 +28,9 @@ val projectRootDir: Path
 
 val hasGradmConfig: Boolean
     get() = RootProjectPaths.gradmConfig.exists()
+
+val shouldIgnoredByGit: Boolean
+    get() = RootProjectPaths.gitIgnore.let { it.exists() && ".gradm" !in it.readText() }
 
 val isGradmGeneratedDependenciesSourcesExists: Boolean
     get() = GradmPaths.GeneratedDependenciesProject.sourceDir.exists()

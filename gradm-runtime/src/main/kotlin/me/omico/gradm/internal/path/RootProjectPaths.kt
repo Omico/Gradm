@@ -22,4 +22,5 @@ object RootProjectPaths : ProjectPaths(
     rootDir = GradmConfigs.projectRootDir,
 ) {
     val gradmConfig: Path by lazy { rootDir.resolve("gradm.yml") }
+    val gitIgnore: Path by lazy { rootDir.resolve(".gitignore") }
 }
