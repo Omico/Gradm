@@ -74,7 +74,7 @@ class FormatterTest {
 
     @Test
     fun formatGradmConfig() {
-        val config = Paths.get("..", "gradm.yml")
+        val config = testResourcesPath.resolve("gradm.yml")
         assert(createFormattedGradmConfigContent(config.asYamlDocument()) == config.readText())
     }
 }

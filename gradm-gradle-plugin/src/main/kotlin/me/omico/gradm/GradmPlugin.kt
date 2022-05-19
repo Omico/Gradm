@@ -17,6 +17,7 @@
 
 package me.omico.gradm
 
+import me.omico.gradm.internal.GradmExtensionImpl
 import me.omico.gradm.task.GradmUpdateDependencies
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
@@ -31,6 +32,7 @@ class GradmPlugin : Plugin<Settings> {
             println("No gradm.yml found, skipping.")
             return
         }
+        GradmExtensionImpl.create(target)
         GradmParser.execute()
         target.includeBuild(gradmGeneratedDependenciesDir) {
             dependencySubstitution {

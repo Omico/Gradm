@@ -21,6 +21,7 @@ import kotlinx.coroutines.withContext
 import me.omico.gradm.GradmConfigs
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.asVersionsMetaHash
+import me.omico.gradm.debug
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Library
 import me.omico.gradm.internal.config.dependencies
@@ -70,6 +71,7 @@ object MavenRepositoryMetadataParser {
 
     private suspend fun Library.downloadMetadata(repositoryUrl: String): ByteArray =
         run {
+            debug { "Downloading metadata for [$module]" }
             val bytes = withContext(Dispatchers.IO) { metadataUrl(repositoryUrl.fixedUrl()).readBytes() }
             val metadataPath = metadataLocalPath(GradmPaths.Metadata.rootDir)
             metadataPath.parent.createDirectories()

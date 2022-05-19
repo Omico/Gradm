@@ -15,13 +15,10 @@
  */
 package me.omico.gradm.internal.config.format
 
-import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.format.node.MappingNode
 import me.omico.gradm.internal.config.format.node.Node
 import me.omico.gradm.internal.config.format.node.ScalarNode
 import me.omico.gradm.internal.config.format.node.SequenceNode
-import me.omico.gradm.internal.config.gradm
-import me.omico.gradm.internal.config.indent
 
 interface FormatterScope {
     fun nested(): FormatterScope
@@ -29,16 +26,10 @@ interface FormatterScope {
     fun StringBuilder.appendNode(key: String, node: Node): StringBuilder
 }
 
-fun FormatterScope(document: YamlDocument): FormatterScope =
+fun FormatterScope(indent: Int = 2): FormatterScope =
     FormatterScopeImpl(
         depth = 0,
-        indent = document.gradm.indent,
-    )
-
-fun FormatterScope(): FormatterScope =
-    FormatterScopeImpl(
-        depth = 0,
-        indent = 2,
+        indent = indent,
     )
 
 data class FormatterScopeImpl(
