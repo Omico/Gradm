@@ -31,38 +31,34 @@ class GradmPlugin : Plugin<Settings> {
             println("No gradm.yml found, skipping.")
             return
         }
-        target.gradle.run {
-            settingsEvaluated {
-                GradmParser.execute()
-                includeBuild(gradmGeneratedDependenciesDir) {
-                    dependencySubstitution {
-                        substitute(module("me.omico.gradm:gradm-generated-dependencies")).using(project(":"))
-                    }
+        GradmParser.execute()
+        target.includeBuild(gradmGeneratedDependenciesDir) {
+            dependencySubstitution {
+                substitute(module("me.omico.gradm:gradm-generated-dependencies")).using(project(":"))
+            }
+        }
+        target.gradle.beforeProject {
+            if (this != rootProject) return@beforeProject
+            buildscript.dependencies.add(
+                "classpath",
+                "me.omico.gradm:gradm-generated-dependencies",
+            )
+            tasks.register("gradmCheckGitIgnore") {
+                group = "gradm"
+                if (shouldIgnoredByGit) doLast {
+                    logger.warn("The generated directory \".gradm\" should be ignored by Git.")
                 }
             }
-            beforeProject {
-                if (this != rootProject) return@beforeProject
-                buildscript.dependencies.add(
-                    "classpath",
-                    "me.omico.gradm:gradm-generated-dependencies",
-                )
-                tasks.register("gradmCheckGitIgnore") {
-                    group = "gradm"
-                    if (shouldIgnoredByGit) doLast {
-                        logger.warn("The generated directory \".gradm\" should be ignored by Git.")
-                    }
-                }
-                tasks.register("gradmUpdateDependencies", GradmUpdateDependencies::class) {
-                    group = "gradm"
-                    finalizedBy("gradmCheckGitIgnore")
-                }
-                tasks.register("gradmClean", Delete::class) {
-                    group = "gradm"
-                    delete(gradmMetadataDir)
-                    delete(gradmUpdatesDir)
-                    delete(gradmGeneratedDependenciesSourceDir)
-                    delete(gradmGeneratedDependenciesBuildDir)
-                }
+            tasks.register("gradmUpdateDependencies", GradmUpdateDependencies::class) {
+                group = "gradm"
+                finalizedBy("gradmCheckGitIgnore")
+            }
+            tasks.register("gradmClean", Delete::class) {
+                group = "gradm"
+                delete(gradmMetadataDir)
+                delete(gradmUpdatesDir)
+                delete(gradmGeneratedDependenciesSourceDir)
+                delete(gradmGeneratedDependenciesBuildDir)
             }
         }
     }
