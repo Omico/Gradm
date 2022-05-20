@@ -49,3 +49,7 @@ val gradmGeneratedDependenciesBuildDir: Path
 
 val gradmGeneratedDependenciesSourceDir: Path
     get() = GradmPaths.GeneratedDependenciesProject.sourceDir
+
+fun debug(message: () -> String) {
+    if (GradmConfigs.debug) println(message())
+}

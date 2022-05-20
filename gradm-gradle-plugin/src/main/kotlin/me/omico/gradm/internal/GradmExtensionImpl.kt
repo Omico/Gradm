@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm
+package me.omico.gradm.internal
 
-import java.nio.file.Path
+import me.omico.gradm.GradmExtension
+import org.gradle.api.initialization.Settings
+import org.gradle.kotlin.dsl.create
 
-interface GradmConfigs {
-    var debug: Boolean
-    var format: Boolean
-    var indent: Int
+open class GradmExtensionImpl : GradmExtension {
 
-    companion object : GradmConfigs {
-        lateinit var projectRootDir: Path
-        var offline: Boolean = false
-        var updateDependencies: Boolean = false
-
-        override var debug: Boolean = false
-        override var format: Boolean = false
-        override var indent: Int = 2
+    companion object {
+        internal fun create(target: Settings): GradmExtension =
+            target.extensions.create("gradm", GradmExtensionImpl::class)
     }
 }

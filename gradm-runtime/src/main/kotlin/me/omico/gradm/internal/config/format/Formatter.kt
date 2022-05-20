@@ -15,36 +15,27 @@
  */
 package me.omico.gradm.internal.config.format
 
+import me.omico.gradm.GradmConfigs
 import me.omico.gradm.internal.YamlArray
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.YamlObject
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.Repository
-import me.omico.gradm.internal.config.format
 import me.omico.gradm.internal.config.format.node.MappingNodeScope
 import me.omico.gradm.internal.config.format.node.mapping
 import me.omico.gradm.internal.config.format.node.scalar
 import me.omico.gradm.internal.config.format.node.sequence
-import me.omico.gradm.internal.config.gradm
-import me.omico.gradm.internal.config.gradmRuleVersion
-import me.omico.gradm.internal.config.indent
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.path.RootProjectPaths
 import kotlin.io.path.writeText
 
 fun formatGradmConfig(document: YamlDocument) {
-    if (!document.gradm.format) return
+    if (!GradmConfigs.format) return
     RootProjectPaths.gradmConfig.writeText(createFormattedGradmConfigContent(document))
 }
 
 fun createFormattedGradmConfigContent(document: YamlDocument): String =
-    yaml(formatterScope = FormatterScope(document)) {
-        mapping("gradm") {
-            scalar("rule-version", document.gradmRuleVersion)
-            scalar("format", true)
-            if (document.gradm.indent != 2) scalar("indent", document.gradm.indent)
-        }
-        newline()
+    yaml(formatterScope = FormatterScope(indent = GradmConfigs.indent)) {
         versionsMapping(document)
         newline()
         repositoriesSequence(document)

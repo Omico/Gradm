@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+import me.omico.gradm.configs
+import me.omico.gradm.gradm
+
 rootProject.name = "gradm-example"
 
 pluginManagement {
@@ -19,4 +22,11 @@ pluginManagement {
 
 plugins {
     id("me.omico.gradm")
+}
+
+gradm {
+    configs {
+        debug = true
+        format = true
+    }
 }

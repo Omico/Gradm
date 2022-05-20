@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("unused")
+
 package me.omico.gradm
 
-import java.nio.file.Path
+import org.gradle.api.initialization.Settings
+import org.gradle.kotlin.dsl.configure
 
-interface GradmConfigs {
-    var debug: Boolean
-    var format: Boolean
-    var indent: Int
+fun Settings.gradm(block: GradmExtension.() -> Unit) = extensions.configure(block)
 
-    companion object : GradmConfigs {
-        lateinit var projectRootDir: Path
-        var offline: Boolean = false
-        var updateDependencies: Boolean = false
-
-        override var debug: Boolean = false
-        override var format: Boolean = false
-        override var indent: Int = 2
-    }
-}
+fun GradmExtension.configs(block: GradmConfigs.() -> Unit) = GradmConfigs.let(block)
