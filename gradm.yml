@@ -1,7 +1,3 @@
-gradm:
-  rule-version: 1
-  format: true
-
 versions:
   kotlinpoet: "1.10.2"
   kotlinx:

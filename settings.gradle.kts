@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
+import me.omico.gradm.configs
+import me.omico.gradm.gradm
 import org.gradle.api.internal.FeaturePreviews
 
 rootProject.name = "Gradm"
@@ -15,7 +17,7 @@ pluginManagement {
         val agePlugin = "1.0.0-SNAPSHOT"
         val gradleEnterprisePlugin = "3.10"
         val gradleVersionsPlugin = "0.42.0"
-        val gradmPlugin = "1.6.0"
+        val gradmPlugin = "1.7.0"
         val spotlessPlugin = "6.6.0"
     }
     plugins {
@@ -39,6 +41,12 @@ gradleEnterprise {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
         termsOfServiceAgree = "yes"
         publishAlwaysIf(!gradle.startParameter.isOffline)
+    }
+}
+
+gradm {
+    configs {
+        format = true
     }
 }
 

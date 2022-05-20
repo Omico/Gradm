@@ -14,7 +14,7 @@ val kotlinDslVersion = "2.1.7" // From embedded Kotlin
 
 allprojects {
     group = "me.omico.gradm"
-    version = "1.7.0"
+    version = "1.8.0-SNAPSHOT"
     configureDependencyUpdates(
         pinnedGroups = mapOf(
             "org.gradle.kotlin.kotlin-dsl" to kotlinDslVersion,
