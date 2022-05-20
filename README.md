@@ -32,16 +32,19 @@ pluginManagement {
 plugins {
     id("me.omico.gradm")
 }
+
+gradm {
+    configs {
+        debug = true // default: false
+        format = true // default: false
+        indent = 4 // default: 2, won't take effect if format is false.
+    }
+}
 ```
 
 Create a file named `gradm.yml` in your root project directory, and add the following:
 
 ```yaml
-gradm:
-  rule-version: 1 # Gradm rule version, currently has no effect on this
-  format: true # default is false, if you haven't specify
-  indent: 4 # default is 2, won't take effect if format is false
-
 versions:
   something: "1.0.0" # create your own version
 
