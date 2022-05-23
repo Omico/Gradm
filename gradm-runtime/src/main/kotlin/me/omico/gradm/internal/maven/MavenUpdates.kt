@@ -58,12 +58,13 @@ internal fun YamlDocument.storeAvailableUpdates(metadataList: List<MavenMetadata
         .filter { it.availableVersions.isNotEmpty() }
         .toTreeMavenUpdates()
     val mavenUpdatesContent = yaml {
-        treeMavenUpdates.forEach { (group, artifactUpdates) ->
+        treeMavenUpdates.entries.forEachIndexed { index, (group, artifactUpdates) ->
             mapping(group) {
                 artifactUpdates.forEach { (artifact, versions) ->
                     sequence(artifact) { versions.forEach { scalar(it) } }
                 }
             }
+            if (index < treeMavenUpdates.size - 1) newline()
         }
     }
     GradmPaths.Updates.rootDir.createDirectories()
