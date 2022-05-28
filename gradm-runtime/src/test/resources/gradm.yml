@@ -14,104 +14,116 @@ versions:
   okhttp: "4.9.3"
 
 repositories:
-  - id: google
-    url: https://maven.google.com/
-  - id: mavenCentral
-    url: https://repo1.maven.org/maven2/
+  google:
+    url: https://maven.google.com
+  mavenCentral:
+    url: https://repo1.maven.org/maven2
 
 dependencies:
-  - name: Accompanist
-    repository: mavenCentral
-    libraries:
-      - module: com.google.accompanist:accompanist-insets
-        alias: insets
-        version: ${versions.accompanist}
-      - module: com.google.accompanist:accompanist-insets-ui
-        alias: insetsUi
-        version: ${versions.accompanist}
-      - module: com.google.accompanist:accompanist-permissions
-        alias: permissions
-        version: ${versions.accompanist}
-      - module: com.google.accompanist:accompanist-swiperefresh
-        alias: swipeRefresh
-        version: ${versions.accompanist}
-      - module: com.google.accompanist:accompanist-systemuicontroller
-        alias: systemUiController
-        version: ${versions.accompanist}
-  - name: Androidx
-    repository: google
-    libraries:
-      - module: androidx.activity:activity-compose
-        alias: activity.compose
+  google:
+    androidx.activity:
+      activity-compose:
+        alias: androidx.activity.compose
         version: ${versions.androidx.activity}
-      - module: androidx.activity:activity-ktx
-        alias: activity.ktx
+      activity-ktx:
+        alias: androidx.activity.ktx
         version: ${versions.androidx.activity}
-      - module: androidx.annotation:annotation
-        alias: annotation
+    androidx.annotation:
+      annotation:
+        alias: androidx.annotation
         version: ${versions.androidx.annotation}
-      - module: androidx.appcompat:appcompat
-        alias: appcompat
+    androidx.appcompat:
+      appcompat:
+        alias: androidx.appcompat
         version: ${versions.androidx.appcompat}
-      - module: androidx.camera:camera-camera2
+    androidx.camera:
+      camera-camera2:
+        alias: androidx.camera.camera2
         version: ${versions.androidx.camera}
-      - module: androidx.camera:camera-lifecycle
+      camera-lifecycle:
+        alias: androidx.camera.lifecycle
         version: ${versions.androidx.camera}
-      - module: androidx.camera:camera-view
+      camera-view:
+        alias: androidx.camera.view
         version: ${versions.androidx.camera}
-      - module: androidx.compose.animation:animation
-        alias: compose.animation
+    androidx.compose.animation:
+      animation:
+        alias: androidx.compose.animation
         version: ${versions.androidx.compose}
-      - module: androidx.compose.foundation:foundation
-        alias: compose.foundation
+    androidx.compose.foundation:
+      foundation:
+        alias: androidx.compose.foundation
         version: ${versions.androidx.compose}
-      - module: androidx.compose.material:material
-        alias: compose.material
+    androidx.compose.material:
+      material:
+        alias: androidx.compose.material
         version: ${versions.androidx.compose}
-      - module: androidx.compose.material:material-icons-core
-        alias: compose.material.icons.core
+      material-icons-core:
+        alias: androidx.compose.material.icons.core
         version: ${versions.androidx.compose}
-      - module: androidx.compose.material:material-icons-extended
-        alias: compose.material.icons.extended
+      material-icons-extended:
+        alias: androidx.compose.material.icons.extended
         version: ${versions.androidx.compose}
-      - module: androidx.compose.runtime:runtime
-        alias: compose.runtime
+    androidx.compose.runtime:
+      runtime:
+        alias: androidx.compose.runtime
         version: ${versions.androidx.compose}
-      - module: androidx.compose.ui:ui
-        alias: compose.ui
+    androidx.compose.ui:
+      ui:
+        alias: androidx.compose.ui
         version: ${versions.androidx.compose}
-      - module: androidx.compose.ui:ui-tooling
-        alias: compose.ui.tooling
+      ui-tooling:
+        alias: androidx.compose.ui.tooling
         version: ${versions.androidx.compose}
-      - module: androidx.compose.ui:ui-tooling-preview
-        alias: compose.ui.tooling.preview
+      ui-tooling-preview:
+        alias: androidx.compose.ui.tooling.preview
         version: ${versions.androidx.compose}
-      - module: androidx.compose.ui:ui-util
-        alias: compose.ui.util
+      ui-util:
+        alias: androidx.compose.ui.util
         version: ${versions.androidx.compose}
-      - module: androidx.core:core-ktx
-        alias: core.ktx
+    androidx.core:
+      core-ktx:
+        alias: androidx.core.ktx
         version: ${versions.androidx.core}
-      - module: androidx.datastore:datastore
-        alias: datastore
+    androidx.datastore:
+      datastore:
+        alias: androidx.datastore
         version: ${versions.androidx.datastore}
-      - module: androidx.lifecycle:lifecycle-runtime-ktx
-        alias: lifecycle.runtime.ktx
+    androidx.lifecycle:
+      lifecycle-runtime-ktx:
+        alias: androidx.lifecycle.runtime.ktx
         version: ${versions.androidx.lifecycle}
-      - module: androidx.navigation:navigation-compose
+    androidx.navigation:
+      navigation-compose:
+        alias: androidx.navigation.compose
         version: ${versions.androidx.navigation}
-      - module: androidx.navigation:navigation-runtime-ktx
-        alias: navigation.runtime.ktx
+      navigation-runtime-ktx:
+        alias: androidx.navigation.runtime.ktx
         version: ${versions.androidx.navigation}
-  - name: Square
-    repository: mavenCentral
-    libraries:
-      - module: com.squareup.okhttp3:logging-interceptor
-        alias: okhttp3.interceptor.logging
+  mavenCentral:
+    com.google.accompanist:
+      accompanist-insets:
+        alias: accompanist.insets
+        version: ${versions.accompanist}
+      accompanist-insets-ui:
+        alias: accompanist.insetsUi
+        version: ${versions.accompanist}
+      accompanist-permissions:
+        alias: accompanist.permissions
+        version: ${versions.accompanist}
+      accompanist-swiperefresh:
+        alias: accompanist.swipeRefresh
+        version: ${versions.accompanist}
+      accompanist-systemuicontroller:
+        alias: accompanist.systemUiController
+        version: ${versions.accompanist}
+    com.squareup.okhttp3:
+      logging-interceptor:
+        alias: okhttp.interceptor.logging
         version: ${versions.okhttp}
-      - module: com.squareup.okhttp3:okhttp
-        alias: okhttp3
+      okhttp:
+        alias: okhttp
         version: ${versions.okhttp}
-      - module: com.squareup.okhttp3:okhttp-dnsoverhttps
-        alias: okhttp3.dnsOverHttps
+      okhttp-dnsoverhttps:
+        alias: okhttp.dnsOverHttps
         version: ${versions.okhttp}

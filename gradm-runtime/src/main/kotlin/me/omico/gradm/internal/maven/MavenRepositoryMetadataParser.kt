@@ -23,12 +23,9 @@ import me.omico.gradm.VersionsMeta
 import me.omico.gradm.asVersionsMetaHash
 import me.omico.gradm.debug
 import me.omico.gradm.internal.YamlDocument
-import me.omico.gradm.internal.config.Library
+import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.dependencies
 import me.omico.gradm.internal.config.metadataLocalPath
-import me.omico.gradm.internal.config.metadataUrl
-import me.omico.gradm.internal.config.repositories
-import me.omico.gradm.internal.config.repositoryUrl
 import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.internal.sha1
 import java.nio.file.Files
@@ -60,19 +57,13 @@ object MavenRepositoryMetadataParser {
     private fun YamlDocument.downloadAllMetadata() =
         runBlocking {
             if (GradmConfigs.offline) return@runBlocking
-            val byteArrays = ArrayList<ByteArray>()
-            val repositories = repositories
-            dependencies.forEach { dependency ->
-                val repositoryUrl = dependency.repositoryUrl(repositories)
-                dependency.libraries.forEach { library -> byteArrays.add(library.downloadMetadata(repositoryUrl)) }
-            }
-            storeHash(byteArrays)
+            dependencies.map { dependency -> dependency.downloadMetadata() }.let(::storeHash)
         }
 
-    private suspend fun Library.downloadMetadata(repositoryUrl: String): ByteArray =
+    private suspend fun Dependency.downloadMetadata(): ByteArray =
         run {
             debug { "Downloading metadata for [$module]" }
-            val bytes = withContext(Dispatchers.IO) { metadataUrl(repositoryUrl.fixedUrl()).readBytes() }
+            val bytes = withContext(Dispatchers.IO) { metadataUrl.readBytes() }
             val metadataPath = metadataLocalPath(GradmPaths.Metadata.rootDir)
             metadataPath.parent.createDirectories()
             metadataPath.writeBytes(bytes)
@@ -86,12 +77,6 @@ object MavenRepositoryMetadataParser {
 
     private fun collectAllMetadata(): List<MavenMetadata> =
         collectAllMetadataFile().map(::MavenMetadata)
-
-    private fun String.fixedUrl(): String =
-        when {
-            endsWith("/") -> removeSuffix("/")
-            else -> this
-        }
 
     private fun storeHash(byteArrays: List<ByteArray>) =
         GradmPaths.Metadata.versionsMetaHash.writeText(byteArrays.sha1())

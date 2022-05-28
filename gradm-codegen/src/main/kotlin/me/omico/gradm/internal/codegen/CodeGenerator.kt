@@ -28,14 +28,14 @@ import java.util.Locale
 internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
     RootProjectPaths.copyTo(GradmPaths.GeneratedDependenciesProject)
     generateGradleBuildScript()
-    clearDir(GradmPaths.GeneratedDependenciesProject.sourceDir)
+    GradmPaths.GeneratedDependenciesProject.sourceDir.clearDirectory()
     generateDependenciesSourceFiles(document, versionsMeta)
     generateVersionsSourceFile(document)
 }
 
-internal fun clearDir(dir: Path) {
-    if (Files.exists(dir)) Files.walk(dir).sorted(Comparator.reverseOrder()).forEach(Files::delete)
-    Files.createDirectories(dir)
+internal fun Path.clearDirectory() {
+    if (Files.exists(this)) Files.walk(this).sorted(Comparator.reverseOrder()).forEach(Files::delete)
+    Files.createDirectories(this)
 }
 
 private val defaultSuppressWarningTypes = arrayOf(
