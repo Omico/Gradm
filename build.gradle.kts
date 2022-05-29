@@ -74,7 +74,9 @@ fun isNonStable(version: String): Boolean {
     return isStable.not()
 }
 
-val wrapper: Wrapper by tasks.named("wrapper") {
+val wrapper: Wrapper by tasks.named<Wrapper>("wrapper") {
+    gradleVersion = versions.gradle
+    distributionType = Wrapper.DistributionType.BIN
     finalizedBy(updateGradleWrapper, updateGradleWrapperScripts)
 }
 
