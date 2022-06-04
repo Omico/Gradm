@@ -49,28 +49,27 @@ versions:
   something: "1.0.0" # create your own version
 
 repositories:
-  - id: google
-    url: https://maven.google.com/
-  - id: your-repo # your own repo id
-    url: https://repo.example.com/ # your repo url
+  google:
+    url: https://maven.google.com
+  your-repo: # your own repo id
+    url: https://repo.example.com # your repo url
 
 dependencies:
-  - name: Libs # create your own dependency name
-    repository: google # from repositories' id
-    libraries:
-      - # for final use, libs.company.artifact
-        module: my.company.lib:artifact # create your own library
-        alias: company.artifact # create your own alias, optional
+  google:
+    androidx.activity:
+      activity-compose:
+        alias: androidx.activity.compose
+        version: ${versions.androidx.activity}
+  your-repo: # from repositories' id
+    com.example.group:
+      example-artifact:
+        # for final use, for example: 
+        # compileOnly(my.company.artifact)
+        alias: my.company.artifact
         # You can use either specific version like "1.0.0" or use version variables.
         # It will use the latest version, if you don't specify version.
         # version: "1.0.0"
         version: ${versions.something}
-      - # This style is also acceptable
-        # note: if your enable format, it will be override by the "module" style above
-        group: my.company.lib
-        artifact: artifact2
-        version: "1.0.0"
-        alias: company.artifact2
 ```
 
 For more information, please see the [example project](./example).

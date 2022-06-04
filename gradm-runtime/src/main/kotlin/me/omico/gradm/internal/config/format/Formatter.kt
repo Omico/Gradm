@@ -16,17 +16,15 @@
 package me.omico.gradm.internal.config.format
 
 import me.omico.gradm.GradmConfigs
-import me.omico.gradm.internal.YamlArray
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.YamlObject
-import me.omico.gradm.internal.config.Dependency
-import me.omico.gradm.internal.config.Repository
+import me.omico.gradm.internal.config.fixedUrl
 import me.omico.gradm.internal.config.format.node.MappingNodeScope
 import me.omico.gradm.internal.config.format.node.mapping
 import me.omico.gradm.internal.config.format.node.scalar
-import me.omico.gradm.internal.config.format.node.sequence
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.path.RootProjectPaths
+import me.omico.gradm.internal.require
 import kotlin.io.path.writeText
 
 fun formatGradmConfig(document: YamlDocument) {
@@ -58,31 +56,33 @@ fun MappingNodeScope.recursiveVersionsMapping(versions: Map<*, *>): Unit =
         }
     }
 
+@Suppress("UNCHECKED_CAST")
 fun YamlScope.repositoriesSequence(document: YamlDocument) {
-    val repositories = document.find<YamlArray>("repositories") ?: return
-    sequence("repositories") {
-        repositories.map(::Repository).sortedBy { it.id }.forEach { repository ->
-            mapping {
-                scalar("id", repository.id)
-                scalar("url", repository.url)
+    val repositories = document.find<YamlObject>("repositories") ?: return
+    mapping("repositories") {
+        repositories.toSortedMap().forEach { (id, repository) ->
+            repository as YamlObject
+            mapping(id) {
+                scalar("url", repository.require<String>("url").fixedUrl())
             }
         }
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 fun YamlScope.dependenciesMapping(document: YamlDocument) {
-    val dependencies = document.find<YamlArray>("dependencies") ?: return
-    sequence("dependencies") {
-        dependencies.map(::Dependency).forEach { dependency ->
-            if (dependency.libraries.isNotEmpty()) mapping {
-                scalar("name", dependency.name)
-                scalar("repository", dependency.repository)
-                sequence("libraries") {
-                    dependency.libraries.forEach { library ->
-                        mapping {
-                            scalar("module", library.module)
-                            library.alias?.let { scalar("alias", it) }
-                            library.version?.let { scalar("version", it) }
+    val dependencies = document.find<YamlObject>("dependencies") ?: return
+    mapping("dependencies") {
+        dependencies.toSortedMap().forEach { (repository, groups) ->
+            mapping(repository) {
+                (groups as YamlObject).toSortedMap().forEach { (group, artifacts) ->
+                    mapping(group) {
+                        (artifacts as YamlObject).toSortedMap().forEach { (artifact, attributes) ->
+                            attributes as YamlObject
+                            mapping(artifact) {
+                                scalar("alias", attributes.require("alias"))
+                                attributes.find<String>("version")?.let { scalar("version", it) }
+                            }
                         }
                     }
                 }

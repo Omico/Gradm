@@ -15,39 +15,48 @@
  */
 package me.omico.gradm.internal.config
 
-import me.omico.gradm.internal.YamlArray
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.YamlObject
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.require
+import java.net.URL
+import java.nio.file.Path
 
 val YamlDocument.dependencies: List<Dependency>
-    get() = find<YamlArray>("dependencies", emptyList())
-        .map { Dependency(it, versions.toFlatVersions()) }
+    @Suppress("UNCHECKED_CAST")
+    get() = run {
+        val repositories = repositories
+        val versions = versions.toFlatVersions()
+        find<YamlObject>("dependencies", emptyMap())
+            .flatMap { (repository, groups) ->
+                val repositoryUrl = requireNotNull(repositories.find { it.id == repository }?.url) {
+                    "Repository $repository not found."
+                }
+                (groups as YamlObject).flatMap { (group, artifacts) ->
+                    (artifacts as YamlObject).map { (artifact, attributes) ->
+                        attributes as YamlObject
+                        Dependency(
+                            repository = repositoryUrl,
+                            group = group,
+                            artifact = artifact,
+                            alias = attributes.require("alias"),
+                            version = attributes.find<String>("version").let(versions::resolveVariable),
+                        )
+                    }
+                }
+            }
+    }
 
 data class Dependency(
-    val name: String,
     val repository: String,
-    val libraries: List<Library>,
-)
+    val group: String,
+    val artifact: String,
+    val alias: String,
+    val version: String?,
+) {
+    val module: String by lazy { "$group:$artifact" }
+    val metadataUrl: URL by lazy { URL("$repository/${group.replace(".", "/")}/$artifact/maven-metadata.xml") }
+}
 
-internal fun Dependency.repositoryUrl(repositories: List<Repository>): String =
-    repositories.find { it.id == repository }?.url ?: error("Repository not found.")
-
-internal typealias DependencyObject = YamlObject
-
-internal fun Dependency(dependencyObject: DependencyObject): Dependency =
-    Dependency(
-        name = dependencyObject.require("name"),
-        repository = dependencyObject.require("repository"),
-        libraries = dependencyObject.find<YamlArray>("libraries", emptyList()).map(::Library).sortedBy { it.module },
-    )
-
-private fun Dependency(dependencyObject: DependencyObject, versions: FlatVersions): Dependency =
-    Dependency(dependencyObject).let { dependency ->
-        dependency.copy(
-            libraries = dependency.libraries.map { library ->
-                library.copy(version = versions.resolveVariable(library.version))
-            },
-        )
-    }
+internal fun Dependency.metadataLocalPath(metadataRootDir: Path): Path =
+    metadataRootDir.resolve(group).resolve(artifact).resolve("maven-metadata.xml")

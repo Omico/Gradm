@@ -16,7 +16,7 @@
 package me.omico.gradm.internal.maven
 
 import me.omico.gradm.internal.YamlDocument
-import me.omico.gradm.internal.config.Library
+import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.dependencies
 import me.omico.gradm.internal.config.format.node.mapping
 import me.omico.gradm.internal.config.format.node.scalar
@@ -53,7 +53,6 @@ internal sealed interface UpdateStatus {
 
 internal fun YamlDocument.storeAvailableUpdates(metadataList: List<MavenMetadata>) {
     val treeMavenUpdates = dependencies
-        .flatMap { it.libraries }
         .map { MavenUpdates(it, metadataList) }
         .filter { it.availableVersions.isNotEmpty() }
         .toTreeMavenUpdates()
@@ -76,11 +75,11 @@ internal fun List<MavenUpdates>.toTreeMavenUpdates(): TreeMavenUpdates =
         .apply { this@toTreeMavenUpdates.forEach { getOrCreate(it.group).add(ArtifactUpdates(it)) } }
         .toSortedMap()
 
-private fun MavenUpdates(library: Library, metadataList: List<MavenMetadata>): MavenUpdates =
+private fun MavenUpdates(dependency: Dependency, metadataList: List<MavenMetadata>): MavenUpdates =
     MavenUpdates(
-        group = library.group,
-        artifact = library.artifact,
-        availableVersions = library.createUpdateStatus(metadataList).availableVersions(),
+        group = dependency.group,
+        artifact = dependency.artifact,
+        availableVersions = dependency.createUpdateStatus(metadataList).availableVersions(),
     )
 
 private fun ArtifactUpdates(mavenUpdates: MavenUpdates): ArtifactUpdates =
@@ -90,9 +89,9 @@ private fun ArtifactUpdates(mavenUpdates: MavenUpdates): ArtifactUpdates =
     )
 
 private fun MutableTreeMavenUpdates.getOrCreate(group: String): MutableList<ArtifactUpdates> =
-    this[group] ?: mutableListOf<ArtifactUpdates>().also { this[group] = it }
+    getOrPut(group) { mutableListOf() }
 
-private fun Library.createUpdateStatus(metadataList: List<MavenMetadata>): UpdateStatus =
+private fun Dependency.createUpdateStatus(metadataList: List<MavenMetadata>): UpdateStatus =
     metadataList.find { it.module == module }?.let { metadata ->
         val index = metadata.versions.indexOf(version)
         val newerAvailableVersions = when {

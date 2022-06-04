@@ -42,7 +42,7 @@ private fun Map<*, *>.toMutableFlatVersions(parentKey: String, versions: Mutable
         versions
     }
 
-private val flatKeyRegex = Regex("^[a-zA-Z0-9]+([.-][a-zA-Z0-9]+)?")
+private val flatKeyRegex = Regex("^[a-zA-Z\\d]+([.-][a-zA-Z\\d]+)?")
 
 private fun subFlatKey(key: Any?): String =
     run {
@@ -122,7 +122,7 @@ private fun SubMutableTreeVersions.groupTreeVersion(key: String, value: Any?): U
     }
 
 private fun SubMutableTreeVersions.getOrCreate(name: String): MutableTreeVersions =
-    this[name] ?: MutableTreeVersions(name, null, SubMutableTreeVersions()).also { this[name] = it }
+    getOrPut(name) { MutableTreeVersions(name, null, SubMutableTreeVersions()) }
 
 private val versionVariableRegex = Regex("\\\$\\{(.*)}")
 
