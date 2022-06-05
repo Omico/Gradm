@@ -6,22 +6,23 @@ versions:
   snakeyaml: "2.3"
 
 repositories:
-  - id: mavenCentral
-    url: https://repo1.maven.org/maven2/
+  mavenCentral:
+    url: https://repo1.maven.org/maven2
 
 dependencies:
-  - name: Libs
-    repository: mavenCentral
-    libraries:
-      - module: com.squareup:kotlinpoet
-        alias: kotlinpoet
+  mavenCentral:
+    com.squareup:
+      kotlinpoet:
+        alias: libs.kotlinpoet
         version: ${versions.kotlinpoet}
-      - module: org.jetbrains.kotlinx:kotlinx-coroutines-core
-        alias: kotlinx.coroutines
+    org.jetbrains.kotlinx:
+      kotlinx-coroutines-core:
+        alias: libs.kotlinx.coroutines
         version: ${versions.kotlinx.coroutines}
-      - module: org.jetbrains.kotlinx:kotlinx-serialization-json
-        alias: kotlinx.serialization
+      kotlinx-serialization-json:
+        alias: libs.kotlinx.serialization
         version: ${versions.kotlinx.serialization}
-      - module: org.snakeyaml:snakeyaml-engine
-        alias: snakeyaml
+    org.snakeyaml:
+      snakeyaml-engine:
+        alias: libs.snakeyaml
         version: ${versions.snakeyaml}

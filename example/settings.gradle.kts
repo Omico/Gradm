@@ -14,9 +14,9 @@ pluginManagement {
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
     }
     plugins {
-        id("com.android.library") version "7.2.0"
-        id("me.omico.gradm") version "1.8.0-SNAPSHOT"
-        kotlin("android") version "1.6.21"
+        id("com.android.library") version "7.2.1"
+        id("me.omico.gradm") version "2.1.0-SNAPSHOT"
+        kotlin("android") version "1.7.0"
     }
 }
 

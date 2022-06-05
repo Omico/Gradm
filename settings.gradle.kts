@@ -17,8 +17,8 @@ pluginManagement {
         val agePlugin = "1.0.0-SNAPSHOT"
         val gradleEnterprisePlugin = "3.10"
         val gradleVersionsPlugin = "0.42.0"
-        val gradmPlugin = "1.7.0"
-        val spotlessPlugin = "6.6.0"
+        val gradmPlugin = "2.0.0"
+        val spotlessPlugin = "6.6.1"
     }
     plugins {
         id("com.diffplug.spotless") version versions.spotlessPlugin
