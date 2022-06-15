@@ -44,6 +44,7 @@ private val gradleBuildScriptContent: String =
     repositories {
         mavenCentral()
         mavenLocal()
+        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
     }
 
     dependencies {
