@@ -22,6 +22,7 @@ import me.omico.gradm.internal.config.fixedUrl
 import me.omico.gradm.internal.config.format.node.MappingNodeScope
 import me.omico.gradm.internal.config.format.node.mapping
 import me.omico.gradm.internal.config.format.node.scalar
+import me.omico.gradm.internal.config.versionVariableRegex
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.path.RootProjectPaths
 import me.omico.gradm.internal.require
@@ -81,7 +82,12 @@ fun YamlScope.dependenciesMapping(document: YamlDocument) {
                             attributes as YamlObject
                             mapping(artifact) {
                                 scalar("alias", attributes.require("alias"))
-                                attributes.find<String>("version")?.let { scalar("version", it) }
+                                attributes.find<String>("version")?.let { version ->
+                                    when {
+                                        versionVariableRegex.matches(version) -> scalar("version", version)
+                                        else -> scalar("version", version, style = ScalarStyle.DoubleQuoted)
+                                    }
+                                }
                             }
                         }
                     }

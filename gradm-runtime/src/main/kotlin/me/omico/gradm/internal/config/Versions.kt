@@ -124,7 +124,7 @@ private fun SubMutableTreeVersions.groupTreeVersion(key: String, value: Any?): U
 private fun SubMutableTreeVersions.getOrCreate(name: String): MutableTreeVersions =
     getOrPut(name) { MutableTreeVersions(name, null, SubMutableTreeVersions()) }
 
-private val versionVariableRegex = Regex("\\\$\\{(.*)}")
+internal val versionVariableRegex = Regex("\\\$\\{(.*)}")
 
 internal fun FlatVersions.resolveVariable(version: String?): String? =
     version
