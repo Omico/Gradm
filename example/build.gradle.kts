@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("com.android.library")
     kotlin("android")
@@ -10,11 +8,24 @@ repositories {
     google()
 }
 
+kotlin {
+    target {
+        compilations.all {
+            kotlinOptions {
+                jvmTarget = "11"
+            }
+        }
+    }
+}
+
 android {
     namespace = "me.omico.gradm.example"
     compileSdk = 32
     defaultConfig {
         minSdk = 26
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = versions.androidx.compose.toString()
     }
 }
 
@@ -38,6 +49,7 @@ dependencies {
     compileOnly(androidx.compose.material)
     compileOnly(androidx.compose.material.icons.core)
     compileOnly(androidx.compose.material.icons.extended)
+    compileOnly(androidx.compose.material3)
     compileOnly(androidx.compose.runtime)
     compileOnly(androidx.compose.ui)
     compileOnly(androidx.compose.ui.tooling)
@@ -52,8 +64,4 @@ dependencies {
     compileOnly(square.okhttp3)
     compileOnly(square.okhttp3.dnsOverHttps)
     compileOnly(square.okhttp3.interceptor.logging)
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
 }
