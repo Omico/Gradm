@@ -56,20 +56,16 @@ private fun FileSpec.Builder.addVersionsObjects(versions: TreeVersions): FileSpe
 private fun TypeSpec.Builder.addSubVersionsProperties(versions: TreeVersions): TypeSpec.Builder =
     apply {
         versions.subTreeVersions.toSortedMap().forEach { (name, subVersions) ->
-            addVersionProperty(name, subVersions.version)
+            addVersionProperty(name, subVersions)
             addSubVersionsProperty(name, subVersions)
-            if (subVersions.subTreeVersions.isNotEmpty()) {
-                TypeSpec.objectBuilder("${name.capitalize()}Versions")
-                    .addSubVersionsProperties(subVersions)
-                    .build()
-                    .also(::addType)
-            }
+            addSubVersionsObjects(name, subVersions)
         }
     }
 
-private fun TypeSpec.Builder.addVersionProperty(propertyName: String, version: String?): TypeSpec.Builder =
+private fun TypeSpec.Builder.addVersionProperty(propertyName: String, subVersions: TreeVersions): TypeSpec.Builder =
     apply {
-        if (version == null) return this
+        if (subVersions.subTreeVersions.isNotEmpty()) return this
+        val version = subVersions.version ?: return this
         PropertySpec.builder(propertyName, String::class)
             .addModifiers(KModifier.CONST)
             .initializer("\"$version\"")
@@ -87,6 +83,27 @@ private fun TypeSpec.Builder.addSubVersionsProperty(
             .initializer("${propertyName.capitalize()}Versions")
             .build()
             .let(::addProperty)
+    }
+
+private fun TypeSpec.Builder.addSubVersionsObjects(name: String, subVersions: TreeVersions): TypeSpec.Builder =
+    apply {
+        if (subVersions.subTreeVersions.isEmpty()) return this
+        TypeSpec.objectBuilder("${name.capitalize()}Versions")
+            .addSubVersionsProperties(subVersions)
+            .addSubVersionsOverrideFunction(subVersions)
+            .build()
+            .also(::addType)
+    }
+
+private fun TypeSpec.Builder.addSubVersionsOverrideFunction(subVersions: TreeVersions): TypeSpec.Builder =
+    apply {
+        val version = subVersions.version ?: return this
+        FunSpec.builder("toString")
+            .addModifiers(KModifier.OVERRIDE)
+            .returns(String::class)
+            .addStatement("return \"$version\"", String::class)
+            .build()
+            .also(::addFunction)
     }
 
 private fun FileSpec.Builder.addVersionsDslProperty(): FileSpec.Builder =

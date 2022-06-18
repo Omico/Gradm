@@ -51,9 +51,10 @@ fun YamlScope.versionsMapping(document: YamlDocument) {
 
 fun MappingNodeScope.recursiveVersionsMapping(versions: Map<*, *>): Unit =
     versions.toSortedMap(comparator = compareBy(Any?::toString)).forEach { (key, value) ->
+        val formattedKey = key.toString().replace("-", ".")
         when (value) {
-            is Map<*, *> -> mapping(key.toString()) { recursiveVersionsMapping(value) }
-            else -> scalar(key.toString(), value.toString(), style = ScalarStyle.DoubleQuoted)
+            is Map<*, *> -> mapping(formattedKey) { recursiveVersionsMapping(value) }
+            else -> scalar(formattedKey, value.toString(), ScalarStyle.DoubleQuoted)
         }
     }
 

@@ -7,6 +7,7 @@ versions:
     browser: "1.4.0"
     camera: "1.1.0-beta01"
     compose: "1.2.0-alpha03"
+    compose.material3: "1.0.0-alpha13"
     core: "1.8.0-alpha04"
     datastore: "1.0.0"
     lifecycle: "2.5.0-alpha02"
@@ -64,6 +65,10 @@ dependencies:
       material-icons-extended:
         alias: androidx.compose.material.icons.extended
         version: ${versions.androidx.compose}
+    androidx.compose.material3:
+      material3:
+        alias: androidx.compose.material3
+        version: ${versions.androidx.compose.material3}
     androidx.compose.runtime:
       runtime:
         alias: androidx.compose.runtime
