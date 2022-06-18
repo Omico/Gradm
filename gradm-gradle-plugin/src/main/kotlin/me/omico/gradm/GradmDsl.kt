@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused")
+@file:Suppress(
+    "UnusedReceiverParameter",
+    "unused",
+)
 
 package me.omico.gradm
 
@@ -23,3 +26,5 @@ import org.gradle.kotlin.dsl.configure
 fun Settings.gradm(block: GradmExtension.() -> Unit) = extensions.configure(block)
 
 fun GradmExtension.configs(block: GradmConfigs.() -> Unit) = GradmConfigs.let(block)
+
+fun GradmConfigs.development(block: GradmDevelopmentConfigs.() -> Unit) = GradmDevelopmentConfigs.let(block)

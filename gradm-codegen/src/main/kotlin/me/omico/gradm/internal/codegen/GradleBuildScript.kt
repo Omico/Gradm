@@ -16,11 +16,18 @@
 package me.omico.gradm.internal.codegen
 
 import me.omico.gradm.GRADM_VERSION
+import me.omico.gradm.GradmDevelopmentConfigs
 import me.omico.gradm.internal.path.GradmPaths
 import kotlin.io.path.writeText
 
 internal fun generateGradleBuildScript() {
-    GradmPaths.GeneratedDependenciesProject.gradleBuildScript.writeText(gradleBuildScriptContent)
+    val content = GradmDevelopmentConfigs.customGradleBuildScript
+        ?.ifBlank {
+            println("Development: customGradleBuildScript is blank, fallback to default.")
+            gradleBuildScriptContent
+        }
+        ?: gradleBuildScriptContent
+    GradmPaths.GeneratedDependenciesProject.gradleBuildScript.writeText(content)
 }
 
 private val gradleBuildScriptContent: String =
