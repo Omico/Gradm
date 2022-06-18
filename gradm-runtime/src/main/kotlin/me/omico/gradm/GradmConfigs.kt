@@ -32,3 +32,11 @@ interface GradmConfigs {
         override var indent: Int = 2
     }
 }
+
+interface GradmDevelopmentConfigs {
+    var customGradleBuildScript: String?
+
+    companion object : GradmDevelopmentConfigs {
+        override var customGradleBuildScript: String? = null
+    }
+}
