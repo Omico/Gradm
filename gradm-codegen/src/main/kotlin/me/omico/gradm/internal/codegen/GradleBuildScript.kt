@@ -21,12 +21,11 @@ import me.omico.gradm.internal.path.GradmPaths
 import kotlin.io.path.writeText
 
 internal fun generateGradleBuildScript() {
-    val content = GradmDevelopmentConfigs.customGradleBuildScript
-        ?.ifBlank {
-            println("Development: customGradleBuildScript is blank, fallback to default.")
-            gradleBuildScriptContent
-        }
-        ?: gradleBuildScriptContent
+    var content = GradmDevelopmentConfigs.customGradleBuildScript ?: gradleBuildScriptContent
+    if (content.isBlank()) {
+        println("Development: customGradleBuildScript is blank, fallback to default.")
+        content = gradleBuildScriptContent
+    }
     GradmPaths.GeneratedDependenciesProject.gradleBuildScript.writeText(content)
 }
 
