@@ -1,17 +1,16 @@
-import me.omico.age.dsl.javaCompatibility
 import me.omico.age.dsl.withKotlinMavenPublication
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `kotlin-dsl`
 }
 
-javaCompatibility(all = JavaVersion.VERSION_11)
 withKotlinMavenPublication(mavenPublicationName = "gradlePlugin")
 
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "11"
+kotlin {
+    target.compilations.all {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
     }
 }
 

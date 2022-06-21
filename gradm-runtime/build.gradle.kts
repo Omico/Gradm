@@ -1,4 +1,3 @@
-import me.omico.age.dsl.javaCompatibility
 import me.omico.age.dsl.withKotlinMavenPublication
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -6,7 +5,6 @@ plugins {
     `embedded-kotlin`
 }
 
-javaCompatibility(all = JavaVersion.VERSION_11)
 withKotlinMavenPublication()
 
 kotlin {
