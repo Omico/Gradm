@@ -3,7 +3,6 @@ import me.omico.age.dsl.withKotlinMavenPublication
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    `java-gradle-plugin`
     `kotlin-dsl`
 }
 
