@@ -1,5 +1,4 @@
 import me.omico.age.dsl.withKotlinMavenPublication
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `embedded-kotlin`
@@ -39,7 +38,7 @@ val copyKotlinTemplates by tasks.registering(Copy::class) {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
-tasks.withType<KotlinCompile> {
+tasks.compileKotlin {
     dependsOn(copyKotlinTemplates)
 }
 
