@@ -26,6 +26,8 @@ import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.dependencies
 import me.omico.gradm.internal.config.metadataLocalPath
+import me.omico.gradm.internal.config.plugins
+import me.omico.gradm.internal.config.toDependency
 import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.internal.sha1
 import java.nio.file.Files
@@ -57,7 +59,12 @@ object MavenRepositoryMetadataParser {
     private fun YamlDocument.downloadAllMetadata() =
         runBlocking {
             if (GradmConfigs.offline) return@runBlocking
-            dependencies.map { dependency -> dependency.downloadMetadata() }.let(::storeHash)
+            ArrayList<ByteArray>().apply {
+                debug { "Downloading plugins metadata" }
+                plugins.map { plugin -> plugin.toDependency().downloadMetadata() }.let(::addAll)
+                debug { "Downloading dependencies metadata" }
+                dependencies.map { dependency -> dependency.downloadMetadata() }.let(::addAll)
+            }.let(::storeHash)
         }
 
     private suspend fun Dependency.downloadMetadata(): ByteArray =

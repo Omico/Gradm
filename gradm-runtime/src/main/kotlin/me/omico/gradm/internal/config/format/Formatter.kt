@@ -36,9 +36,8 @@ fun formatGradmConfig(document: YamlDocument) {
 fun createFormattedGradmConfigContent(document: YamlDocument): String =
     yaml(formatterScope = FormatterScope(indent = GradmConfigs.indent)) {
         versionsMapping(document)
-        newline()
         repositoriesSequence(document)
-        newline()
+        pluginsMapping(document)
         dependenciesMapping(document)
     }
 
@@ -47,6 +46,7 @@ fun YamlScope.versionsMapping(document: YamlDocument) {
     mapping("versions") {
         recursiveVersionsMapping(versions)
     }
+    newline()
 }
 
 fun MappingNodeScope.recursiveVersionsMapping(versions: Map<*, *>): Unit =
@@ -69,6 +69,24 @@ fun YamlScope.repositoriesSequence(document: YamlDocument) {
             }
         }
     }
+    newline()
+}
+
+@Suppress("UNCHECKED_CAST")
+fun YamlScope.pluginsMapping(document: YamlDocument) {
+    val plugins = document.find<YamlObject>("plugins") ?: return
+    mapping("plugins") {
+        plugins.toSortedMap().forEach { (repository, plugins) ->
+            mapping(repository) {
+                plugins as YamlObject
+                plugins.toSortedMap().forEach { (id, version) ->
+                    version as String
+                    scalar(id, version, style = decideVersionStyle(version))
+                }
+            }
+        }
+    }
+    newline()
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -84,10 +102,7 @@ fun YamlScope.dependenciesMapping(document: YamlDocument) {
                             mapping(artifact) {
                                 scalar("alias", attributes.require("alias"))
                                 attributes.find<String>("version")?.let { version ->
-                                    when {
-                                        versionVariableRegex.matches(version) -> scalar("version", version)
-                                        else -> scalar("version", version, style = ScalarStyle.DoubleQuoted)
-                                    }
+                                    scalar("version", version, style = decideVersionStyle(version))
                                 }
                             }
                         }
@@ -97,3 +112,9 @@ fun YamlScope.dependenciesMapping(document: YamlDocument) {
         }
     }
 }
+
+private fun decideVersionStyle(version: String): ScalarStyle =
+    when {
+        versionVariableRegex.matches(version) -> ScalarStyle.Plain
+        else -> ScalarStyle.DoubleQuoted
+    }
