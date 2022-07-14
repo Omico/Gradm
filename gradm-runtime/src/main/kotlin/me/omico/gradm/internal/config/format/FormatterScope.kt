@@ -83,15 +83,16 @@ data class FormatterScopeImpl(
                                 with(nested()) {
                                     val stringIndex = lastIndex
                                     appendNode(key, value)
-                                    if (index == 0 && value.comment.block.isEmpty())
+                                    if (index == 0 && value.comment.block.isEmpty()) {
                                         delete(stringIndex, stringIndex + actualIndent)
+                                    }
                                 }
                             }
                         }
                         else -> TODO(
                             "This part of the code is only designed to support what Gradm needs. " +
                                 "If you are interested in it, please contact me. " +
-                                "I am willing to turn it into an independent library."
+                                "I am willing to turn it into an independent library.",
                         )
                     }
                 }

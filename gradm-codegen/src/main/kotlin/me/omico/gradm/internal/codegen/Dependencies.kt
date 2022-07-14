@@ -80,7 +80,7 @@ private fun CodegenDependencies.toDslFileSpec(): FileSpec =
                     receivers = arrayOf(
                         ClassName("org.gradle.api.artifacts.dsl", "DependencyHandler"),
                         ClassName("org.jetbrains.kotlin.gradle.plugin", "KotlinDependencyHandler"),
-                    )
+                    ),
                 )
             }
         }
@@ -98,7 +98,7 @@ internal fun FileSpec.Builder.addDslProperty(name: String, receivers: Array<Clas
                             "return ${name.capitalize()}",
                             ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, name.capitalize()),
                         )
-                        .build()
+                        .build(),
                 )
                 .build()
                 .also(::addProperty)

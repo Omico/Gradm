@@ -56,10 +56,11 @@ class FormatterTest {
                     }
                     mapping {
                         scalar(
-                            key = "xxx", value = "xx",
+                            key = "xxx",
+                            value = "xx",
                             comment = Comment(
                                 block = listOf("comment"),
-                                inline = "comment"
+                                inline = "comment",
                             ),
                         )
                         scalar("yyy", "yy")

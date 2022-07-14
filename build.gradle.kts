@@ -1,6 +1,7 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import me.omico.age.spotless.androidXml
 import me.omico.age.spotless.configureSpotless
+import me.omico.age.spotless.defaultEditorConfig
 import me.omico.age.spotless.intelliJIDEARunConfiguration
 
 plugins {
@@ -33,7 +34,8 @@ allprojects {
         intelliJIDEARunConfiguration()
         kotlin {
             target("src/**/*.kt")
-            ktlint(versions.ktlint)
+            ktlint()
+                .editorConfigOverride(defaultEditorConfig)
             indentWithSpaces()
             trimTrailingWhitespace()
             endWithNewline()
@@ -42,7 +44,8 @@ allprojects {
         kotlinGradle {
             target("**/*.gradle.kts")
             targetExclude(".gradm/**/*.gradle.kts")
-            ktlint(versions.ktlint)
+            ktlint()
+                .editorConfigOverride(defaultEditorConfig)
             indentWithSpaces()
             trimTrailingWhitespace()
             endWithNewline()
