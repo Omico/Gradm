@@ -33,10 +33,19 @@ class GradmPlugin : Plugin<Settings> {
             return
         }
         GradmExtensionImpl.create(target)
-        GradmParser.execute()
+        val result = GradmParser.execute()
         target.includeBuild(gradmGeneratedDependenciesDir) {
             dependencySubstitution {
                 substitute(module("me.omico.gradm:gradm-generated-dependencies")).using(project(":"))
+            }
+        }
+        target.gradle.settingsEvaluated {
+            pluginManagement {
+                plugins {
+                    result.plugins.forEach { plugin ->
+                        id(plugin.id).version(plugin.version)
+                    }
+                }
             }
         }
         target.gradle.beforeProject {

@@ -12,13 +12,24 @@ versions:
     datastore: "1.0.0"
     lifecycle: "2.5.0-alpha02"
     navigation: "2.5.0-alpha02"
+  kotlin: "1.7.10"
   okhttp: "4.9.3"
+  plugins:
+    android: "7.2.1"
 
 repositories:
   google:
     url: https://maven.google.com
+  gradlePluginPortal:
+    url: https://plugins.gradle.org/m2
   mavenCentral:
     url: https://repo1.maven.org/maven2
+
+plugins:
+  google:
+    com.android.library: ${versions.plugins.android}
+  gradlePluginPortal:
+    org.jetbrains.kotlin.android: ${versions.kotlin}
 
 dependencies:
   google:

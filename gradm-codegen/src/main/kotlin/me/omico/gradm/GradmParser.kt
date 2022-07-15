@@ -18,12 +18,13 @@ package me.omico.gradm
 import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.codegen.generateDependenciesProjectFiles
 import me.omico.gradm.internal.config.format.formatGradmConfig
+import me.omico.gradm.internal.config.plugins
 import me.omico.gradm.internal.maven.MavenRepositoryMetadataParser
 import me.omico.gradm.internal.path.RootProjectPaths
 
 object GradmParser {
 
-    fun execute() {
+    fun execute(): GradmResult {
         debug {
             "Debug mode enabled." +
                 "\n" + "Gradm version: $GRADM_VERSION"
@@ -35,5 +36,6 @@ object GradmParser {
             else -> MavenRepositoryMetadataParser.localVersionsMeta
         }
         generateDependenciesProjectFiles(document, versionsMeta)
+        return GradmResult(document.plugins)
     }
 }
