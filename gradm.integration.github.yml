@@ -1,4 +1,0 @@
-github:
-  versions:
-    - repository: gradle/gradle
-      regex: "v([\\d].[\\d].[\\d])"

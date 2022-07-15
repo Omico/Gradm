@@ -11,7 +11,7 @@ plugins {
     id("me.omico.age.spotless")
 }
 
-val kotlinDslVersion = "2.1.7" // From embedded Kotlin
+val kotlinDslVersion = "2.3.3" // From embedded Kotlin
 
 allprojects {
     group = "me.omico.gradm"
