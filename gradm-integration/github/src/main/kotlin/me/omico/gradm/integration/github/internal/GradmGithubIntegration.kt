@@ -47,12 +47,23 @@ internal val GithubVersion.regex: String?
 internal val GithubVersion.group: Int
     get() = find("group", 1)
 
+internal val GithubVersion.matchType: MatchType
+    get() = find("matchType", "exact")
+        .let(String::uppercase)
+        .let(MatchType::valueOf)
+
 internal data class GithubVersionConfiguration(
     val repository: String,
     val alias: String,
     val regex: Regex,
     val group: Int,
+    val matchType: MatchType,
 )
+
+internal enum class MatchType {
+    EXACT,
+    PARTIAL,
+}
 
 internal fun GithubVersionConfiguration(configuration: GithubVersion): GithubVersionConfiguration =
     GithubVersionConfiguration(
@@ -60,6 +71,7 @@ internal fun GithubVersionConfiguration(configuration: GithubVersion): GithubVer
         alias = configuration.alias ?: configuration.repository.substringAfter("/"),
         regex = configuration.regex?.toRegex() ?: defaultSemverRegex,
         group = configuration.group,
+        matchType = configuration.matchType,
     )
 
 internal fun Path.parseGithubIntegration(versions: MutableFlatVersions) =
@@ -67,7 +79,10 @@ internal fun Path.parseGithubIntegration(versions: MutableFlatVersions) =
         ?.map(::GithubVersionConfiguration)
         ?.mapNotNull { configuration ->
             val tag = configuration.latestReleaseTag
-            val result = configuration.regex.matchEntire(tag)
+            val result = when (configuration.matchType) {
+                MatchType.EXACT -> configuration.regex.matchEntire(tag)
+                MatchType.PARTIAL -> configuration.regex.find(tag)
+            }
             if (result == null) {
                 println("[${configuration.repository}]: Unable to match regex ${configuration.regex} with tag $tag")
                 return@mapNotNull null
