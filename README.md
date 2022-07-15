@@ -63,7 +63,7 @@ dependencies:
   your-repo: # from repositories' id
     com.example.group:
       example-artifact:
-        # for final use, for example: 
+        # for final use, for example:
         # compileOnly(my.company.artifact)
         alias: my.company.artifact
         # You can use either specific version like "1.0.0" or use version variables.
@@ -72,7 +72,7 @@ dependencies:
         version: ${versions.something}
 ```
 
-For more information, please see the [example project](./example).
+For more information, please see the [example project](../../tree/release/example).
 
 ## License
 
