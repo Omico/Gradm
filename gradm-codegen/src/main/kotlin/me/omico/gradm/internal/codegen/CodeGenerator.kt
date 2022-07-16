@@ -28,6 +28,7 @@ import java.util.Locale
 internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
     RootProjectPaths.copyTo(GradmPaths.GeneratedDependenciesProject)
     generateGradleBuildScript()
+    generateGradleSettingsScript()
     GradmPaths.GeneratedDependenciesProject.sourceDir.clearDirectory()
     generateDependenciesSourceFiles(document, versionsMeta)
     generateVersionsSourceFile(document)

@@ -38,5 +38,6 @@ object GradmPaths {
     ) {
         val sourceDir: Path by lazy { rootDir.resolve("src/main/kotlin") }
         val gradleBuildScript: Path by lazy { rootDir.resolve("build.gradle.kts") }
+        val gradleSettingsScript: Path by lazy { rootDir.resolve("settings.gradle.kts") }
     }
 }
