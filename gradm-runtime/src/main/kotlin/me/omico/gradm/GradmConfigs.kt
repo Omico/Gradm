@@ -35,8 +35,10 @@ interface GradmConfigs {
 
 interface GradmDevelopmentConfigs {
     var customGradleBuildScript: String?
+    var customGradleSettingsScript: String?
 
     companion object : GradmDevelopmentConfigs {
         override var customGradleBuildScript: String? = null
+        override var customGradleSettingsScript: String? = null
     }
 }
