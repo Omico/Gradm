@@ -1,11 +1,21 @@
+import me.omico.age.spotless.configureSpotless
+import me.omico.age.spotless.kotlinGradle
+
 plugins {
     id("com.android.library")
+    id("com.diffplug.spotless")
+    id("me.omico.age.project")
+    id("me.omico.age.spotless")
     kotlin("android")
 }
 
 repositories {
     mavenCentral()
     google()
+}
+
+configureSpotless {
+    kotlinGradle()
 }
 
 kotlin {

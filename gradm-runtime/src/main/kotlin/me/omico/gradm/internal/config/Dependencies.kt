@@ -28,15 +28,14 @@ val YamlDocument.dependencies: List<Dependency>
         val repositories = repositories
         val versions = versions.toFlatVersions()
         find<YamlObject>("dependencies", emptyMap())
-            .flatMap { (repository, groups) ->
-                val repositoryUrl = requireNotNull(repositories.find { it.id == repository }?.url) {
-                    "Repository $repository not found."
-                }
+            .flatMap { (repositoryId, groups) ->
+                val repository = repositories.requireRepository(repositoryId)
                 (groups as YamlObject).flatMap { (group, artifacts) ->
                     (artifacts as YamlObject).map { (artifact, attributes) ->
                         attributes as YamlObject
                         Dependency(
-                            repository = repositoryUrl,
+                            repository = repository.url,
+                            noUpdates = repository.noUpdates,
                             group = group,
                             artifact = artifact,
                             alias = attributes.require("alias"),
@@ -49,6 +48,7 @@ val YamlDocument.dependencies: List<Dependency>
 
 data class Dependency(
     val repository: String,
+    val noUpdates: Boolean,
     val group: String,
     val artifact: String,
     val alias: String,

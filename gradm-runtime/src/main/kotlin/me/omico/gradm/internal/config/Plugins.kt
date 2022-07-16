@@ -25,14 +25,13 @@ val YamlDocument.plugins: List<Plugin>
         val repositories = repositories
         val versions = versions.toFlatVersions()
         find<YamlObject>("plugins", emptyMap())
-            .flatMap { (repository, plugin) ->
-                val repositoryUrl = requireNotNull(repositories.find { it.id == repository }?.url) {
-                    "Repository $repository not found."
-                }
+            .flatMap { (repositoryId, plugin) ->
+                val repository = repositories.requireRepository(repositoryId)
                 (plugin as YamlObject).map { (id, version) ->
                     version as String
                     Plugin(
-                        repository = repositoryUrl,
+                        repository = repository.url,
+                        noUpdates = repository.noUpdates,
                         id = id,
                         version = version.let(versions::resolveVariable),
                     )
@@ -42,6 +41,7 @@ val YamlDocument.plugins: List<Plugin>
 
 data class Plugin(
     val repository: String,
+    val noUpdates: Boolean,
     val id: String,
     val version: String?,
 ) {
@@ -52,6 +52,7 @@ data class Plugin(
 internal fun Plugin.toDependency(): Dependency =
     Dependency(
         repository = repository,
+        noUpdates = noUpdates,
         group = group,
         artifact = artifact,
         alias = "",

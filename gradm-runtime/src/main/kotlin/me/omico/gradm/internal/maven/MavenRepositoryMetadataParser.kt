@@ -61,14 +61,18 @@ object MavenRepositoryMetadataParser {
             if (GradmConfigs.offline) return@runBlocking
             ArrayList<ByteArray>().apply {
                 debug { "Downloading plugins metadata" }
-                plugins.map { plugin -> plugin.toDependency().downloadMetadata() }.let(::addAll)
+                plugins.forEach { plugin -> plugin.toDependency().downloadMetadata()?.let(::add) }
                 debug { "Downloading dependencies metadata" }
-                dependencies.map { dependency -> dependency.downloadMetadata() }.let(::addAll)
+                dependencies.forEach { dependency -> dependency.downloadMetadata()?.let(::add) }
             }.let(::storeHash)
         }
 
-    private suspend fun Dependency.downloadMetadata(): ByteArray =
+    private suspend fun Dependency.downloadMetadata(): ByteArray? =
         run {
+            if (noUpdates) {
+                debug { "Skipping [$module] because noUpdates is set to true" }
+                return@run null
+            }
             debug { "Downloading metadata for [$module]" }
             val bytes = withContext(Dispatchers.IO) { metadataUrl.readBytes() }
             val metadataPath = metadataLocalPath(GradmPaths.Metadata.rootDir)
