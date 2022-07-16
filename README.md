@@ -53,6 +53,10 @@ repositories:
     url: https://maven.google.com
   your-repo: # your own repo id
     url: https://repo.example.com # your repo url
+  # A repo named "noUpdates" is already build-in.
+  # You can use it directly or define your own like below.
+  your-repo-2:
+    noUpdates: true # disable updates for this repo
 
 dependencies:
   google:
@@ -60,6 +64,16 @@ dependencies:
       activity-compose:
         alias: androidx.activity.compose
         version: ${versions.androidx.activity}
+  noUpdates: # use build-in repo "noUpdates"
+    com.example.group:
+      noUpdates:
+        alias: my.company.noUpdates
+        version: ${versions.something}
+  your-repo-2:
+    com.example.group:
+      noUpdates2:
+        alias: my.company.noUpdates2
+        version: ${versions.something}
   your-repo: # from repositories' id
     com.example.group:
       example-artifact:
