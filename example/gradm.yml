@@ -14,10 +14,17 @@ versions:
     navigation: "2.5.0-alpha02"
   kotlin: "1.7.10"
   okhttp: "4.9.3"
+  omico:
+    cloudflare: "1.0.0-SNAPSHOT"
+    cryonics: "1.0.0-SNAPSHOT"
   plugins:
+    age: "1.0.0-SNAPSHOT"
     android: "7.2.1"
+    spotless: "6.8.0"
 
 repositories:
+  customNoUpdates:
+    noUpdates: true
   google:
     url: https://maven.google.com
   gradlePluginPortal:
@@ -26,12 +33,21 @@ repositories:
     url: https://repo1.maven.org/maven2
 
 plugins:
-  google:
-    com.android.library: ${versions.plugins.android}
+  customNoUpdates:
+    me.omico.age.project: ${versions.plugins.age}
+    me.omico.age.spotless: ${versions.plugins.age}
   gradlePluginPortal:
+    com.diffplug.spotless: ${versions.plugins.spotless}
+  noUpdates:
+    com.android.library: ${versions.plugins.android}
     org.jetbrains.kotlin.android: ${versions.kotlin}
 
 dependencies:
+  customNoUpdates:
+    me.omico.cryonics:
+      cryonics:
+        alias: omico.cryonics
+        version: ${versions.omico.cryonics}
   google:
     androidx.activity:
       activity-compose:
@@ -143,3 +159,8 @@ dependencies:
       okhttp-dnsoverhttps:
         alias: square.okhttp3.dnsOverHttps
         version: ${versions.okhttp}
+  noUpdates:
+    me.omico.cloudflare.api:
+      cloudflare-dns:
+        alias: omico.cloudflare.dns
+        version: ${versions.omico.cloudflare}

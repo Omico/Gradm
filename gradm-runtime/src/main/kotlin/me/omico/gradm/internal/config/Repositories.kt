@@ -22,21 +22,43 @@ import me.omico.gradm.internal.require
 
 val YamlDocument.repositories: List<Repository>
     @Suppress("UNCHECKED_CAST")
-    get() = find<YamlObject>("repositories", emptyMap())
-        .map { (id, urlObject) ->
-            Repository(
-                id = id,
-                url = (urlObject as YamlObject).require<String>("url").fixedUrl(),
-            )
-        }
+    get() = ArrayList<Repository>().apply {
+        add(noUpdatesRepository)
+        find<YamlObject>("repositories", emptyMap())
+            .map { (id, attributes) ->
+                attributes as YamlObject
+                val noUpdates = attributes.find("noUpdates", false)
+                val url = when {
+                    noUpdates -> ""
+                    else -> attributes.require<String>("url").fixedUrl()
+                }
+                Repository(
+                    id = id,
+                    noUpdates = noUpdates,
+                    url = url,
+                )
+            }
+            .let(::addAll)
+    }
 
 data class Repository(
     val id: String,
+    val noUpdates: Boolean,
     val url: String,
 )
+
+internal val noUpdatesRepository: Repository =
+    Repository(
+        id = "noUpdates",
+        noUpdates = true,
+        url = "",
+    )
 
 internal fun String.fixedUrl(): String =
     when {
         endsWith("/") -> removeSuffix("/")
         else -> this
     }
+
+internal fun List<Repository>.requireRepository(id: String): Repository =
+    requireNotNull(find { it.id == id }) { "Repository $id not found." }

@@ -62,10 +62,13 @@ fun MappingNodeScope.recursiveVersionsMapping(versions: Map<*, *>): Unit =
 fun YamlScope.repositoriesSequence(document: YamlDocument) {
     val repositories = document.find<YamlObject>("repositories") ?: return
     mapping("repositories") {
-        repositories.toSortedMap().forEach { (id, repository) ->
-            repository as YamlObject
+        repositories.toSortedMap().forEach { (id, attributes) ->
+            attributes as YamlObject
             mapping(id) {
-                scalar("url", repository.require<String>("url").fixedUrl())
+                when {
+                    attributes.find("noUpdates", false) -> scalar("noUpdates", true)
+                    else -> scalar("url", attributes.require<String>("url").fixedUrl())
+                }
             }
         }
     }
