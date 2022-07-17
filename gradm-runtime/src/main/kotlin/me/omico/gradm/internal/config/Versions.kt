@@ -42,7 +42,7 @@ private fun Map<*, *>.toMutableFlatVersions(parentKey: String, versions: Mutable
         versions
     }
 
-private val flatKeyRegex = Regex("^[a-zA-Z\\d]+([.-][a-zA-Z\\d]+)?")
+private val flatKeyRegex = Regex("^[a-zA-Z\\d]+(([.-][a-zA-Z\\d]+)+)?")
 
 private fun subFlatKey(key: Any?): String =
     run {
