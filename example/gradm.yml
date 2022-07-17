@@ -14,6 +14,7 @@ versions:
     lifecycle: "2.6.0-alpha01"
     navigation: "2.5.0"
   kotlin: "1.7.10"
+  material: "1.7.0-alpha03"
   okhttp: "5.0.0-alpha.10"
   omico:
     cloudflare: "1.0.0-SNAPSHOT"
@@ -133,6 +134,10 @@ dependencies:
       navigation-runtime-ktx:
         alias: androidx.navigation.runtime.ktx
         version: ${versions.androidx.navigation}
+    com.google.android.material:
+      material:
+        alias: material
+        version: ${versions.material}
   mavenCentral:
     com.google.accompanist:
       accompanist-insets:
@@ -152,13 +157,13 @@ dependencies:
         version: ${versions.accompanist}
     com.squareup.okhttp3:
       logging-interceptor:
-        alias: square.okhttp3.interceptor.logging
+        alias: okhttp.interceptor.logging
         version: ${versions.okhttp}
       okhttp:
-        alias: square.okhttp3
+        alias: okhttp
         version: ${versions.okhttp}
       okhttp-dnsoverhttps:
-        alias: square.okhttp3.dnsOverHttps
+        alias: okhttp.dnsOverHttps
         version: ${versions.okhttp}
   noUpdates:
     me.omico.cloudflare.api:

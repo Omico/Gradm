@@ -70,8 +70,10 @@ dependencies {
     compileOnly(androidx.lifecycle.runtime.ktx)
     compileOnly(androidx.navigation.compose)
     compileOnly(androidx.navigation.runtime.ktx)
+    // Material
+    compileOnly(material)
     // Square
-    compileOnly(square.okhttp3)
-    compileOnly(square.okhttp3.dnsOverHttps)
-    compileOnly(square.okhttp3.interceptor.logging)
+    compileOnly(okhttp)
+    compileOnly(okhttp.dnsOverHttps)
+    compileOnly(okhttp.interceptor.logging)
 }
