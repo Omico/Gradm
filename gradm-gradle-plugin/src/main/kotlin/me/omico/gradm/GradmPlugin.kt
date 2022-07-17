@@ -18,6 +18,7 @@
 package me.omico.gradm
 
 import me.omico.gradm.internal.GradmExtensionImpl
+import me.omico.gradm.task.GradmDependenciesAnalysis
 import me.omico.gradm.task.GradmUpdateDependencies
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
@@ -63,6 +64,9 @@ class GradmPlugin : Plugin<Settings> {
             tasks.register("gradmUpdateDependencies", GradmUpdateDependencies::class) {
                 group = "gradm"
                 finalizedBy("gradmCheckGitIgnore")
+            }
+            tasks.register("gradmDependenciesAnalysis", GradmDependenciesAnalysis::class) {
+                group = "gradm"
             }
             tasks.register("gradmClean", Delete::class) {
                 group = "gradm"
