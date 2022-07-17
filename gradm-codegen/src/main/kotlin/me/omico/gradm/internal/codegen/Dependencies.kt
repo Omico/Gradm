@@ -31,6 +31,7 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDepen
 import java.util.TreeMap
 
 internal data class CodegenDependency(
+    val hasParent: Boolean = false,
     val group: String = "",
     val artifact: String = "",
     val version: String = "",
@@ -105,7 +106,11 @@ internal fun FileSpec.Builder.addDslProperty(name: String, receivers: Array<Clas
         }
     }
 
-private fun CodegenDependencies.addDependency(versionsMeta: VersionsMeta, dependency: Dependency) {
+private fun CodegenDependencies.addDependency(
+    versionsMeta: VersionsMeta,
+    dependency: Dependency,
+    hasParent: Boolean = false,
+) {
     val alias = dependency.alias
     when {
         alias.contains(".") ->
@@ -113,10 +118,12 @@ private fun CodegenDependencies.addDependency(versionsMeta: VersionsMeta, depend
                 .addDependency(
                     versionsMeta = versionsMeta,
                     dependency = dependency.copy(alias = alias.substringAfter(".")),
+                    hasParent = true,
                 )
         else ->
             getOrDefault(alias, CodegenDependency())
                 .copy(
+                    hasParent = hasParent,
                     group = dependency.group,
                     artifact = dependency.artifact,
                     version = dependency.version ?: versionsMeta[dependency.module]!!,
@@ -127,7 +134,7 @@ private fun CodegenDependencies.addDependency(versionsMeta: VersionsMeta, depend
 
 private fun FileSpec.Builder.addDependencyObjects(name: String, dependency: CodegenDependency): FileSpec.Builder =
     apply {
-        if (!dependency.hasSubDependencies) return@apply
+        if (dependency.hasParent && !dependency.hasSubDependencies) return@apply
         TypeSpec.objectBuilder(name.capitalize())
             .addDependencySuperClass(dependency)
             .addDependencies(name, dependency)
