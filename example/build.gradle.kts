@@ -35,7 +35,7 @@ android {
         minSdk = 26
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = versions.androidx.compose.toString()
+        kotlinCompilerExtensionVersion = versions.androidx.compose.compiler
     }
 }
 
