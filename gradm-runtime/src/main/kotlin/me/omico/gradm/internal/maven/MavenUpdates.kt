@@ -23,6 +23,7 @@ import me.omico.gradm.internal.config.format.node.scalar
 import me.omico.gradm.internal.config.format.node.sequence
 import me.omico.gradm.internal.config.format.yaml
 import me.omico.gradm.internal.path.GradmPaths
+import me.omico.gradm.utility.deleteDirectory
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 
@@ -56,6 +57,10 @@ internal fun YamlDocument.storeAvailableUpdates(metadataList: List<MavenMetadata
         .map { MavenUpdates(it, metadataList) }
         .filter { it.availableVersions.isNotEmpty() }
         .toTreeMavenUpdates()
+    if (treeMavenUpdates.isEmpty()) {
+        GradmPaths.Updates.rootDir.deleteDirectory()
+        return
+    }
     val mavenUpdatesContent = yaml {
         treeMavenUpdates.entries.forEachIndexed { index, (group, artifactUpdates) ->
             mapping(group) {
