@@ -119,7 +119,6 @@ private fun Dependency.createUpdateStatus(metadataList: List<MavenMetadata>): Up
         if (noUpdates) return@let UpdateStatus.UpToDate
         val newerAvailableVersions = when (val index = metadata.versions.indexOf(version)) {
             -1 -> metadata.versions
-            0 -> emptyList()
             else -> metadata.versions.subList(index + 1, metadata.versions.size)
         }
         when {

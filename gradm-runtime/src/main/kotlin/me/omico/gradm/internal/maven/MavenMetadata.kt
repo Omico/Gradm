@@ -38,11 +38,12 @@ internal fun MavenMetadata(metadataPath: Path): MavenMetadata =
                 group = document.getElementsByTagName("groupId").item(0).textContent,
                 artifact = document.getElementsByTagName("artifactId").item(0).textContent,
                 latestVersion = document.getElementsByTagName("latest").item(0).textContent,
-                versions = document.getElementsByTagName("version").map { it.textContent },
+                versions = document.getElementsByTagName("versions").item(0).childNodes
+                    .mapNotNull { if (it.nodeName == "version") it.textContent else null },
             )
         }
 
 private val documentBuilder: DocumentBuilder by lazy { DocumentBuilderFactory.newInstance().newDocumentBuilder() }
 
-private fun <T> NodeList.map(transform: (Node) -> T): List<T> =
-    (0 until length).map { transform(item(it)) }
+private fun <T> NodeList.mapNotNull(transform: (Node) -> T?): List<T> =
+    (0 until length).mapNotNull { transform(item(it)) }
