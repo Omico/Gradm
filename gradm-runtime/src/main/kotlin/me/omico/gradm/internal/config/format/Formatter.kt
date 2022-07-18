@@ -107,6 +107,9 @@ fun YamlScope.dependenciesMapping(document: YamlDocument) {
                                 attributes.find<String>("version")?.let { version ->
                                     scalar("version", version, style = decideVersionStyle(version))
                                 }
+                                if (attributes.find("noSpecificVersion", false)) {
+                                    scalar("noSpecificVersion", true)
+                                }
                             }
                         }
                     }

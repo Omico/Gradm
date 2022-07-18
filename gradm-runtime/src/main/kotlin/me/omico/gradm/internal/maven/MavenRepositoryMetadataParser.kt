@@ -30,6 +30,7 @@ import me.omico.gradm.internal.config.plugins
 import me.omico.gradm.internal.config.toDependency
 import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.internal.sha1
+import me.omico.gradm.utility.deleteDirectory
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
@@ -71,6 +72,11 @@ object MavenRepositoryMetadataParser {
         run {
             if (noUpdates) {
                 debug { "Skipping [$module] because noUpdates is set to true" }
+                return@run null
+            }
+            if (noSpecificVersion) {
+                debug { "Skipping [$module] because noSpecificVersion is set to true" }
+                metadataLocalPath(GradmPaths.Metadata.rootDir).parent.deleteDirectory()
                 return@run null
             }
             debug { "Downloading metadata for [$module]" }

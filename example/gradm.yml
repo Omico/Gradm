@@ -158,13 +158,16 @@ dependencies:
     com.squareup.okhttp3:
       logging-interceptor:
         alias: okhttp.interceptor.logging
-        version: ${versions.okhttp}
+        noSpecificVersion: true
       okhttp:
         alias: okhttp
+        noSpecificVersion: true
+      okhttp-bom:
+        alias: okhttp.bom
         version: ${versions.okhttp}
       okhttp-dnsoverhttps:
         alias: okhttp.dnsOverHttps
-        version: ${versions.okhttp}
+        noSpecificVersion: true
   noUpdates:
     me.omico.cloudflare.api:
       cloudflare-dns:

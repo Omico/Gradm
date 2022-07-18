@@ -34,10 +34,11 @@ internal data class CodegenDependency(
     val hasParent: Boolean = false,
     val group: String = "",
     val artifact: String = "",
-    val version: String = "",
+    val version: String? = null,
     val subDependencies: CodegenDependencies = CodegenDependencies(),
 ) {
     val module: String by lazy { "$group:$artifact" }
+    val noSpecificVersion: Boolean by lazy { version?.isBlank() ?: false }
 }
 
 internal val CodegenDependency.hasDependency
@@ -151,7 +152,7 @@ private fun TypeSpec.Builder.addDependencySuperClass(dependency: CodegenDependen
         superclass(DefaultExternalModuleDependency::class)
         addSuperclassConstructorParameter("%S", dependency.group)
         addSuperclassConstructorParameter("%S", dependency.artifact)
-        addSuperclassConstructorParameter("%S", dependency.version)
+        addSuperclassConstructorParameter("%S", dependency.version ?: "")
         FunSpec.builder("invoke")
             .addModifiers(KModifier.OPERATOR)
             .addParameter("version", String::class)
@@ -182,7 +183,15 @@ private fun TypeSpec.Builder.addDependency(name: String, dependency: CodegenDepe
     apply {
         if (!dependency.hasDependency) return@apply
         PropertySpec.builder(name.camelCase(), String::class)
-            .initializer("${name.camelCase()}(\"${dependency.version}\")")
+            .apply {
+                when {
+                    dependency.noSpecificVersion -> {
+                        addModifiers(KModifier.CONST)
+                        initializer("\"${dependency.module}\"")
+                    }
+                    else -> initializer("${name.camelCase()}(\"${dependency.version}\")")
+                }
+            }
             .build()
             .also(::addProperty)
         FunSpec.builder(name.camelCase())
