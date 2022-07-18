@@ -22,6 +22,8 @@ import me.omico.gradm.internal.config.format.node.mapping
 import me.omico.gradm.internal.config.format.node.scalar
 import me.omico.gradm.internal.config.format.node.sequence
 import me.omico.gradm.internal.config.format.yaml
+import me.omico.gradm.internal.config.plugins
+import me.omico.gradm.internal.config.toDependency
 import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.utility.deleteDirectory
 import kotlin.io.path.createDirectories
@@ -53,22 +55,38 @@ internal sealed interface UpdateStatus {
 }
 
 internal fun YamlDocument.storeAvailableUpdates(metadataList: List<MavenMetadata>) {
-    val treeMavenUpdates = dependencies
+    val pluginsMavenUpdates = plugins
+        .map { MavenUpdates(it.toDependency(), metadataList) }
+        .filter { it.availableVersions.isNotEmpty() }
+        .toTreeMavenUpdates()
+    val dependenciesMavenUpdates = dependencies
         .map { MavenUpdates(it, metadataList) }
         .filter { it.availableVersions.isNotEmpty() }
         .toTreeMavenUpdates()
-    if (treeMavenUpdates.isEmpty()) {
+    if (pluginsMavenUpdates.isEmpty() && dependenciesMavenUpdates.isEmpty()) {
         GradmPaths.Updates.rootDir.deleteDirectory()
         return
     }
     val mavenUpdatesContent = yaml {
-        treeMavenUpdates.entries.forEachIndexed { index, (group, artifactUpdates) ->
-            mapping(group) {
-                artifactUpdates.forEach { (artifact, versions) ->
-                    sequence(artifact) { versions.forEach { scalar(it) } }
+        if (pluginsMavenUpdates.isNotEmpty()) mapping("plugins") {
+            pluginsMavenUpdates.entries.forEachIndexed { index, (id, pluginUpdates) ->
+                sequence(id) {
+                    pluginUpdates.forEach { (_, versions) ->
+                        versions.forEach { scalar(it) }
+                    }
                 }
+                if (index < dependenciesMavenUpdates.size - 1) newline()
             }
-            if (index < treeMavenUpdates.size - 1) newline()
+        }
+        if (dependenciesMavenUpdates.isNotEmpty()) mapping("dependencies") {
+            dependenciesMavenUpdates.entries.forEachIndexed { index, (group, artifactUpdates) ->
+                mapping(group) {
+                    artifactUpdates.forEach { (artifact, versions) ->
+                        sequence(artifact) { versions.forEach { scalar(it) } }
+                    }
+                }
+                if (index < dependenciesMavenUpdates.size - 1) newline()
+            }
         }
     }
     GradmPaths.Updates.rootDir.createDirectories()
@@ -98,10 +116,11 @@ private fun MutableTreeMavenUpdates.getOrCreate(group: String): MutableList<Arti
 
 private fun Dependency.createUpdateStatus(metadataList: List<MavenMetadata>): UpdateStatus =
     metadataList.find { it.module == module }?.let { metadata ->
-        val index = metadata.versions.indexOf(version)
-        val newerAvailableVersions = when {
-            index != -1 -> metadata.versions.subList(index + 1, metadata.versions.size)
-            else -> metadata.versions
+        if (noUpdates) return@let UpdateStatus.UpToDate
+        val newerAvailableVersions = when (val index = metadata.versions.indexOf(version)) {
+            -1 -> metadata.versions
+            0 -> emptyList()
+            else -> metadata.versions.subList(index + 1, metadata.versions.size)
         }
         when {
             newerAvailableVersions.isNotEmpty() -> UpdateStatus.UpdatesAvailable(newerAvailableVersions.asReversed())
