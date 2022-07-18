@@ -33,13 +33,19 @@ val YamlDocument.dependencies: List<Dependency>
                 (groups as YamlObject).flatMap { (group, artifacts) ->
                     (artifacts as YamlObject).map { (artifact, attributes) ->
                         attributes as YamlObject
+                        val noSpecificVersion = attributes.find("noSpecificVersion", false)
+                        val version = when {
+                            noSpecificVersion -> ""
+                            else -> attributes.find<String>("version").let(versions::resolveVariable)
+                        }
                         Dependency(
                             repository = repository.url,
                             noUpdates = repository.noUpdates,
+                            noSpecificVersion = noSpecificVersion,
                             group = group,
                             artifact = artifact,
                             alias = attributes.require("alias"),
-                            version = attributes.find<String>("version").let(versions::resolveVariable),
+                            version = version,
                         )
                     }
                 }
@@ -49,6 +55,7 @@ val YamlDocument.dependencies: List<Dependency>
 data class Dependency(
     val repository: String,
     val noUpdates: Boolean,
+    val noSpecificVersion: Boolean,
     val group: String,
     val artifact: String,
     val alias: String,

@@ -53,6 +53,7 @@ internal fun Plugin.toDependency(): Dependency =
     Dependency(
         repository = repository,
         noUpdates = noUpdates,
+        noSpecificVersion = false,
         group = group,
         artifact = artifact,
         alias = "",
