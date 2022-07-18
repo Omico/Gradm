@@ -43,6 +43,9 @@ private val gradleBuildScriptContent: String =
         target.compilations.all {
             kotlinOptions {
                 jvmTarget = "11"
+                freeCompilerArgs = listOf(
+                    "-Xcontext-receivers",
+                )
             }
         }
     }

@@ -16,22 +16,27 @@
 package me.omico.gradm.internal.codegen
 
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.ExperimentalKotlinPoetApi
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.asTypeName
 import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.dependencies
+import me.omico.gradm.internal.gradle.impl.DependencyHandlerImpl
 import me.omico.gradm.internal.path.GradmPaths
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
 import java.util.TreeMap
+import org.gradle.api.artifacts.Dependency as GradleArtifactsDependency
 
 internal data class CodegenDependency(
     val hasParent: Boolean = false,
+    val bom: Boolean = false,
     val group: String = "",
     val artifact: String = "",
     val version: String? = null,
@@ -125,6 +130,7 @@ private fun CodegenDependencies.addDependency(
             getOrDefault(alias, CodegenDependency())
                 .copy(
                     hasParent = hasParent,
+                    bom = dependency.bom,
                     group = dependency.group,
                     artifact = dependency.artifact,
                     version = dependency.version ?: versionsMeta[dependency.module]!!,
@@ -179,9 +185,32 @@ private fun TypeSpec.Builder.addDependencyProperty(propertyName: String, classNa
         .build()
         .let(::addProperty)
 
+@OptIn(ExperimentalKotlinPoetApi::class)
 private fun TypeSpec.Builder.addDependency(name: String, dependency: CodegenDependency): TypeSpec.Builder =
     apply {
         if (!dependency.hasDependency) return@apply
+        if (dependency.bom) {
+            PropertySpec.builder(name.camelCase(), GradleArtifactsDependency::class)
+                .contextReceivers(DependencyHandlerImpl::class.asTypeName())
+                .getter(
+                    FunSpec.getterBuilder()
+                        .addStatement("return ${name.camelCase()}(\"${dependency.version}\")")
+                        .build(),
+                )
+                .build()
+                .also(::addProperty)
+            FunSpec.builder(name.camelCase())
+                .addParameter("version", String::class)
+                .returns(GradleArtifactsDependency::class)
+                .contextReceivers(DependencyHandlerImpl::class.asTypeName())
+                .addStatement(
+                    "return platform(\"${dependency.module}:\$version\")",
+                    GradleArtifactsDependency::class,
+                )
+                .build()
+                .also(::addFunction)
+            return@apply
+        }
         PropertySpec.builder(name.camelCase(), String::class)
             .apply {
                 when {

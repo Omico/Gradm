@@ -165,6 +165,7 @@ dependencies:
       okhttp-bom:
         alias: okhttp.bom
         version: ${versions.okhttp}
+        bom: true
       okhttp-dnsoverhttps:
         alias: okhttp.dnsOverHttps
         noSpecificVersion: true
