@@ -21,8 +21,7 @@ import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.internal.path.RootProjectPaths
-import java.nio.file.Files
-import java.nio.file.Path
+import me.omico.gradm.utility.clearDirectory
 import java.util.Locale
 
 internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
@@ -32,11 +31,6 @@ internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMe
     GradmPaths.GeneratedDependenciesProject.sourceDir.clearDirectory()
     generateDependenciesSourceFiles(document, versionsMeta)
     generateVersionsSourceFile(document)
-}
-
-internal fun Path.clearDirectory() {
-    if (Files.exists(this)) Files.walk(this).sorted(Comparator.reverseOrder()).forEach(Files::delete)
-    Files.createDirectories(this)
 }
 
 private val defaultSuppressWarningTypes = arrayOf(
