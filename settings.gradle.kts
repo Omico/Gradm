@@ -13,27 +13,11 @@ pluginManagement {
         mavenLocal()
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
     }
-    val versions = object {
-        val agePlugin = "1.0.0-SNAPSHOT"
-        val gradleEnterprisePlugin = "3.10"
-        val gradleVersionsPlugin = "0.42.0"
-        val gradmPlugin = "2.0.0"
-        val spotlessPlugin = "6.8.0"
-    }
-    plugins {
-        id("com.diffplug.spotless") version versions.spotlessPlugin
-        id("com.github.ben-manes.versions") version versions.gradleVersionsPlugin
-        id("com.gradle.enterprise") version versions.gradleEnterprisePlugin
-        id("me.omico.age.project") version versions.agePlugin
-        id("me.omico.age.spotless") version versions.agePlugin
-        id("me.omico.gradm") version versions.gradmPlugin
-        kotlin("plugin.serialization") version embeddedKotlinVersion
-    }
 }
 
 plugins {
-    id("com.gradle.enterprise")
-    id("me.omico.gradm")
+    id("com.gradle.enterprise") version "3.10.3"
+    id("me.omico.gradm") version "2.2.0"
 }
 
 gradleEnterprise {

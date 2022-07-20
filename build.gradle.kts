@@ -10,22 +10,20 @@ plugins {
     id("me.omico.age.spotless")
 }
 
-val kotlinDslVersion = "2.3.3" // From embedded Kotlin
-
 allprojects {
     group = "me.omico.gradm"
     version = "2.3.0-SNAPSHOT"
     configureDependencyUpdates(
         pinnedGroups = mapOf(
-            "org.gradle.kotlin.kotlin-dsl" to kotlinDslVersion,
-            "org.jetbrains.kotlin" to embeddedKotlinVersion,
-            "org.jetbrains.kotlin.plugin.serialization" to embeddedKotlinVersion,
+            "org.gradle.kotlin.kotlin-dsl" to versions.kotlin.dsl,
+            "org.jetbrains.kotlin" to versions.kotlin.toString(),
+            "org.jetbrains.kotlin.plugin.serialization" to versions.kotlin.toString(),
         ),
         pinnedModules = mapOf(
             "kotlinpoet" to versions.kotlinpoet,
             "kotlinx-coroutines-core" to versions.kotlinx.coroutines,
             "kotlinx-serialization-json" to versions.kotlinx.serialization,
-            "org.gradle.kotlin.embedded-kotlin.gradle.plugin" to kotlinDslVersion,
+            "org.gradle.kotlin.embedded-kotlin.gradle.plugin" to versions.kotlin.dsl,
         ),
     )
     configureSpotless {

@@ -1,14 +1,31 @@
 versions:
   gradle: "7.5"
+  kotlin: "1.6.21"
+  kotlin.dsl: "2.3.3"
   kotlinpoet: "1.11.0"
   kotlinx:
     coroutines: "1.6.4"
     serialization: "1.3.3"
+  plugins:
+    age: "1.0.0-SNAPSHOT"
+    gradle.versions: "0.42.0"
+    spotless: "6.8.0"
   snakeyaml: "2.3"
 
 repositories:
+  gradlePluginPortal:
+    url: https://plugins.gradle.org/m2
   mavenCentral:
     url: https://repo1.maven.org/maven2
+
+plugins:
+  gradlePluginPortal:
+    com.diffplug.spotless: ${versions.plugins.spotless}
+    com.github.ben-manes.versions: ${versions.plugins.gradle.versions}
+  noUpdates:
+    me.omico.age.project: ${versions.plugins.age}
+    me.omico.age.spotless: ${versions.plugins.age}
+    org.jetbrains.kotlin.plugin.serialization: ${versions.kotlin}
 
 dependencies:
   mavenCentral:
