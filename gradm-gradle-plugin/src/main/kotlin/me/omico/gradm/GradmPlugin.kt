@@ -29,7 +29,7 @@ class GradmPlugin : Plugin<Settings> {
     override fun apply(target: Settings) {
         target.initializeGradmConfig()
         if (!hasGradmConfig) {
-            println("No gradm.yml found, skipping.")
+            debug { "No gradm.yml found, skipping." }
             return
         }
         GradmExtensionImpl.create(target)
