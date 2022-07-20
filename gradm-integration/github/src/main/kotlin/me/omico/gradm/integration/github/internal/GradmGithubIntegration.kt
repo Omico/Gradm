@@ -15,6 +15,7 @@
  */
 package me.omico.gradm.integration.github.internal
 
+import me.omico.gradm.info
 import me.omico.gradm.integration.github.GradmGithubIntegrationConfigs
 import me.omico.gradm.internal.YamlArray
 import me.omico.gradm.internal.YamlDocument
@@ -84,19 +85,19 @@ internal fun Path.parseGithubIntegration(versions: MutableFlatVersions) =
                 MatchType.PARTIAL -> configuration.regex.find(tag)
             }
             if (result == null) {
-                println("[${configuration.repository}]: Unable to match regex ${configuration.regex} with tag $tag")
+                info { "[${configuration.repository}]: Unable to match regex ${configuration.regex} with tag $tag" }
                 return@mapNotNull null
             }
             val key = "versions.${configuration.alias}"
             if (versions.contains(key)) {
-                println("[${configuration.repository}]: Duplicate with $key, skipping.")
+                info { "[${configuration.repository}]: Duplicate with $key, skipping." }
                 return@mapNotNull null
             }
             runCatching { result.groupValues[configuration.group] }
                 .fold(
                     onSuccess = { key to it },
                     onFailure = {
-                        println("[${configuration.repository}]: Unable to parse version from regex ${configuration.regex} with tag $tag.")
+                        info { "[${configuration.repository}]: Unable to parse version from regex ${configuration.regex} with tag $tag." }
                         null
                     },
                 )

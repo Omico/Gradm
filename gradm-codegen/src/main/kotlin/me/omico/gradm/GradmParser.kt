@@ -25,10 +25,8 @@ import me.omico.gradm.internal.path.RootProjectPaths
 object GradmParser {
 
     fun execute(): GradmResult {
-        debug {
-            "Debug mode enabled." +
-                "\n" + "Gradm version: $GRADM_VERSION"
-        }
+        debug { "Debug mode enabled." }
+        debug { "Gradm version is $GRADM_VERSION" }
         val document = RootProjectPaths.gradmConfig.asYamlDocument()
         formatGradmConfig(document)
         val versionsMeta = when {
