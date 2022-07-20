@@ -15,6 +15,8 @@
  */
 package me.omico.gradm
 
+import me.omico.gradm.internal.YamlDocument
+import me.omico.gradm.internal.maven.collectAllMetadata
 import me.omico.gradm.internal.sha1
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -22,6 +24,11 @@ import kotlin.io.path.readLines
 import kotlin.io.path.writeText
 
 typealias VersionsMeta = Map<String, String>
+
+val YamlDocument.localVersionsMeta: VersionsMeta
+    get() = runCatching(::collectAllMetadata)
+        .getOrDefault(emptyList())
+        .associate { it.module to it.latestVersion }
 
 fun VersionsMeta.store(versionsMeta: Path, versionsMetaHash: Path) {
     versionsMeta.writeText(versionsMetaContent)

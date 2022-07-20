@@ -15,6 +15,7 @@
  */
 package me.omico.gradm.internal.maven
 
+import me.omico.gradm.info
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.dependencies
@@ -26,6 +27,7 @@ import me.omico.gradm.internal.config.plugins
 import me.omico.gradm.internal.config.toDependency
 import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.utility.deleteDirectory
+import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 
@@ -54,7 +56,8 @@ internal sealed interface UpdateStatus {
     object UpdateNotFound : UpdateStatus
 }
 
-internal fun YamlDocument.storeAvailableUpdates(metadataList: List<MavenMetadata>) {
+internal fun YamlDocument.refreshAvailableUpdates() {
+    val metadataList = runCatching(::collectAllMetadata).getOrNull() ?: return
     val pluginsMavenUpdates = plugins
         .map { MavenUpdates(it.toDependency(), metadataList) }
         .filter { it.availableVersions.isNotEmpty() }
@@ -91,6 +94,7 @@ internal fun YamlDocument.storeAvailableUpdates(metadataList: List<MavenMetadata
     }
     GradmPaths.Updates.rootDir.createDirectories()
     GradmPaths.Updates.available.writeText(mavenUpdatesContent)
+    info { "Available updates found, see ${GradmPaths.Updates.available.absolutePathString()}" }
 }
 
 internal fun List<MavenUpdates>.toTreeMavenUpdates(): TreeMavenUpdates =

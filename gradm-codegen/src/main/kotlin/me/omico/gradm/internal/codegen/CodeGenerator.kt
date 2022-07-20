@@ -25,6 +25,7 @@ import me.omico.gradm.utility.clearDirectory
 import java.util.Locale
 
 internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
+    if (versionsMeta.isEmpty()) return
     RootProjectPaths.copyTo(GradmPaths.GeneratedDependenciesProject)
     generateGradleBuildScript()
     generateGradleSettingsScript()

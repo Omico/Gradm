@@ -24,7 +24,6 @@ object GradmPaths {
 
     object Metadata {
         val rootDir: Path by lazy { GradmPaths.rootDir.resolve("metadata") }
-        val versionsMeta: Path by lazy { rootDir.resolve("versions-meta.txt") }
         val versionsMetaHash: Path by lazy { rootDir.resolve("versions-meta.hash") }
     }
 
