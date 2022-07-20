@@ -16,6 +16,7 @@
 package me.omico.gradm.integration.github
 
 import me.omico.gradm.GradmConfigs
+import me.omico.gradm.info
 import me.omico.gradm.integration.GradmIntegration
 import me.omico.gradm.integration.github.internal.parseGithubIntegration
 import me.omico.gradm.internal.config.MutableFlatVersions
@@ -30,7 +31,7 @@ object GradmGithubIntegration : GradmIntegration() {
         if (!githubIntegrationConfig.exists()) return
         when {
             GradmConfigs.offline -> {
-                println("[Gradm]: Github integration config found, but the offline mode is enabled.")
+                info { "Github integration config found, but the offline mode is enabled." }
                 applyVersionsByCache(versions)
             }
             else -> applyVersionsIfNeeded(versions)
@@ -39,10 +40,10 @@ object GradmGithubIntegration : GradmIntegration() {
 
     private fun applyVersionsByCache(versions: MutableFlatVersions) =
         when (val versionsMeta = GradmGithubIntegrationConfigs.localVersionsMeta) {
-            null -> println("[Gradm]: versions-meta.txt for Github integration is not found, skipping.")
+            null -> info { "versions-meta.txt for Github integration is not found, skipping." }
             else -> versionsMeta.forEach { (key, value) ->
                 when {
-                    versions.containsKey(key) -> println("[Gradm]: $key is already in the versions, skipping.")
+                    versions.containsKey(key) -> info { "$key is already in the versions, skipping." }
                     else -> versions[key] = value
                 }
             }

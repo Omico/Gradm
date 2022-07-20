@@ -50,6 +50,10 @@ val gradmGeneratedDependenciesBuildDir: Path
 val gradmGeneratedDependenciesSourceDir: Path
     get() = GradmPaths.GeneratedDependenciesProject.sourceDir
 
+fun info(message: () -> String) {
+    println("[Gradm] ${message()}")
+}
+
 fun debug(message: () -> String) {
-    if (GradmConfigs.debug) println(message())
+    if (GradmConfigs.debug) info(message)
 }
