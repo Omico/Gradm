@@ -16,10 +16,12 @@
 package me.omico.gradm
 
 import me.omico.gradm.path.GradleRootProjectPaths
+import me.omico.gradm.path.buildSourceProjectPaths
 import me.omico.gradm.path.gitIgnoreFile
 import me.omico.gradm.path.gradmConfigFile
 import me.omico.gradm.path.gradmGeneratedDependenciesProjectPaths
 import me.omico.gradm.path.sourceFolder
+import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.readText
 
@@ -29,7 +31,13 @@ val hasGradmConfig: Boolean
     get() = gradmConfigFile.exists()
 
 val shouldIgnoredByGit: Boolean
-    get() = GradleRootProjectPaths.gitIgnoreFile.let { it.exists() && ".gradm" !in it.readText() }
+    get() = when (GradmConfigs.mode) {
+        GradmMode.Normal -> !GradleRootProjectPaths.gitIgnoreFile.hasIgnoredGradmGeneratedFolder
+        GradmMode.BuildSource -> !GradleRootProjectPaths.buildSourceProjectPaths.gitIgnoreFile.hasIgnoredGradmGeneratedFolder
+    }
+
+private val Path.hasIgnoredGradmGeneratedFolder: Boolean
+    get() = exists() && ".gradm" in readText()
 
 val isGradmGeneratedDependenciesSourcesExists: Boolean
     get() = gradmGeneratedDependenciesProjectPaths.sourceFolder.exists()

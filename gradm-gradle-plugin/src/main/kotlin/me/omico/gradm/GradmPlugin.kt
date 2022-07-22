@@ -28,6 +28,7 @@ import me.omico.gradm.path.updatesFolder
 import me.omico.gradm.task.GradmDependenciesAnalysis
 import me.omico.gradm.task.GradmUpdateDependencies
 import org.gradle.api.Plugin
+import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.Delete
@@ -48,12 +49,22 @@ class GradmPlugin : Plugin<Settings> {
     }
 
     private fun Settings.initializeGradmConfigs() {
-        GradmConfigs.rootDir = rootDir.toPath()
+        GradmConfigs.rootDir = when (rootDir.name) {
+            "buildSrc" -> rootDir.parentFile.toPath().also { GradmConfigs.mode = GradmMode.BuildSource }
+            else -> rootDir.toPath()
+        }
         GradmConfigs.offline = gradle.startParameter.isOffline
         GradmConfigs.requireRefresh = !isGradmGeneratedDependenciesSourcesExists
     }
 
     private fun Gradle.initializeGradm() {
+        when (GradmConfigs.mode) {
+            GradmMode.Normal -> initializeGradmForNormalMode()
+            GradmMode.BuildSource -> initializeGradmForBuildSourceMode()
+        }
+    }
+
+    private fun Gradle.initializeGradmForNormalMode() {
         settingsEvaluated {
             val result = initializeGradmFiles()
             includeBuild(gradmProjectPaths.generatedDependenciesFolder) {
@@ -75,29 +86,49 @@ class GradmPlugin : Plugin<Settings> {
                 "classpath",
                 "me.omico.gradm:gradm-generated-dependencies",
             )
-            tasks.register("gradmCheckGitIgnore") {
-                group = "gradm"
-                if (shouldIgnoredByGit) doLast {
-                    logger.warn("The generated directory \".gradm\" should be ignored by Git.")
-                }
+            registerGradmTasks()
+        }
+    }
+
+    private fun Gradle.initializeGradmForBuildSourceMode() {
+        settingsEvaluated {
+            include(":generated-dependencies")
+            project(":generated-dependencies").projectDir = gradmProjectPaths.generatedDependenciesFolder.toFile()
+        }
+        afterProject {
+            if (this != rootProject) return@afterProject
+            dependencies.add("implementation", project(":generated-dependencies"))
+            val result = initializeGradmFiles()
+            result.plugins.forEach { plugin ->
+                dependencies.add("implementation", "${plugin.module}:${plugin.version}")
             }
-            tasks.register("gradmUpdateDependencies", GradmUpdateDependencies::class) {
-                group = "gradm"
-                finalizedBy("gradmCheckGitIgnore")
+            registerGradmTasks()
+        }
+    }
+
+    private fun Project.registerGradmTasks() {
+        tasks.register("gradmCheckGitIgnore") {
+            group = "gradm"
+            if (shouldIgnoredByGit) doLast {
+                logger.warn("The generated directory \".gradm\" should be ignored by Git.")
             }
-            tasks.register("gradmDependenciesAnalysis", GradmDependenciesAnalysis::class) {
-                group = "gradm"
+        }
+        tasks.register("gradmUpdateDependencies", GradmUpdateDependencies::class) {
+            group = "gradm"
+            finalizedBy("gradmCheckGitIgnore")
+        }
+        tasks.register("gradmDependenciesAnalysis", GradmDependenciesAnalysis::class) {
+            group = "gradm"
+        }
+        tasks.register("gradmClean", Delete::class) {
+            group = "gradm"
+            with(gradmProjectPaths) {
+                delete(metadataFolder)
+                delete(updatesFolder)
             }
-            tasks.register("gradmClean", Delete::class) {
-                group = "gradm"
-                with(gradmProjectPaths) {
-                    delete(metadataFolder)
-                    delete(updatesFolder)
-                }
-                with(gradmGeneratedDependenciesProjectPaths) {
-                    delete(sourceFolder)
-                    delete(buildFolder)
-                }
+            with(gradmGeneratedDependenciesProjectPaths) {
+                delete(sourceFolder)
+                delete(buildFolder)
             }
         }
     }

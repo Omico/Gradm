@@ -24,6 +24,7 @@ interface GradmConfigs {
 
     companion object : GradmConfigs {
         lateinit var rootDir: Path
+        var mode: GradmMode = GradmMode.Normal
         var offline: Boolean = false
         var requireRefresh: Boolean = false
 
