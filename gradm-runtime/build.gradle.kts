@@ -9,7 +9,7 @@ withKotlinMavenPublication()
 kotlin {
     target.compilations.all {
         kotlinOptions {
-            jvmTarget = "11"
+            jvmTarget = "1.8"
         }
     }
     sourceSets["main"].kotlin.srcDir("$buildDir/generated/sources/kotlinTemplates")

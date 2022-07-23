@@ -27,14 +27,15 @@ import me.omico.gradm.internal.config.TreeVersions
 import me.omico.gradm.internal.config.toFlatVersions
 import me.omico.gradm.internal.config.toTreeVersions
 import me.omico.gradm.internal.config.versions
-import me.omico.gradm.internal.path.GradmPaths
+import me.omico.gradm.path.gradmGeneratedDependenciesProjectPaths
+import me.omico.gradm.path.sourceFolder
 
 internal fun generateVersionsSourceFile(document: YamlDocument) {
     val treeVersions = mutableMapOf<String, String>()
         .apply { putAll(document.versions.toFlatVersions()) }
         .apply { gradmIntegrations.forEach { it.applyVersions(this) } }
         .toTreeVersions()
-    treeVersions.toFileSpec().writeTo(GradmPaths.GeneratedDependenciesProject.sourceDir)
+    treeVersions.toFileSpec().writeTo(gradmGeneratedDependenciesProjectPaths.sourceFolder)
 }
 
 private fun TreeVersions.toFileSpec(): FileSpec =

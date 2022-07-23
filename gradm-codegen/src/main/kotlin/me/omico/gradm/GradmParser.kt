@@ -20,14 +20,14 @@ import me.omico.gradm.internal.codegen.generateDependenciesProjectFiles
 import me.omico.gradm.internal.config.format.formatGradmConfig
 import me.omico.gradm.internal.config.plugins
 import me.omico.gradm.internal.maven.refreshVersionsMeta
-import me.omico.gradm.internal.path.RootProjectPaths
+import me.omico.gradm.path.gradmConfigFile
 
 object GradmParser {
 
     fun execute(): GradmResult {
         debug { "Debug mode enabled." }
         debug { "Gradm version is $GRADM_VERSION" }
-        val document = RootProjectPaths.gradmConfig.asYamlDocument()
+        val document = gradmConfigFile.asYamlDocument()
         formatGradmConfig(document)
         val versionsMeta = refreshVersionsMeta(document)
         generateDependenciesProjectFiles(document, versionsMeta)

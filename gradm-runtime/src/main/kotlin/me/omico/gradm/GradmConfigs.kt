@@ -23,7 +23,7 @@ interface GradmConfigs {
     var indent: Int
 
     companion object : GradmConfigs {
-        lateinit var projectRootDir: Path
+        lateinit var rootDir: Path
         var offline: Boolean = false
         var updateDependencies: Boolean = false
 

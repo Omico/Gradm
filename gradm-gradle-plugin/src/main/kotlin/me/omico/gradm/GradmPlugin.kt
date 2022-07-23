@@ -18,6 +18,13 @@
 package me.omico.gradm
 
 import me.omico.gradm.internal.GradmExtensionImpl
+import me.omico.gradm.path.buildFolder
+import me.omico.gradm.path.generatedDependenciesFolder
+import me.omico.gradm.path.gradmGeneratedDependenciesProjectPaths
+import me.omico.gradm.path.gradmProjectPaths
+import me.omico.gradm.path.metadataFolder
+import me.omico.gradm.path.sourceFolder
+import me.omico.gradm.path.updatesFolder
 import me.omico.gradm.task.GradmDependenciesAnalysis
 import me.omico.gradm.task.GradmUpdateDependencies
 import org.gradle.api.Plugin
@@ -35,7 +42,7 @@ class GradmPlugin : Plugin<Settings> {
         }
         GradmExtensionImpl.create(target)
         val result = GradmParser.execute()
-        target.includeBuild(gradmGeneratedDependenciesDir) {
+        target.includeBuild(gradmProjectPaths.generatedDependenciesFolder) {
             dependencySubstitution {
                 substitute(module("me.omico.gradm:gradm-generated-dependencies")).using(project(":"))
             }
@@ -70,16 +77,20 @@ class GradmPlugin : Plugin<Settings> {
             }
             tasks.register("gradmClean", Delete::class) {
                 group = "gradm"
-                delete(gradmMetadataDir)
-                delete(gradmUpdatesDir)
-                delete(gradmGeneratedDependenciesSourceDir)
-                delete(gradmGeneratedDependenciesBuildDir)
+                with(gradmProjectPaths) {
+                    delete(metadataFolder)
+                    delete(updatesFolder)
+                }
+                with(gradmGeneratedDependenciesProjectPaths) {
+                    delete(sourceFolder)
+                    delete(buildFolder)
+                }
             }
         }
     }
 
     private fun Settings.initializeGradmConfig() {
-        GradmConfigs.projectRootDir = rootDir.toPath()
+        GradmConfigs.rootDir = rootDir.toPath()
         GradmConfigs.offline = gradle.startParameter.isOffline
         GradmConfigs.updateDependencies = !isGradmGeneratedDependenciesSourcesExists
     }

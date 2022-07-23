@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.internal.path
+package me.omico.gradm.path
 
-import me.omico.gradm.GradmConfigs
 import java.nio.file.Path
 
-object RootProjectPaths : ProjectPaths(
-    rootDir = GradmConfigs.projectRootDir,
-) {
-    val gradmConfig: Path by lazy { rootDir.resolve("gradm.yml") }
-    val gitIgnore: Path by lazy { rootDir.resolve(".gitignore") }
+interface ProjectPaths {
+    val path: Path
 }
+
+val ProjectPaths.gitIgnoreFile: Path
+    get() = path.resolve(".gitignore")

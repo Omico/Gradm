@@ -26,12 +26,13 @@ import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.Plugin
 import me.omico.gradm.internal.config.dependencies
-import me.omico.gradm.internal.config.metadataLocalPath
+import me.omico.gradm.internal.config.localMetadataFile
 import me.omico.gradm.internal.config.plugins
 import me.omico.gradm.internal.config.toDependency
-import me.omico.gradm.internal.path.GradmPaths
 import me.omico.gradm.internal.sha1
 import me.omico.gradm.localVersionsMeta
+import me.omico.gradm.path.gradmProjectPaths
+import me.omico.gradm.path.versionsMetaHashFile
 import me.omico.gradm.utility.deleteDirectory
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
@@ -51,7 +52,7 @@ internal fun YamlDocument.collectAllMetadataFiles(): List<Path> =
         .apply { addAll(plugins.map(Plugin::toDependency)) }
         .apply { addAll(dependencies) }
         .filterNot { it.noUpdates || it.noSpecificVersion }
-        .runCatching { map { it.metadataLocalPath(GradmPaths.Metadata.rootDir) } }
+        .runCatching { map { it.localMetadataFile } }
         .onFailure { it.printStackTrace() }
         .getOrDefault(emptyList())
 
@@ -79,14 +80,15 @@ private suspend fun Dependency.downloadMetadata() {
     }
     if (noSpecificVersion) {
         debug { "Skipping [$module] because noSpecificVersion is set to true" }
-        metadataLocalPath(GradmPaths.Metadata.rootDir).parent.deleteDirectory()
+        localMetadataFile.parent.deleteDirectory()
         return
     }
     debug { "Downloading metadata for [$module]" }
     val bytes = withContext(Dispatchers.IO) { metadataUrl.readBytes() }
-    val metadataPath = metadataLocalPath(GradmPaths.Metadata.rootDir)
-    metadataPath.parent.createDirectories()
-    metadataPath.writeBytes(bytes)
+    with(localMetadataFile) {
+        parent.createDirectories()
+        writeBytes(bytes)
+    }
 }
 
 private val YamlDocument.calculateMetadataHash
@@ -94,10 +96,10 @@ private val YamlDocument.calculateMetadataHash
 
 private fun YamlDocument.refreshHash() =
     calculateMetadataHash
-        ?.let { GradmPaths.Metadata.versionsMetaHash.writeText(it) }
-        ?: GradmPaths.Metadata.versionsMetaHash.deleteExisting()
+        ?.let { gradmProjectPaths.versionsMetaHashFile.writeText(it) }
+        ?: gradmProjectPaths.versionsMetaHashFile.deleteExisting()
 
 private val YamlDocument.requireUpdateMetadata: Boolean
     get() = GradmConfigs.updateDependencies ||
-        runCatching { GradmPaths.Metadata.versionsMetaHash.asVersionsMetaHash() != calculateMetadataHash }
+        runCatching { gradmProjectPaths.versionsMetaHashFile.asVersionsMetaHash() != calculateMetadataHash }
             .getOrDefault(GradmConfigs.updateDependencies)
