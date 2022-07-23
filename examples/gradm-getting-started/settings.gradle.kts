@@ -3,7 +3,7 @@
 import me.omico.gradm.configs
 import me.omico.gradm.gradm
 
-rootProject.name = "gradm-example"
+rootProject.name = "gradm-getting-started"
 
 pluginManagement {
     repositories {

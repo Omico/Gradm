@@ -17,7 +17,7 @@ The Gradle version catalogs is an excellent move for us. But it also brings a lo
 
 ## Getting Started
 
-For more information, please see the document in the [example project](../../tree/release/example).
+For more information, please see the document in the [example project](../../tree/release/examples/gradm-getting-started).
 
 ## License
 

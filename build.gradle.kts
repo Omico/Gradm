@@ -72,21 +72,18 @@ fun isNonStable(version: String): Boolean {
 val wrapper: Wrapper by tasks.named<Wrapper>("wrapper") {
     gradleVersion = versions.gradle
     distributionType = Wrapper.DistributionType.BIN
-    finalizedBy(updateGradleWrapper, updateGradleWrapperScripts)
+    finalizedBy(syncGradleWrapperForExamples)
 }
 
-val updateGradleWrapper by tasks.registering(Copy::class) {
-    from(
-        wrapper.jarFile,
-        wrapper.propertiesFile,
-    )
-    into("example/gradle/wrapper")
-}
-
-val updateGradleWrapperScripts by tasks.registering(Copy::class) {
-    from(
-        wrapper.scriptFile,
-        wrapper.batchScript,
-    )
-    into("example")
+val syncGradleWrapperForExamples by tasks.registering {
+    file("examples").list()?.forEach {
+        copy {
+            from(wrapper.scriptFile, wrapper.batchScript)
+            into("examples/$it")
+        }
+        copy {
+            from(wrapper.jarFile, wrapper.propertiesFile)
+            into("examples/$it/gradle/wrapper")
+        }
+    }
 }

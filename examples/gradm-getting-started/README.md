@@ -1,8 +1,6 @@
-# Gradm Example
+# Gradm Getting Started
 
 ![Maven Central](https://img.shields.io/maven-central/v/me.omico.gradm/gradm-runtime)
-
-## Getting Started
 
 In `settings.gradle.kts`, add the following:
 
