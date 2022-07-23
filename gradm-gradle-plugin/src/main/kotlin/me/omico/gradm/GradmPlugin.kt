@@ -35,7 +35,7 @@ import org.gradle.kotlin.dsl.register
 class GradmPlugin : Plugin<Settings> {
 
     override fun apply(target: Settings) {
-        target.initializeGradmConfig()
+        target.initializeGradmConfigs()
         if (!hasGradmConfig) {
             debug { "No gradm.yml found, skipping." }
             return
@@ -89,7 +89,7 @@ class GradmPlugin : Plugin<Settings> {
         }
     }
 
-    private fun Settings.initializeGradmConfig() {
+    private fun Settings.initializeGradmConfigs() {
         GradmConfigs.rootDir = rootDir.toPath()
         GradmConfigs.offline = gradle.startParameter.isOffline
         GradmConfigs.updateDependencies = !isGradmGeneratedDependenciesSourcesExists
