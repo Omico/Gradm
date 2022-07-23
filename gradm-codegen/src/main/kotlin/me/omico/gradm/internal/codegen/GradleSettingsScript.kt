@@ -17,7 +17,8 @@ package me.omico.gradm.internal.codegen
 
 import me.omico.gradm.GradmDevelopmentConfigs
 import me.omico.gradm.info
-import me.omico.gradm.internal.path.GradmPaths
+import me.omico.gradm.path.gradleSettingsScript
+import me.omico.gradm.path.gradmGeneratedDependenciesProjectPaths
 import kotlin.io.path.writeText
 
 internal fun generateGradleSettingsScript() {
@@ -26,7 +27,7 @@ internal fun generateGradleSettingsScript() {
         info { "Development: customGradleSettingsScript is blank, fallback to default." }
         content = gradleSettingsScriptContent
     }
-    GradmPaths.GeneratedDependenciesProject.gradleSettingsScript.writeText(content)
+    gradmGeneratedDependenciesProjectPaths.gradleSettingsScript.writeText(content)
 }
 
 private val gradleSettingsScriptContent: String =

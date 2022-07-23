@@ -20,15 +20,15 @@ import me.omico.gradm.info
 import me.omico.gradm.integration.GradmIntegration
 import me.omico.gradm.integration.github.internal.parseGithubIntegration
 import me.omico.gradm.internal.config.MutableFlatVersions
-import me.omico.gradm.projectRootDir
+import me.omico.gradm.path.GradleRootProjectPaths
 import kotlin.io.path.exists
 
 object GradmGithubIntegration : GradmIntegration() {
 
-    private val githubIntegrationConfig = projectRootDir.resolve("gradm.integration.github.yml")
+    private val githubIntegrationConfigFile = GradleRootProjectPaths.path.resolve("gradm.integration.github.yml")
 
     override fun applyVersions(versions: MutableFlatVersions) {
-        if (!githubIntegrationConfig.exists()) return
+        if (!githubIntegrationConfigFile.exists()) return
         when {
             GradmConfigs.offline -> {
                 info { "Github integration config found, but the offline mode is enabled." }
@@ -52,7 +52,7 @@ object GradmGithubIntegration : GradmIntegration() {
     private fun applyVersionsIfNeeded(versions: MutableFlatVersions) {
         when {
             GradmConfigs.updateDependencies || GradmGithubIntegrationConfigs.localVersionsMeta == null ->
-                githubIntegrationConfig.parseGithubIntegration(versions)
+                githubIntegrationConfigFile.parseGithubIntegration(versions)
             else -> applyVersionsByCache(versions)
         }
     }

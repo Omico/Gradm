@@ -17,14 +17,15 @@ package me.omico.gradm.integration.github
 
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.asVersionsMeta
-import me.omico.gradm.internal.path.GradmPaths
+import me.omico.gradm.path.gradmProjectPaths
+import me.omico.gradm.path.integrationFolder
 import me.omico.gradm.store
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 
 object GradmGithubIntegrationConfigs {
 
-    private val githubIntegrationDirPath: Path = GradmPaths.integrationDir.resolve("github")
+    private val githubIntegrationDirPath: Path = gradmProjectPaths.integrationFolder.resolve("github")
     private val versionsMetaPath: Path = githubIntegrationDirPath.resolve("versions-meta.txt")
     private val versionsMetaHashPath: Path = githubIntegrationDirPath.resolve("versions-meta.hash")
 

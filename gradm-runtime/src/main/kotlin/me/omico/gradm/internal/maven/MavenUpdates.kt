@@ -25,7 +25,9 @@ import me.omico.gradm.internal.config.format.node.sequence
 import me.omico.gradm.internal.config.format.yaml
 import me.omico.gradm.internal.config.plugins
 import me.omico.gradm.internal.config.toDependency
-import me.omico.gradm.internal.path.GradmPaths
+import me.omico.gradm.path.gradmProjectPaths
+import me.omico.gradm.path.updatesAvailableFile
+import me.omico.gradm.path.updatesFolder
 import me.omico.gradm.utility.deleteDirectory
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
@@ -67,7 +69,7 @@ internal fun YamlDocument.refreshAvailableUpdates() {
         .filter { it.availableVersions.isNotEmpty() }
         .toTreeMavenUpdates()
     if (pluginsMavenUpdates.isEmpty() && dependenciesMavenUpdates.isEmpty()) {
-        GradmPaths.Updates.rootDir.deleteDirectory()
+        gradmProjectPaths.updatesFolder.deleteDirectory()
         return
     }
     val mavenUpdatesContent = yaml {
@@ -92,9 +94,11 @@ internal fun YamlDocument.refreshAvailableUpdates() {
             }
         }
     }
-    GradmPaths.Updates.rootDir.createDirectories()
-    GradmPaths.Updates.available.writeText(mavenUpdatesContent)
-    info { "Available updates found, see ${GradmPaths.Updates.available.absolutePathString()}" }
+    with(gradmProjectPaths) {
+        updatesFolder.createDirectories()
+        updatesAvailableFile.writeText(mavenUpdatesContent)
+        info { "Available updates found, see ${updatesAvailableFile.absolutePathString()}" }
+    }
 }
 
 internal fun List<MavenUpdates>.toTreeMavenUpdates(): TreeMavenUpdates =

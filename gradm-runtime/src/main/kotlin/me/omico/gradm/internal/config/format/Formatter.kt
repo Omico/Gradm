@@ -24,13 +24,13 @@ import me.omico.gradm.internal.config.format.node.mapping
 import me.omico.gradm.internal.config.format.node.scalar
 import me.omico.gradm.internal.config.versionVariableRegex
 import me.omico.gradm.internal.find
-import me.omico.gradm.internal.path.RootProjectPaths
 import me.omico.gradm.internal.require
+import me.omico.gradm.path.gradmConfigFile
 import kotlin.io.path.writeText
 
 fun formatGradmConfig(document: YamlDocument) {
     if (!GradmConfigs.format) return
-    RootProjectPaths.gradmConfig.writeText(createFormattedGradmConfigContent(document))
+    gradmConfigFile.writeText(createFormattedGradmConfigContent(document))
 }
 
 fun createFormattedGradmConfigContent(document: YamlDocument): String =
