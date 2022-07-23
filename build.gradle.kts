@@ -32,19 +32,15 @@ allprojects {
             target("src/**/*.kt")
             ktlint()
                 .editorConfigOverride(defaultEditorConfig)
-            indentWithSpaces()
-            trimTrailingWhitespace()
-            endWithNewline()
-            licenseHeaderFile(rootProject.file("spotless/copyright.kt")).updateYearWithLatest(true).yearSeparator("-")
+            licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
+                .updateYearWithLatest(true)
+                .yearSeparator("-")
         }
         kotlinGradle {
             target("**/*.gradle.kts")
             targetExclude(".gradm/**/*.gradle.kts")
             ktlint()
                 .editorConfigOverride(defaultEditorConfig)
-            indentWithSpaces()
-            trimTrailingWhitespace()
-            endWithNewline()
         }
     }
 }
