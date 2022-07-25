@@ -20,7 +20,7 @@ import me.omico.gradm.GradmMode
 import java.nio.file.Path
 
 @JvmInline
-value class GradmProjectPaths(override val path: Path) : GradleRootProjectPaths
+value class GradmProjectPaths(override val path: Path) : ProjectPaths
 
 inline val gradmConfigFile: Path
     get() = GradleRootProjectPaths.path.resolve("gradm.yml")
