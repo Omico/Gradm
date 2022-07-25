@@ -100,6 +100,6 @@ private fun YamlDocument.refreshHash() =
         ?: gradmProjectPaths.versionsMetaHashFile.deleteExisting()
 
 private val YamlDocument.requireUpdateMetadata: Boolean
-    get() = GradmConfigs.updateDependencies ||
+    get() = GradmConfigs.requireRefresh ||
         runCatching { gradmProjectPaths.versionsMetaHashFile.asVersionsMetaHash() != calculateMetadataHash }
-            .getOrDefault(GradmConfigs.updateDependencies)
+            .getOrDefault(GradmConfigs.requireRefresh)

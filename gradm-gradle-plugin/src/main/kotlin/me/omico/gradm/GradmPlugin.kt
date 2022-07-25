@@ -29,6 +29,7 @@ import me.omico.gradm.task.GradmDependenciesAnalysis
 import me.omico.gradm.task.GradmUpdateDependencies
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
+import org.gradle.api.invocation.Gradle
 import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.register
 
@@ -40,14 +41,26 @@ class GradmPlugin : Plugin<Settings> {
             debug { "No gradm.yml found, skipping." }
             return
         }
+        debug { "Debug mode enabled." }
+        debug { "Gradm version is $GRADM_VERSION" }
         GradmExtensionImpl.create(target)
-        val result = GradmParser.execute()
-        target.includeBuild(gradmProjectPaths.generatedDependenciesFolder) {
-            dependencySubstitution {
-                substitute(module("me.omico.gradm:gradm-generated-dependencies")).using(project(":"))
+        target.gradle.initializeGradm()
+    }
+
+    private fun Settings.initializeGradmConfigs() {
+        GradmConfigs.rootDir = rootDir.toPath()
+        GradmConfigs.offline = gradle.startParameter.isOffline
+        GradmConfigs.requireRefresh = !isGradmGeneratedDependenciesSourcesExists
+    }
+
+    private fun Gradle.initializeGradm() {
+        settingsEvaluated {
+            val result = initializeGradmFiles()
+            includeBuild(gradmProjectPaths.generatedDependenciesFolder) {
+                dependencySubstitution {
+                    substitute(module("me.omico.gradm:gradm-generated-dependencies")).using(project(":"))
+                }
             }
-        }
-        target.gradle.settingsEvaluated {
             pluginManagement {
                 plugins {
                     result.plugins.forEach { plugin ->
@@ -56,7 +69,7 @@ class GradmPlugin : Plugin<Settings> {
                 }
             }
         }
-        target.gradle.beforeProject {
+        beforeProject {
             if (this != rootProject) return@beforeProject
             buildscript.dependencies.add(
                 "classpath",
@@ -87,11 +100,5 @@ class GradmPlugin : Plugin<Settings> {
                 }
             }
         }
-    }
-
-    private fun Settings.initializeGradmConfigs() {
-        GradmConfigs.rootDir = rootDir.toPath()
-        GradmConfigs.offline = gradle.startParameter.isOffline
-        GradmConfigs.updateDependencies = !isGradmGeneratedDependenciesSourcesExists
     }
 }
