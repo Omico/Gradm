@@ -16,21 +16,34 @@
 package me.omico.gradm
 
 import me.omico.gradm.internal.asYamlDocument
-import me.omico.gradm.internal.codegen.generateDependenciesProjectFiles
+import me.omico.gradm.internal.codegen.generateGradleFiles
+import me.omico.gradm.internal.codegen.generateSourceFiles
 import me.omico.gradm.internal.config.format.formatGradmConfig
 import me.omico.gradm.internal.config.plugins
 import me.omico.gradm.internal.maven.refreshVersionsMeta
 import me.omico.gradm.path.gradmConfigFile
 
-object GradmParser {
+private var isRefreshed: Boolean = false
 
-    fun execute(): GradmResult {
-        debug { "Debug mode enabled." }
-        debug { "Gradm version is $GRADM_VERSION" }
-        val document = gradmConfigFile.asYamlDocument()
-        formatGradmConfig(document)
-        val versionsMeta = refreshVersionsMeta(document)
-        generateDependenciesProjectFiles(document, versionsMeta)
-        return GradmResult(document.plugins)
+fun initializeGradmFiles(): GradmResult {
+    when {
+        GradmConfigs.requireRefresh -> refreshGradmSourceFiles().also { isRefreshed = true }
+        else -> {
+            formatGradmConfig()
+            generateGradleFiles()
+        }
     }
+    return GradmResult(gradmConfigFile.asYamlDocument().plugins)
+}
+
+fun refreshGradmSourceFiles() {
+    if (isRefreshed) {
+        isRefreshed = false
+        return
+    }
+    GradmConfigs.requireRefresh = true
+    formatGradmConfig()
+    generateGradleFiles()
+    val document = gradmConfigFile.asYamlDocument()
+    generateSourceFiles(document, refreshVersionsMeta(document))
 }

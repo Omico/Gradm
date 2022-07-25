@@ -18,6 +18,7 @@ package me.omico.gradm.internal.config.format
 import me.omico.gradm.GradmConfigs
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.YamlObject
+import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.config.fixedUrl
 import me.omico.gradm.internal.config.format.node.MappingNodeScope
 import me.omico.gradm.internal.config.format.node.mapping
@@ -26,15 +27,17 @@ import me.omico.gradm.internal.config.versionVariableRegex
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.require
 import me.omico.gradm.path.gradmConfigFile
+import java.nio.file.Path
 import kotlin.io.path.writeText
 
-fun formatGradmConfig(document: YamlDocument) {
+fun formatGradmConfig() {
     if (!GradmConfigs.format) return
-    gradmConfigFile.writeText(createFormattedGradmConfigContent(document))
+    gradmConfigFile.writeText(gradmConfigFile.createFormattedGradmConfigContent())
 }
 
-fun createFormattedGradmConfigContent(document: YamlDocument): String =
+fun Path.createFormattedGradmConfigContent(): String =
     yaml(formatterScope = FormatterScope(indent = GradmConfigs.indent)) {
+        val document = asYamlDocument()
         versionsMapping(document)
         repositoriesSequence(document)
         pluginsMapping(document)

@@ -25,7 +25,7 @@ interface GradmConfigs {
     companion object : GradmConfigs {
         lateinit var rootDir: Path
         var offline: Boolean = false
-        var updateDependencies: Boolean = false
+        var requireRefresh: Boolean = false
 
         override var debug: Boolean = false
         override var format: Boolean = false

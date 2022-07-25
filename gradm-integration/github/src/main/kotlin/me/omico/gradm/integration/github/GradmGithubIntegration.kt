@@ -51,7 +51,7 @@ object GradmGithubIntegration : GradmIntegration() {
 
     private fun applyVersionsIfNeeded(versions: MutableFlatVersions) {
         when {
-            GradmConfigs.updateDependencies || GradmGithubIntegrationConfigs.localVersionsMeta == null ->
+            GradmConfigs.requireRefresh || GradmGithubIntegrationConfigs.localVersionsMeta == null ->
                 githubIntegrationConfigFile.parseGithubIntegration(versions)
             else -> applyVersionsByCache(versions)
         }

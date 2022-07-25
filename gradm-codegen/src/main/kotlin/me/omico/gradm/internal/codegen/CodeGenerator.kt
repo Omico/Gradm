@@ -25,11 +25,14 @@ import me.omico.gradm.utility.clearDirectory
 import java.util.Locale
 import kotlin.io.path.createDirectories
 
-internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
-    if (versionsMeta.isEmpty()) return
+internal fun generateGradleFiles() {
     gradmGeneratedDependenciesProjectPaths.path.createDirectories()
     generateGradleBuildScript()
     generateGradleSettingsScript()
+}
+
+internal fun generateSourceFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
+    if (versionsMeta.isEmpty()) return
     gradmGeneratedDependenciesProjectPaths.sourceFolder.clearDirectory()
     generateDependenciesSourceFiles(document, versionsMeta)
     generateVersionsSourceFile(document)
