@@ -15,6 +15,8 @@
  */
 package me.omico.gradm.path
 
+import me.omico.gradm.GradmConfigs
+import me.omico.gradm.GradmMode
 import java.nio.file.Path
 
 @JvmInline
@@ -24,7 +26,12 @@ inline val gradmConfigFile: Path
     get() = GradleRootProjectPaths.path.resolve("gradm.yml")
 
 inline val gradmProjectPaths: GradmProjectPaths
-    get() = GradmProjectPaths(path = GradleRootProjectPaths.path.resolve(".gradm"))
+    get() = GradmProjectPaths(
+        path = when (GradmConfigs.mode) {
+            GradmMode.Normal -> GradleRootProjectPaths.path.resolve(".gradm")
+            GradmMode.BuildSource -> GradleRootProjectPaths.buildSourceFolder.resolve(".gradm")
+        },
+    )
 
 inline val GradmProjectPaths.integrationFolder: Path
     get() = path.resolve("integration")

@@ -47,6 +47,7 @@ data class Plugin(
 ) {
     val group: String by lazy { id }
     val artifact: String by lazy { "$id.gradle.plugin" }
+    val module: String by lazy { "$group:$artifact" }
 }
 
 internal fun Plugin.toDependency(): Dependency =
