@@ -30,24 +30,6 @@ interface GradleRootProjectPaths : GradleProjectPaths {
     }
 }
 
-inline val GradleRootProjectPaths.gradleFolder: Path
-    get() = path.resolve("gradle")
-
-inline val GradleRootProjectPaths.gradleWrapperFolder: Path
-    get() = gradleFolder.resolve("wrapper")
-
-inline val GradleRootProjectPaths.gradleWrapperJar: Path
-    get() = gradleWrapperFolder.resolve("gradle-wrapper.jar")
-
-inline val GradleRootProjectPaths.gradleWrapperProperties: Path
-    get() = gradleWrapperFolder.resolve("gradle-wrapper.properties")
-
-inline val GradleRootProjectPaths.gradleWrapperScript: Path
-    get() = path.resolve("gradlew")
-
-inline val GradleRootProjectPaths.gradleWrapperBatScript: Path
-    get() = path.resolve("gradlew.bat")
-
 inline val GradleProjectPaths.gradleBuildScript: Path
     get() = path.resolve("build.gradle.kts")
 
