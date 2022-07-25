@@ -16,8 +16,6 @@
 package me.omico.gradm.path
 
 import java.nio.file.Path
-import kotlin.io.path.copyTo
-import kotlin.io.path.createDirectories
 
 @JvmInline
 value class GradmProjectPaths(override val path: Path) : GradleRootProjectPaths
@@ -48,13 +46,3 @@ inline val GradmProjectPaths.updatesFolder: Path
 
 inline val GradmProjectPaths.updatesAvailableFile: Path
     get() = updatesFolder.resolve("available.yml")
-
-fun GradleRootProjectPaths.copyGradleWrapperToGradmFolder() {
-    val gradmProjectPaths = GradmProjectPaths(path = path.resolve(".gradm"))
-    gradmProjectPaths.path.createDirectories()
-    gradmProjectPaths.gradleWrapperFolder.createDirectories()
-    gradleWrapperJar.copyTo(gradmProjectPaths.gradleWrapperJar, overwrite = true)
-    gradleWrapperProperties.copyTo(gradmProjectPaths.gradleWrapperProperties, overwrite = true)
-    gradleWrapperScript.copyTo(gradmProjectPaths.gradleWrapperScript, overwrite = true)
-    gradleWrapperBatScript.copyTo(gradmProjectPaths.gradleWrapperBatScript, overwrite = true)
-}

@@ -19,8 +19,6 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
-import me.omico.gradm.path.GradleRootProjectPaths
-import me.omico.gradm.path.copyGradleWrapperToGradmFolder
 import me.omico.gradm.path.gradmGeneratedDependenciesProjectPaths
 import me.omico.gradm.path.sourceFolder
 import me.omico.gradm.utility.clearDirectory
@@ -30,7 +28,6 @@ import kotlin.io.path.createDirectories
 internal fun generateDependenciesProjectFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
     if (versionsMeta.isEmpty()) return
     gradmGeneratedDependenciesProjectPaths.path.createDirectories()
-    GradleRootProjectPaths.copyGradleWrapperToGradmFolder()
     generateGradleBuildScript()
     generateGradleSettingsScript()
     gradmGeneratedDependenciesProjectPaths.sourceFolder.clearDirectory()
