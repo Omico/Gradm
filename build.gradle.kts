@@ -1,7 +1,8 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import me.omico.age.spotless.configureSpotless
-import me.omico.age.spotless.defaultEditorConfig
 import me.omico.age.spotless.intelliJIDEARunConfiguration
+import me.omico.age.spotless.kotlin
+import me.omico.age.spotless.kotlinGradle
 
 plugins {
     id("com.diffplug.spotless")
@@ -28,20 +29,13 @@ allprojects {
     )
     configureSpotless {
         intelliJIDEARunConfiguration()
-        kotlin {
-            target("src/**/*.kt")
-            ktlint()
-                .editorConfigOverride(defaultEditorConfig)
-            licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
-                .updateYearWithLatest(true)
-                .yearSeparator("-")
-        }
-        kotlinGradle {
-            target("**/*.gradle.kts")
-            targetExclude(".gradm/**/*.gradle.kts")
-            ktlint()
-                .editorConfigOverride(defaultEditorConfig)
-        }
+        kotlin(
+            licenseHeaderConfig = {
+                updateYearWithLatest(true)
+                yearSeparator("-")
+            },
+        )
+        kotlinGradle(excludeTargets = listOf(".gradm/**/*.gradle.kts"))
     }
 }
 
