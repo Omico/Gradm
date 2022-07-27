@@ -49,6 +49,12 @@ dependencyResolutionManagement {
     }
 }
 
+buildCache {
+    local {
+        removeUnusedEntriesAfterDays = 1
+    }
+}
+
 include(":gradm-codegen")
 include(":gradm-gradle-plugin")
 include(":gradm-integration")
