@@ -15,6 +15,12 @@ pluginManagement {
     }
 }
 
+buildscript {
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor(0, TimeUnit.SECONDS)
+    }
+}
+
 plugins {
     id("com.gradle.enterprise") version "3.10.3"
     id("me.omico.gradm") version "2.2.0"
