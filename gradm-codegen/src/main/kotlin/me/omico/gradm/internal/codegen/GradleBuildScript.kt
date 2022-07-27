@@ -68,7 +68,7 @@ private val gradleBuildScriptContent: String =
     |    implementation("me.omico.gradm:gradm-runtime:$GRADM_VERSION")
     |}
     |
-    """.trimMargin().replace("\n", System.lineSeparator())
+    """.trimMargin()
 
 val gradleBuildScriptContentForBuildSource: String =
     """
@@ -87,4 +87,4 @@ val gradleBuildScriptContentForBuildSource: String =
     |    implementation("me.omico.gradm:gradm-runtime:$GRADM_VERSION")
     |}
     |
-    """.trimMargin().replace("\n", System.lineSeparator())
+    """.trimMargin()

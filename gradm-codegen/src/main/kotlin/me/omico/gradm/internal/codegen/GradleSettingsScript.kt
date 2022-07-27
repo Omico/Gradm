@@ -41,4 +41,4 @@ private val gradleSettingsScriptContent: String =
 
     rootProject.name = "generated-dependencies"
 
-    """.trimIndent().replace("\n", System.lineSeparator())
+    """.trimIndent()
