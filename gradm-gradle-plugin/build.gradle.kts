@@ -4,7 +4,7 @@ plugins {
     `kotlin-dsl`
 }
 
-withKotlinMavenPublication(mavenPublicationName = "gradlePlugin")
+withKotlinMavenPublication()
 
 kotlin {
     target.compilations.all {
