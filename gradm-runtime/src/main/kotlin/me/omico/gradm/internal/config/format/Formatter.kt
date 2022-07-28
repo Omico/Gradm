@@ -49,7 +49,7 @@ fun YamlScope.versionsMapping(document: YamlDocument) {
     mapping("versions") {
         recursiveVersionsMapping(versions)
     }
-    newline()
+    requireNewline = true
 }
 
 fun MappingNodeScope.recursiveVersionsMapping(versions: Map<*, *>): Unit =
@@ -64,6 +64,7 @@ fun MappingNodeScope.recursiveVersionsMapping(versions: Map<*, *>): Unit =
 @Suppress("UNCHECKED_CAST")
 fun YamlScope.repositoriesSequence(document: YamlDocument) {
     val repositories = document.find<YamlObject>("repositories") ?: return
+    newlineIfNeeded()
     mapping("repositories") {
         repositories.toSortedMap().forEach { (id, attributes) ->
             attributes as YamlObject
@@ -75,12 +76,13 @@ fun YamlScope.repositoriesSequence(document: YamlDocument) {
             }
         }
     }
-    newline()
+    requireNewline = true
 }
 
 @Suppress("UNCHECKED_CAST")
 fun YamlScope.pluginsMapping(document: YamlDocument) {
     val plugins = document.find<YamlObject>("plugins") ?: return
+    newlineIfNeeded()
     mapping("plugins") {
         plugins.toSortedMap().forEach { (repository, plugins) ->
             mapping(repository) {
@@ -92,12 +94,13 @@ fun YamlScope.pluginsMapping(document: YamlDocument) {
             }
         }
     }
-    newline()
+    requireNewline = true
 }
 
 @Suppress("UNCHECKED_CAST")
 fun YamlScope.dependenciesMapping(document: YamlDocument) {
     val dependencies = document.find<YamlObject>("dependencies") ?: return
+    newlineIfNeeded()
     mapping("dependencies") {
         dependencies.toSortedMap().forEach { (repository, groups) ->
             mapping(repository) {
@@ -127,3 +130,11 @@ private fun decideVersionStyle(version: String): ScalarStyle =
         versionVariableRegex.matches(version) -> ScalarStyle.Plain
         else -> ScalarStyle.DoubleQuoted
     }
+
+private var requireNewline: Boolean = false
+
+private fun YamlScope.newlineIfNeeded() {
+    if (!requireNewline) return
+    newline()
+    requireNewline = false
+}
