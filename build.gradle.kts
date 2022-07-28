@@ -30,6 +30,7 @@ allprojects {
     configureSpotless {
         intelliJIDEARunConfiguration()
         kotlin(
+            licenseHeaderFile = rootProject.file("spotless/copyright.kt"),
             licenseHeaderConfig = {
                 updateYearWithLatest(true)
                 yearSeparator("-")
