@@ -38,6 +38,10 @@ class GradmPlugin : Plugin<Settings> {
 
     override fun apply(target: Settings) {
         GradmExtensionImpl.create(target)
+        if (!GradmConfigs.enabled) {
+            debug { "Gradm is manually disabled, skipping." }
+            return
+        }
         target.initializeGradmConfigs()
         if (!hasGradmConfig) {
             debug { "No gradm.yml found, skipping." }

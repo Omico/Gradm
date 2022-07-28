@@ -18,6 +18,7 @@ package me.omico.gradm
 import java.nio.file.Path
 
 interface GradmConfigs {
+    var enabled: Boolean
     var debug: Boolean
     var format: Boolean
     var indent: Int
@@ -28,6 +29,7 @@ interface GradmConfigs {
         var offline: Boolean = false
         var requireRefresh: Boolean = false
 
+        override var enabled: Boolean = true
         override var debug: Boolean = false
         override var format: Boolean = false
         override var indent: Int = 2
