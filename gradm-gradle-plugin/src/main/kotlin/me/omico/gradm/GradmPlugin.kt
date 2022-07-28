@@ -37,6 +37,7 @@ import org.gradle.kotlin.dsl.register
 class GradmPlugin : Plugin<Settings> {
 
     override fun apply(target: Settings) {
+        GradmExtensionImpl.create(target)
         target.initializeGradmConfigs()
         if (!hasGradmConfig) {
             debug { "No gradm.yml found, skipping." }
@@ -44,7 +45,6 @@ class GradmPlugin : Plugin<Settings> {
         }
         debug { "Debug mode enabled." }
         debug { "Gradm version is $GRADM_VERSION" }
-        GradmExtensionImpl.create(target)
         target.gradle.initializeGradm()
     }
 
