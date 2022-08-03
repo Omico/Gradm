@@ -27,8 +27,6 @@ gradlePlugin {
 }
 
 dependencies {
-    compileOnly(gradleApi())
-    compileOnly(gradleKotlinDsl())
     implementation(projects.gradmCodegen)
     implementation(projects.gradmIntegration)
     implementation(projects.gradmRuntime)
