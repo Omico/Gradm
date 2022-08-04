@@ -1,8 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-import me.omico.gradm.configs
-import me.omico.gradm.gradm
-
 rootProject.name = "gradm-getting-started"
 
 pluginManagement {
