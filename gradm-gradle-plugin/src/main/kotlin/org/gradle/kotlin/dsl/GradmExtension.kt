@@ -18,32 +18,25 @@
     "unused",
 )
 
-package me.omico.gradm
+package org.gradle.kotlin.dsl
 
+import me.omico.gradm.GradmConfigs
+import me.omico.gradm.GradmDevelopmentConfigs
+import me.omico.gradm.GradmExtension
+import org.gradle.api.Action
 import org.gradle.api.initialization.Settings
-import org.gradle.kotlin.dsl.configure
 
-// TODO mark as error once 2.3 is released
-// TODO remove this once 2.4 is released
+val Settings.gradm: GradmExtension
+    get() = extensions.getByType()
 
-private const val deprecatedMessage =
-    "You should remove \"import me.omico.gradm\". " +
-        "It will be marked as an error in 2.4 and removed in 2.5."
+fun Settings.gradm(configure: Action<GradmExtension>) = extensions.configure("gradm", configure)
 
-@Deprecated(
-    message = deprecatedMessage,
-    level = DeprecationLevel.HIDDEN,
-)
-fun Settings.gradm(block: GradmExtension.() -> Unit) = extensions.configure(block)
+val GradmExtension.configs: GradmConfigs
+    get() = GradmConfigs
 
-@Deprecated(
-    message = deprecatedMessage,
-    level = DeprecationLevel.HIDDEN,
-)
 fun GradmExtension.configs(block: GradmConfigs.() -> Unit) = GradmConfigs.let(block)
 
-@Deprecated(
-    message = deprecatedMessage,
-    level = DeprecationLevel.HIDDEN,
-)
+val GradmExtension.development: GradmDevelopmentConfigs
+    get() = GradmDevelopmentConfigs
+
 fun GradmConfigs.development(block: GradmDevelopmentConfigs.() -> Unit) = GradmDevelopmentConfigs.let(block)
