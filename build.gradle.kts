@@ -14,7 +14,7 @@ plugins {
 
 allprojects {
     group = "me.omico.gradm"
-    version = "2.3.0-SNAPSHOT"
+    version = "2.3.0"
     configureDependencyUpdates(
         pinnedGroups = mapOf(
             "org.gradle.kotlin.kotlin-dsl" to versions.kotlin.dsl,
