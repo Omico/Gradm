@@ -10,9 +10,14 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="spotlessApply" />
+          <option value="clean" />
           <option value="build" />
-          <option value="publishToMavenLocal" />
+          <option value=":gradm-runtime:publishToMavenLocal" />
+          <option value=":gradm-codegen:publishToMavenLocal" />
+          <option value=":gradm-integration:api:publishToMavenLocal" />
+          <option value=":gradm-integration:github:publishToMavenLocal" />
+          <option value=":gradm-integration:publishToMavenLocal" />
+          <option value=":gradm-gradle-plugin:publishGradlePluginPublicationToMavenLocal" />
         </list>
       </option>
       <option name="vmOptions" />
@@ -20,6 +25,8 @@
     <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
     <DebugAllEnabled>false</DebugAllEnabled>
-    <method v="2" />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="gradm.spotlessApply" run_configuration_type="GradleRunConfiguration" />
+    </method>
   </configuration>
 </component>

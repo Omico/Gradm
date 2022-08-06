@@ -1,13 +1,11 @@
-import me.omico.age.dsl.withJavaSourcesJar
-import me.omico.age.dsl.withJavadocJar
+import me.omico.age.dsl.withKotlinMavenPublication
 
 plugins {
     `kotlin-dsl`
     `maven-publish`
 }
 
-withJavaSourcesJar()
-withJavadocJar()
+withKotlinMavenPublication(mavenPublicationName = "gradlePlugin")
 
 kotlin {
     target.compilations.all {
