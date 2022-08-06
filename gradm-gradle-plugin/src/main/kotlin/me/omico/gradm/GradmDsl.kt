@@ -23,27 +23,27 @@ package me.omico.gradm
 import org.gradle.api.initialization.Settings
 import org.gradle.kotlin.dsl.configure
 
-// TODO mark as error once 2.3 is released
 // TODO remove this once 2.4 is released
 
-private const val deprecatedMessage =
-    "You should remove \"import me.omico.gradm\". " +
-        "It will be marked as an error in 2.4 and removed in 2.5."
+private const val deprecatedMessage = "You should remove \"import me.omico.gradm\"."
 
 @Deprecated(
     message = deprecatedMessage,
-    level = DeprecationLevel.HIDDEN,
+    replaceWith = ReplaceWith(""),
+    level = DeprecationLevel.ERROR,
 )
 fun Settings.gradm(block: GradmExtension.() -> Unit) = extensions.configure(block)
 
 @Deprecated(
     message = deprecatedMessage,
-    level = DeprecationLevel.HIDDEN,
+    replaceWith = ReplaceWith(""),
+    level = DeprecationLevel.ERROR,
 )
 fun GradmExtension.configs(block: GradmConfigs.() -> Unit) = GradmConfigs.let(block)
 
 @Deprecated(
     message = deprecatedMessage,
-    level = DeprecationLevel.HIDDEN,
+    replaceWith = ReplaceWith(""),
+    level = DeprecationLevel.ERROR,
 )
 fun GradmConfigs.development(block: GradmDevelopmentConfigs.() -> Unit) = GradmDevelopmentConfigs.let(block)
