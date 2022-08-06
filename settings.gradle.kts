@@ -1,7 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-import me.omico.gradm.configs
-import me.omico.gradm.gradm
 import org.gradle.api.internal.FeaturePreviews
 
 rootProject.name = "Gradm"
