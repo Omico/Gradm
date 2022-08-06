@@ -1,5 +1,4 @@
 versions:
-  gradle: "7.5"
   kotlin: "1.6.21"
   kotlin.dsl: "2.3.3"
   kotlinpoet: "1.11.0"
@@ -9,7 +8,7 @@ versions:
   plugins:
     age: "1.0.0-SNAPSHOT"
     gradle.versions: "0.42.0"
-    spotless: "6.8.0"
+    spotless: "6.9.0"
   snakeyaml: "2.3"
 
 repositories:

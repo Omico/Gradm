@@ -23,7 +23,7 @@ buildscript {
 
 plugins {
     id("com.gradle.enterprise") version "3.10.3"
-    id("me.omico.gradm") version "2.2.0"
+    id("me.omico.gradm") version "2.3.0"
 }
 
 gradleEnterprise {
