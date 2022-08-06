@@ -3,6 +3,7 @@ import me.omico.age.spotless.configureSpotless
 import me.omico.age.spotless.intelliJIDEARunConfiguration
 import me.omico.age.spotless.kotlin
 import me.omico.age.spotless.kotlinGradle
+import java.nio.file.Files
 
 plugins {
     id("com.diffplug.spotless")
@@ -81,4 +82,22 @@ val syncGradleWrapperForExamples by tasks.registering {
             into("examples/$it/gradle/wrapper")
         }
     }
+}
+
+val syncGradmVersionForExamples by tasks.registering {
+    Files.walk(file("examples").toPath())
+        .filter { it.endsWith("settings.gradle.kts") }
+        .map { it.toFile() }
+        .forEach { file ->
+            buildString {
+                file.readLines().forEach {
+                    val line = when {
+                        it.startsWith("    id(\"me.omico.gradm\") version") ->
+                            "    id(\"me.omico.gradm\") version \"${version}\""
+                        else -> it
+                    }
+                    appendLine(line)
+                }
+            }.let { file.writeText(it) }
+        }
 }
