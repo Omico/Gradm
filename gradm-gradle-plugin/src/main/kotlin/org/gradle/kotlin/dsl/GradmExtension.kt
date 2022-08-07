@@ -36,7 +36,7 @@ val GradmExtension.configs: GradmConfigs
 
 fun GradmExtension.configs(block: GradmConfigs.() -> Unit) = GradmConfigs.let(block)
 
-val GradmExtension.development: GradmDevelopmentConfigs
+val GradmConfigs.development: GradmDevelopmentConfigs
     get() = GradmDevelopmentConfigs
 
 fun GradmConfigs.development(block: GradmDevelopmentConfigs.() -> Unit) = GradmDevelopmentConfigs.let(block)
