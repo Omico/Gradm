@@ -25,6 +25,7 @@ import me.omico.gradm.path.gradmProjectPaths
 import me.omico.gradm.path.metadataFolder
 import me.omico.gradm.path.sourceFolder
 import me.omico.gradm.path.updatesFolder
+import me.omico.gradm.path.versionsMetaHashFile
 import me.omico.gradm.task.GradmDependenciesAnalysis
 import me.omico.gradm.task.GradmUpdateDependencies
 import org.gradle.api.Plugin
@@ -69,11 +70,12 @@ class GradmPlugin : Plugin<Settings> {
     }
 
     private fun Gradle.initializeGradmForNormalMode() {
+        val hash = gradmProjectPaths.versionsMetaHashFile.asVersionsMetaHash() ?: "null"
         settingsEvaluated {
             val result = initializeGradmFiles()
             includeBuild(gradmProjectPaths.generatedDependenciesFolder) {
                 dependencySubstitution {
-                    substitute(module("me.omico.gradm:gradm-generated-dependencies")).using(project(":"))
+                    substitute(module("me.omico.gradm:gradm-generated-dependencies:$hash")).using(project(":"))
                 }
             }
             pluginManagement {
@@ -88,7 +90,7 @@ class GradmPlugin : Plugin<Settings> {
             if (this != rootProject) return@beforeProject
             buildscript.dependencies.add(
                 "classpath",
-                "me.omico.gradm:gradm-generated-dependencies",
+                "me.omico.gradm:gradm-generated-dependencies:$hash",
             )
             registerGradmTasks()
         }
