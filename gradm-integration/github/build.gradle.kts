@@ -1,11 +1,8 @@
-import me.omico.age.dsl.withKotlinMavenPublication
-
 plugins {
     `embedded-kotlin`
     kotlin("plugin.serialization")
+    id("gradm.build-logic.maven-publish")
 }
-
-withKotlinMavenPublication()
 
 kotlin {
     target.compilations.all {
