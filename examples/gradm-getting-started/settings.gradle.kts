@@ -4,7 +4,11 @@ rootProject.name = "gradm-getting-started"
 
 pluginManagement {
     repositories {
-        gradlePluginPortal()
+        gradlePluginPortal {
+            content {
+                excludeGroupByRegex("me.omico.*") // reduce build time
+            }
+        }
         google()
         mavenCentral()
         mavenLocal()

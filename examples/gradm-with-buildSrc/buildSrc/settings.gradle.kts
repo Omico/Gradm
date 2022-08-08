@@ -2,7 +2,11 @@
 
 pluginManagement {
     repositories {
-        gradlePluginPortal()
+        gradlePluginPortal {
+            content {
+                excludeGroupByRegex("me.omico.*") // reduce build time
+            }
+        }
         mavenCentral()
         mavenLocal()
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
@@ -12,7 +16,11 @@ pluginManagement {
 dependencyResolutionManagement {
     repositories {
         google()
-        gradlePluginPortal()
+        gradlePluginPortal {
+            content {
+                excludeGroupByRegex("me.omico.*") // reduce build time
+            }
+        }
         mavenCentral()
         mavenLocal()
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
