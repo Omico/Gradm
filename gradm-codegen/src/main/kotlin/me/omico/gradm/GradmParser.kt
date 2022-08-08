@@ -15,9 +15,11 @@
  */
 package me.omico.gradm
 
+import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.codegen.generateGradleFiles
 import me.omico.gradm.internal.codegen.generateSourceFiles
+import me.omico.gradm.internal.config.Plugin
 import me.omico.gradm.internal.config.format.formatGradmConfig
 import me.omico.gradm.internal.config.plugins
 import me.omico.gradm.internal.maven.refreshVersionsMeta
@@ -25,7 +27,7 @@ import me.omico.gradm.path.gradmConfigFile
 
 private var isRefreshed: Boolean = false
 
-fun initializeGradmFiles(): GradmResult {
+fun initializeGradmFiles() {
     when {
         GradmConfigs.requireRefresh -> refreshGradmSourceFiles().also { isRefreshed = true }
         else -> {
@@ -33,7 +35,6 @@ fun initializeGradmFiles(): GradmResult {
             generateGradleFiles()
         }
     }
-    return GradmResult(gradmConfigFile.asYamlDocument().plugins)
 }
 
 fun refreshGradmSourceFiles() {
@@ -44,6 +45,12 @@ fun refreshGradmSourceFiles() {
     GradmConfigs.requireRefresh = true
     formatGradmConfig()
     generateGradleFiles()
-    val document = gradmConfigFile.asYamlDocument()
+    val document = gradmDocument
     generateSourceFiles(document, refreshVersionsMeta(document))
 }
+
+val gradmDeclaredPlugins: List<Plugin>
+    get() = gradmDocument.plugins
+
+val gradmDocument: YamlDocument
+    get() = gradmConfigFile.asYamlDocument()
