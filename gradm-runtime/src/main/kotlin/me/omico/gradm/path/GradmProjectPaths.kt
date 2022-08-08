@@ -28,7 +28,10 @@ inline val gradmConfigFile: Path
 inline val gradmProjectPaths: GradmProjectPaths
     get() = GradmProjectPaths(
         path = when (GradmConfigs.mode) {
-            GradmMode.Normal -> GradleRootProjectPaths.path.resolve(".gradm")
+            GradmMode.Normal,
+            GradmMode.BuildLogic,
+            GradmMode.Unspecified,
+            -> GradleRootProjectPaths.path.resolve(".gradm")
             GradmMode.BuildSource -> GradleRootProjectPaths.buildSourceFolder.resolve(".gradm")
         },
     )

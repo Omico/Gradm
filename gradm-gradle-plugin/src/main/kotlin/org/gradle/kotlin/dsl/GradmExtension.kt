@@ -23,6 +23,7 @@ package org.gradle.kotlin.dsl
 import me.omico.gradm.GradmConfigs
 import me.omico.gradm.GradmDevelopmentConfigs
 import me.omico.gradm.GradmExtension
+import me.omico.gradm.GradmMode
 import org.gradle.api.Action
 import org.gradle.api.initialization.Settings
 
@@ -40,3 +41,7 @@ val GradmConfigs.development: GradmDevelopmentConfigs
     get() = GradmDevelopmentConfigs
 
 fun GradmConfigs.development(block: GradmDevelopmentConfigs.() -> Unit) = GradmDevelopmentConfigs.let(block)
+
+typealias Normal = GradmMode.Normal
+typealias BuildSource = GradmMode.BuildSource
+typealias BuildLogic = GradmMode.BuildLogic

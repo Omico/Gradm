@@ -15,7 +15,11 @@
  */
 package me.omico.gradm
 
-sealed interface GradmMode {
-    object Normal : GradmMode
-    object BuildSource : GradmMode
+sealed class GradmMode {
+    object Normal : GradmMode()
+    object BuildSource : GradmMode()
+    object BuildLogic : GradmMode()
+    object Unspecified : GradmMode()
+
+    override fun toString(): String = javaClass.simpleName
 }

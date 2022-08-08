@@ -1,0 +1,175 @@
+versions:
+  accompanist: "0.24.13-rc"
+  androidx:
+    activity: "1.6.0-alpha05"
+    annotation: "1.4.0"
+    appcompat: "1.6.0-alpha05"
+    browser: "1.4.0"
+    camera: "1.2.0-alpha03"
+    compose: "1.3.0-alpha01"
+    compose.compiler: "1.2.0"
+    compose.material3: "1.0.0-alpha14"
+    core: "1.9.0-alpha05"
+    datastore: "1.0.0"
+    lifecycle: "2.6.0-alpha01"
+    navigation: "2.5.0"
+  kotlin: "1.7.10"
+  material: "1.7.0-alpha03"
+  okhttp: "5.0.0-alpha.10"
+  omico:
+    cloudflare: "1.0.0-SNAPSHOT"
+    cryonics: "1.0.0-SNAPSHOT"
+  plugins:
+    age: "1.0.0-SNAPSHOT"
+    android: "7.2.1"
+    spotless: "6.8.0"
+
+repositories:
+  customNoUpdates:
+    noUpdates: true
+  google:
+    url: https://maven.google.com
+  gradlePluginPortal:
+    url: https://plugins.gradle.org/m2
+  mavenCentral:
+    url: https://repo1.maven.org/maven2
+
+plugins:
+  customNoUpdates:
+    me.omico.age.project: ${versions.plugins.age}
+    me.omico.age.spotless: ${versions.plugins.age}
+  gradlePluginPortal:
+    com.diffplug.spotless: ${versions.plugins.spotless}
+  noUpdates:
+    com.android.library: ${versions.plugins.android}
+    org.jetbrains.kotlin.android: ${versions.kotlin}
+
+dependencies:
+  customNoUpdates:
+    me.omico.cryonics:
+      cryonics:
+        alias: omico.cryonics
+        version: ${versions.omico.cryonics}
+  google:
+    androidx.activity:
+      activity-compose:
+        alias: androidx.activity.compose
+        version: ${versions.androidx.activity}
+      activity-ktx:
+        alias: androidx.activity.ktx
+        version: ${versions.androidx.activity}
+    androidx.annotation:
+      annotation:
+        alias: androidx.annotation
+        version: ${versions.androidx.annotation}
+    androidx.appcompat:
+      appcompat:
+        alias: androidx.appcompat
+        version: ${versions.androidx.appcompat}
+    androidx.camera:
+      camera-camera2:
+        alias: androidx.camera.camera2
+        version: ${versions.androidx.camera}
+      camera-lifecycle:
+        alias: androidx.camera.lifecycle
+        version: ${versions.androidx.camera}
+      camera-view:
+        alias: androidx.camera.view
+        version: ${versions.androidx.camera}
+    androidx.compose.animation:
+      animation:
+        alias: androidx.compose.animation
+        version: ${versions.androidx.compose}
+    androidx.compose.foundation:
+      foundation:
+        alias: androidx.compose.foundation
+        version: ${versions.androidx.compose}
+    androidx.compose.material:
+      material:
+        alias: androidx.compose.material
+        version: ${versions.androidx.compose}
+      material-icons-core:
+        alias: androidx.compose.material.icons.core
+        version: ${versions.androidx.compose}
+      material-icons-extended:
+        alias: androidx.compose.material.icons.extended
+        version: ${versions.androidx.compose}
+    androidx.compose.material3:
+      material3:
+        alias: androidx.compose.material3
+        version: ${versions.androidx.compose.material3}
+    androidx.compose.runtime:
+      runtime:
+        alias: androidx.compose.runtime
+        version: ${versions.androidx.compose}
+    androidx.compose.ui:
+      ui:
+        alias: androidx.compose.ui
+        version: ${versions.androidx.compose}
+      ui-tooling:
+        alias: androidx.compose.ui.tooling
+        version: ${versions.androidx.compose}
+      ui-tooling-preview:
+        alias: androidx.compose.ui.tooling.preview
+        version: ${versions.androidx.compose}
+      ui-util:
+        alias: androidx.compose.ui.util
+        version: ${versions.androidx.compose}
+    androidx.core:
+      core-ktx:
+        alias: androidx.core.ktx
+        version: ${versions.androidx.core}
+    androidx.datastore:
+      datastore:
+        alias: androidx.datastore
+        version: ${versions.androidx.datastore}
+    androidx.lifecycle:
+      lifecycle-runtime-ktx:
+        alias: androidx.lifecycle.runtime.ktx
+        version: ${versions.androidx.lifecycle}
+    androidx.navigation:
+      navigation-compose:
+        alias: androidx.navigation.compose
+        version: ${versions.androidx.navigation}
+      navigation-runtime-ktx:
+        alias: androidx.navigation.runtime.ktx
+        version: ${versions.androidx.navigation}
+    com.google.android.material:
+      material:
+        alias: material
+        version: ${versions.material}
+  mavenCentral:
+    com.google.accompanist:
+      accompanist-insets:
+        alias: accompanist.insets
+        version: ${versions.accompanist}
+      accompanist-insets-ui:
+        alias: accompanist.insetsUi
+        version: ${versions.accompanist}
+      accompanist-permissions:
+        alias: accompanist.permissions
+        version: ${versions.accompanist}
+      accompanist-swiperefresh:
+        alias: accompanist.swipeRefresh
+        version: ${versions.accompanist}
+      accompanist-systemuicontroller:
+        alias: accompanist.systemUiController
+        version: ${versions.accompanist}
+    com.squareup.okhttp3:
+      logging-interceptor:
+        alias: okhttp.interceptor.logging
+        noSpecificVersion: true
+      okhttp:
+        alias: okhttp
+        noSpecificVersion: true
+      okhttp-bom:
+        alias: okhttp.bom
+        version: ${versions.okhttp}
+      okhttp-dnsoverhttps:
+        alias: okhttp.dnsOverHttps
+        noSpecificVersion: true
+  noUpdates:
+    me.omico.cloudflare.api:
+      cloudflare-dns:
+        alias: omico.cloudflare.dns
+        version: ${versions.omico.cloudflare}

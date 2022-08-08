@@ -32,8 +32,11 @@ val hasGradmConfig: Boolean
 
 val shouldIgnoredByGit: Boolean
     get() = when (GradmConfigs.mode) {
-        GradmMode.Normal -> !GradleRootProjectPaths.gitIgnoreFile.hasIgnoredGradmGeneratedFolder
+        GradmMode.Normal,
+        GradmMode.BuildLogic,
+        -> !GradleRootProjectPaths.gitIgnoreFile.hasIgnoredGradmGeneratedFolder
         GradmMode.BuildSource -> !GradleRootProjectPaths.buildSourceProjectPaths.gitIgnoreFile.hasIgnoredGradmGeneratedFolder
+        GradmMode.Unspecified -> false
     }
 
 private val Path.hasIgnoredGradmGeneratedFolder: Boolean

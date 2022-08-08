@@ -24,7 +24,14 @@ import me.omico.gradm.path.gradmGeneratedDependenciesProjectPaths
 import kotlin.io.path.writeText
 
 internal fun generateGradleSettingsScript() {
-    if (GradmConfigs.mode == GradmMode.BuildSource) return
+    when (GradmConfigs.mode) {
+        GradmMode.Unspecified,
+        GradmMode.BuildSource,
+        -> return
+        GradmMode.Normal,
+        GradmMode.BuildLogic,
+        -> Unit
+    }
     var content = GradmDevelopmentConfigs.customGradleSettingsScript ?: gradleSettingsScriptContent
     if (content.isBlank()) {
         info { "Development: customGradleSettingsScript is blank, fallback to default." }
