@@ -22,8 +22,8 @@ dependencies {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.8.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation(platform(junit.bom))
+    testImplementation(junit.jupiter)
 }
 
 tasks.test {

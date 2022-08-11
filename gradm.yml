@@ -1,4 +1,5 @@
 versions:
+  junit: "5.9.0"
   kotlin: "1.6.21"
   kotlin.dsl: "2.3.3"
   kotlinpoet: "1.11.0"
@@ -8,7 +9,7 @@ versions:
   plugins:
     age: "1.0.0-SNAPSHOT"
     gradle.versions: "0.42.0"
-    spotless: "6.9.0"
+    spotless: "6.9.1"
   snakeyaml: "2.3"
 
 repositories:
@@ -39,6 +40,14 @@ dependencies:
       kotlinx-serialization-json:
         alias: libs.kotlinx.serialization
         version: ${versions.kotlinx.serialization}
+    org.junit:
+      junit-bom:
+        alias: junit.bom
+        version: ${versions.junit}
+    org.junit.jupiter:
+      junit-jupiter:
+        alias: junit.jupiter
+        noSpecificVersion: true
     org.snakeyaml:
       snakeyaml-engine:
         alias: libs.snakeyaml
