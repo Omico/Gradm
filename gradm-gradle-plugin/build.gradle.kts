@@ -1,11 +1,7 @@
-import me.omico.age.dsl.withKotlinMavenPublication
-
 plugins {
     `kotlin-dsl`
-    `maven-publish`
+    id("gradm.build-logic.maven-publish")
 }
-
-withKotlinMavenPublication(mavenPublicationName = "gradlePlugin")
 
 kotlin {
     target.compilations.all {
@@ -16,6 +12,7 @@ kotlin {
 }
 
 gradlePlugin {
+    isAutomatedPublishing = false
     plugins {
         register("gradm") {
             id = "me.omico.gradm"

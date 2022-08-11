@@ -5,6 +5,7 @@ import org.gradle.api.internal.FeaturePreviews
 rootProject.name = "Gradm"
 
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         gradlePluginPortal {
             content {

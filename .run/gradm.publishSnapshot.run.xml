@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="gradm.publishToMavenLocal" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="gradm.publishSnapshot" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -13,7 +13,7 @@
           <option value="spotlessApply" />
           <option value="clean" />
           <option value="build" />
-          <option value="publishToMavenLocal" />
+          <option value="publish" />
         </list>
       </option>
       <option name="vmOptions" />
