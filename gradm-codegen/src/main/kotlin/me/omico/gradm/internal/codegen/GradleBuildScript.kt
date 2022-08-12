@@ -28,6 +28,8 @@ internal fun generateGradleBuildScript() {
     val defaultContent = when (GradmConfigs.mode) {
         GradmMode.Normal -> gradleBuildScriptContent
         GradmMode.BuildSource -> gradleBuildScriptContentForBuildSource
+        GradmMode.BuildLogic -> gradleBuildScriptContentForBuildLogic
+        GradmMode.Unspecified -> return
     }
     var content = GradmDevelopmentConfigs.customGradleBuildScript ?: defaultContent
     if (content.isBlank()) {
@@ -88,3 +90,5 @@ val gradleBuildScriptContentForBuildSource: String =
     |}
     |
     """.trimMargin()
+
+val gradleBuildScriptContentForBuildLogic: String = gradleBuildScriptContentForBuildSource

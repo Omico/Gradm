@@ -50,6 +50,7 @@ class GradmPlugin : Plugin<Settings> {
         }
         debug { "Debug mode enabled." }
         debug { "Gradm version is $GRADM_VERSION" }
+        debug { "mode: ${GradmConfigs.mode}" }
         target.gradle.initializeGradm()
     }
 
@@ -57,6 +58,12 @@ class GradmPlugin : Plugin<Settings> {
         GradmConfigs.rootDir = when (rootDir.name) {
             "buildSrc" -> rootDir.parentFile.toPath().also { GradmConfigs.mode = GradmMode.BuildSource }
             else -> rootDir.toPath()
+        }
+        if (GradmConfigs.mode == GradmMode.Unspecified) {
+            GradmConfigs.mode = when (gradle.parent) {
+                null -> GradmMode.Normal
+                else -> GradmMode.BuildLogic
+            }
         }
         GradmConfigs.offline = gradle.startParameter.isOffline
         GradmConfigs.requireRefresh = !isGradmGeneratedDependenciesSourcesExists
@@ -66,6 +73,8 @@ class GradmPlugin : Plugin<Settings> {
         when (GradmConfigs.mode) {
             GradmMode.Normal -> initializeGradmForNormalMode()
             GradmMode.BuildSource -> initializeGradmForBuildSourceMode()
+            GradmMode.BuildLogic -> initializeGradmForBuildLogicMode()
+            GradmMode.Unspecified -> return
         }
     }
 
@@ -104,6 +113,22 @@ class GradmPlugin : Plugin<Settings> {
         }
         afterProject {
             if (this != rootProject) return@afterProject
+            dependencies.add("implementation", project(":generated-dependencies"))
+            gradmDeclaredPlugins.forEach { plugin ->
+                dependencies.add("implementation", "${plugin.module}:${plugin.version}")
+            }
+            registerGradmTasks()
+        }
+    }
+
+    private fun Gradle.initializeGradmForBuildLogicMode() {
+        settingsEvaluated {
+            initializeGradmFiles()
+            include(":generated-dependencies")
+            project(":generated-dependencies").projectDir = gradmProjectPaths.generatedDependenciesFolder.toFile()
+        }
+        afterProject {
+            if (name == "generated-dependencies") return@afterProject
             dependencies.add("implementation", project(":generated-dependencies"))
             gradmDeclaredPlugins.forEach { plugin ->
                 dependencies.add("implementation", "${plugin.module}:${plugin.version}")

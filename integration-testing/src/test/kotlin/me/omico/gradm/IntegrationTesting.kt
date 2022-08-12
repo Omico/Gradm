@@ -16,9 +16,12 @@
 package me.omico.gradm
 
 import me.omico.gradm.utility.gradleCommand
+import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import org.junit.jupiter.api.assertDoesNotThrow
 
+@TestMethodOrder(MethodOrderer.MethodName::class)
 class IntegrationTesting {
 
     @Test
@@ -29,6 +32,20 @@ class IntegrationTesting {
                 arguments = arrayOf(
                     "spotlessApply", "clean",
                     "gradmClean", "gradmUpdateDependencies",
+                    "build", "--no-daemon",
+                ),
+            )
+        }
+    }
+
+    @Test
+    fun `test examples gradm-with-build-logic`() {
+        assertDoesNotThrow {
+            gradleCommand(
+                directory = "../examples/gradm-with-build-logic",
+                arguments = arrayOf(
+                    "spotlessApply", "clean",
+                    ":build-logic:gradmClean", ":build-logic:gradmUpdateDependencies",
                     "build", "--no-daemon",
                 ),
             )
