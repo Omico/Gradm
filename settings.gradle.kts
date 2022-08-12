@@ -64,6 +64,7 @@ include(":gradm-integration")
 include(":gradm-integration:api")
 include(":gradm-integration:github")
 include(":gradm-runtime")
+include(":integration-testing")
 
 FeaturePreviews.Feature.values()
     .filter { it.isActive }
