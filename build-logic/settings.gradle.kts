@@ -1,12 +1,34 @@
 @file:Suppress("UnstableApiUsage")
 
-rootProject.name = "build-logic"
+import org.gradle.api.internal.FeaturePreviews
 
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+rootProject.name = "build-logic"
 
 pluginManagement {
     repositories {
-        gradlePluginPortal()
+        google()
+        gradlePluginPortal {
+            content {
+                excludeGroupByRegex("me.omico.*") // reduce build time
+            }
+        }
+        mavenCentral()
+        mavenLocal()
+        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        google()
+        gradlePluginPortal {
+            content {
+                excludeGroupByRegex("me.omico.*") // reduce build time
+            }
+        }
+        mavenCentral()
+        mavenLocal()
+        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
     }
 }
 
@@ -16,16 +38,24 @@ buildscript {
     }
 }
 
-dependencyResolutionManagement {
-    repositories {
-        gradlePluginPortal()
-    }
-}
-
 buildCache {
     local {
         removeUnusedEntriesAfterDays = 1
     }
 }
 
+plugins {
+    id("me.omico.gradm") version "2.4.0"
+}
+
+gradm {
+    configs {
+        format = true
+    }
+}
+
 include(":convention")
+
+FeaturePreviews.Feature.values()
+    .filter { it.isActive }
+    .forEach { enableFeaturePreview(it.name) }

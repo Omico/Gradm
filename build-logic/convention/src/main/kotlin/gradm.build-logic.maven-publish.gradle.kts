@@ -1,3 +1,6 @@
+import me.omico.age.dsl.property
+import me.omico.age.dsl.sensitiveProperty
+
 plugins {
     `maven-publish`
     signing

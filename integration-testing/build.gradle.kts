@@ -12,8 +12,8 @@ kotlin {
 }
 
 dependencies {
-    testImplementation(platform(junit.bom))
-    testImplementation(junit.jupiter)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
 }
 
 tasks.test {

@@ -26,7 +26,6 @@ buildscript {
 
 plugins {
     id("com.gradle.enterprise") version "3.10.3"
-    id("me.omico.gradm") version "2.3.0"
 }
 
 gradleEnterprise {
@@ -34,12 +33,6 @@ gradleEnterprise {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
         termsOfServiceAgree = "yes"
         publishAlwaysIf(!gradle.startParameter.isOffline)
-    }
-}
-
-gradm {
-    configs {
-        format = true
     }
 }
 

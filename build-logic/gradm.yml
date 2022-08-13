@@ -42,11 +42,11 @@ dependencies:
         version: ${versions.kotlinx.serialization}
     org.junit:
       junit-bom:
-        alias: junit.bom
+        alias: libs.junit.bom
         version: ${versions.junit}
     org.junit.jupiter:
       junit-jupiter:
-        alias: junit.jupiter
+        alias: libs.junit.jupiter
         noSpecificVersion: true
     org.snakeyaml:
       snakeyaml-engine:
