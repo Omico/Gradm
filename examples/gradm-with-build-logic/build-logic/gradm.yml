@@ -21,8 +21,8 @@ versions:
     cryonics: "1.0.0-SNAPSHOT"
   plugins:
     age: "1.0.0-SNAPSHOT"
-    android: "7.2.1"
-    spotless: "6.8.0"
+    android: "7.2.2"
+    spotless: "6.9.1"
 
 repositories:
   customNoUpdates:

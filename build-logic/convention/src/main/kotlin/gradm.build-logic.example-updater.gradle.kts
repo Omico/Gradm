@@ -4,7 +4,7 @@ plugins {
     id("gradm.build-logic.root-project.base")
 }
 
-val syncGradmVersionForExamples by tasks.registering {
+val syncExamples by tasks.registering {
     Files.walk(file("examples").toPath())
         .filter { it.endsWith("settings.gradle.kts") }
         .map { it.toFile() }
@@ -20,4 +20,11 @@ val syncGradmVersionForExamples by tasks.registering {
                 }
             }.let { file.writeText(it) }
         }
+    listOf(
+        "examples/gradm-getting-started/gradm.yml",
+        "examples/gradm-with-build-logic/build-logic/gradm.yml",
+        "examples/gradm-with-buildSrc/gradm.yml",
+    ).forEach {
+        file("examples/template/gradm.yml").copyTo(file(it), overwrite = true)
+    }
 }
