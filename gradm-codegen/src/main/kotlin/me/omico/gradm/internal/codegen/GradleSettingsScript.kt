@@ -27,9 +27,9 @@ internal fun generateGradleSettingsScript() {
     when (GradmConfigs.mode) {
         GradmMode.Unspecified,
         GradmMode.BuildSource,
+        GradmMode.BuildLogic,
         -> return
         GradmMode.Normal,
-        GradmMode.BuildLogic,
         -> Unit
     }
     var content = GradmDevelopmentConfigs.customGradleSettingsScript ?: gradleSettingsScriptContent
