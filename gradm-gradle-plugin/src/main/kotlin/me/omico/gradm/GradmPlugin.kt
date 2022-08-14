@@ -128,12 +128,15 @@ class GradmPlugin : Plugin<Settings> {
             project(":generated-dependencies").projectDir = gradmProjectPaths.generatedDependenciesFolder.toFile()
         }
         afterProject {
+            if (this == rootProject) {
+                registerGradmTasks()
+                return@afterProject
+            }
             if (name == "generated-dependencies") return@afterProject
             dependencies.add("implementation", project(":generated-dependencies"))
             gradmDeclaredPlugins.forEach { plugin ->
                 dependencies.add("implementation", "${plugin.module}:${plugin.version}")
             }
-            registerGradmTasks()
         }
     }
 
