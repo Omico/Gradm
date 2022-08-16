@@ -30,7 +30,7 @@ tasks.test {
 val copyKotlinTemplates by tasks.registering(Copy::class) {
     from("src/main/kotlinTemplates")
     into("$buildDir/generated/sources/kotlinTemplates")
-    expand("version" to version)
+    expand("version" to properties["PROJECT_VERSION"])
     filteringCharset = Charsets.UTF_8.toString()
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }

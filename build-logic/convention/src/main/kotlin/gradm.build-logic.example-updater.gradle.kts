@@ -13,7 +13,7 @@ val syncExamples by tasks.registering {
                 file.readLines().forEach {
                     val line = when {
                         it.startsWith("    id(\"me.omico.gradm\") version") ->
-                            "    id(\"me.omico.gradm\") version \"${version}\""
+                            "    id(\"me.omico.gradm\") version \"${properties["PROJECT_VERSION"]}\""
                         else -> it
                     }
                     appendLine(line)

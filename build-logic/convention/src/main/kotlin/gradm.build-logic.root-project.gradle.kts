@@ -8,11 +8,6 @@ plugins {
     id("gradm.build-logic.spotless")
 }
 
-allprojects {
-    group = "me.omico.gradm"
-    version = "2.5.0-SNAPSHOT"
-}
-
 val wrapper: Wrapper by tasks.named<Wrapper>("wrapper") {
     gradleVersion = versions.gradle
     distributionType = Wrapper.DistributionType.BIN
