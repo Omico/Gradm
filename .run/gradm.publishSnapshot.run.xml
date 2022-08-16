@@ -12,7 +12,6 @@
         <list>
           <option value="spotlessApply" />
           <option value="clean" />
-          <option value="build" />
           <option value="publish" />
         </list>
       </option>
