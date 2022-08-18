@@ -21,6 +21,7 @@ import me.omico.gradm.GradmMode
 import me.omico.gradm.info
 import me.omico.gradm.path.gradleSettingsScript
 import me.omico.gradm.path.gradmGeneratedDependenciesProjectPaths
+import kotlin.io.path.deleteIfExists
 import kotlin.io.path.writeText
 
 internal fun generateGradleSettingsScript() {
@@ -28,7 +29,10 @@ internal fun generateGradleSettingsScript() {
         GradmMode.Unspecified,
         GradmMode.BuildSource,
         GradmMode.BuildLogic,
-        -> return
+        -> {
+            gradmGeneratedDependenciesProjectPaths.gradleSettingsScript.deleteIfExists()
+            return
+        }
         GradmMode.Normal,
         -> Unit
     }
