@@ -5,6 +5,7 @@ plugins {
     id("gradm.build-logic.root-project.base")
     id("gradm.build-logic.dependency-updates")
     id("gradm.build-logic.example-updater")
+    id("gradm.build-logic.gradle-enterprise-updater")
     id("gradm.build-logic.spotless")
 }
 
