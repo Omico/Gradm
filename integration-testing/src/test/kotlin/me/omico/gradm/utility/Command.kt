@@ -22,23 +22,32 @@ fun command(
     directory: String = ".",
     vararg commands: String,
 ) {
-    val process = ProcessBuilder(shell.name, *shell.arguments, *commands)
+    val process = ProcessBuilder(shell.name, *shell.arguments, commands.joinToString(" "))
         .directory(File(directory))
         .redirectOutput(ProcessBuilder.Redirect.PIPE)
         .redirectError(ProcessBuilder.Redirect.PIPE)
         .start()
     process.inputStream.bufferedReader().forEachLine { println(it) }
-    if (process.exitValue() == 0) return
+    if (process.waitFor() == 0) return
     val errorOutput = process.errorStream.bufferedReader().readText()
     throw RuntimeException("Command failed: $errorOutput")
 }
 
-fun gradleCommand(directory: String, vararg arguments: String) =
-    command(
-        shell = decideShell(),
-        directory = directory,
-        commands = arrayOf("gradlew", *arguments),
-    )
+fun gradleCommand(
+    shell: Shell = decideShell(),
+    directory: String,
+    vararg arguments: String,
+) = command(
+    shell = shell,
+    directory = directory,
+    commands = arrayOf(
+        when (shell) {
+            Shell.Cmd -> "gradlew.bat"
+            else -> "./gradlew"
+        },
+        *arguments,
+    ),
+)
 
 private fun decideShell(): Shell = when {
     System.getProperty("os.name").startsWith("Windows") -> Shell.Cmd
