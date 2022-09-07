@@ -151,7 +151,7 @@ class GradmPlugin : Plugin<Settings> {
             group = "gradm"
             finalizedBy("gradmCheckGitIgnore")
         }
-        tasks.register("gradmDependenciesAnalysis", GradmDependenciesAnalysis::class) {
+        if (GradmConfigs.mode == GradmMode.Normal) tasks.register("gradmDependenciesAnalysis", GradmDependenciesAnalysis::class) {
             group = "gradm"
         }
         tasks.register("gradmClean", Delete::class) {
