@@ -9,8 +9,8 @@ versions:
   plugins:
     age: "1.0.0-SNAPSHOT"
     gradle.versions: "0.42.0"
-    spotless: "6.9.1"
-  snakeyaml: "2.3"
+    spotless: "6.10.0"
+  snakeyaml: "2.4"
 
 repositories:
   gradlePluginPortal:
