@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="gradm.syncGradmVersionForExamples" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="gradm.syncExamples" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$" />
@@ -11,7 +11,7 @@
       <option name="taskNames">
         <list>
           <option value="spotlessApply" />
-          <option value="syncGradmVersionForExamples" />
+          <option value="syncExamples" />
         </list>
       </option>
       <option name="vmOptions" />
