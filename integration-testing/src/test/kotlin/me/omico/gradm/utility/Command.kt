@@ -15,41 +15,32 @@
  */
 package me.omico.gradm.utility
 
+import java.io.BufferedReader
 import java.io.File
+import java.nio.charset.Charset
 
 fun command(
+    charset: Charset = Charsets.UTF_8,
     shell: Shell,
     directory: String = ".",
+    environment: MutableMap<String, String>.() -> Unit = {},
+    onInput: (BufferedReader) -> Unit = { it.forEachLine(::println) },
+    onError: (BufferedReader) -> Unit = { throw CommandExecutionException("Command failed: ${it.readText()}") },
     vararg commands: String,
 ) {
-    val process = ProcessBuilder(shell.name, *shell.arguments, commands.joinToString(" "))
+    val combinedCommands = ArrayList<String>()
+        .apply { add(shell.name) }
+        .apply { addAll(shell.arguments) }
+        .apply { add(commands.joinToString(" ")) }
+    val process = ProcessBuilder(combinedCommands)
         .directory(File(directory))
+        .apply { environment().apply(environment) }
         .redirectOutput(ProcessBuilder.Redirect.PIPE)
         .redirectError(ProcessBuilder.Redirect.PIPE)
         .start()
-    process.inputStream.bufferedReader().forEachLine { println(it) }
+    process.inputStream.bufferedReader(charset).apply(onInput)
     if (process.waitFor() == 0) return
-    val errorOutput = process.errorStream.bufferedReader().readText()
-    throw RuntimeException("Command failed: $errorOutput")
+    process.errorStream.bufferedReader(charset).apply(onError)
 }
 
-fun gradleCommand(
-    shell: Shell = decideShell(),
-    directory: String,
-    vararg arguments: String,
-) = command(
-    shell = shell,
-    directory = directory,
-    commands = arrayOf(
-        when (shell) {
-            Shell.Cmd -> "gradlew.bat"
-            else -> "./gradlew"
-        },
-        *arguments,
-    ),
-)
-
-private fun decideShell(): Shell = when {
-    System.getProperty("os.name").startsWith("Windows") -> Shell.Cmd
-    else -> Shell.Bash
-}
+class CommandExecutionException(message: String) : RuntimeException(message)

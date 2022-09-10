@@ -15,13 +15,23 @@
  */
 package me.omico.gradm.utility
 
-sealed class Shell(
-    val name: String,
-    vararg val arguments: String,
+fun gradleCommand(
+    shell: Shell = shell(),
+    directory: String,
+    vararg arguments: String,
+) = command(
+    shell = shell,
+    directory = directory,
+    commands = arrayOf(
+        when (shell) {
+            Cmd -> ".\\gradlew.bat"
+            else -> "./gradlew"
+        },
+        *arguments,
+    ),
 )
 
-object PowerShell : Shell("powershell", "-Command")
-
-object Cmd : Shell("cmd", "/c")
-
-object Bash : Shell("bash", "-c")
+private fun shell(): Shell = when {
+    System.getProperty("os.name").startsWith("Windows") -> Cmd
+    else -> Bash
+}
