@@ -1,0 +1,7 @@
+complexity:
+  LongParameterList:
+    ignoreDefaultParameters: true
+
+style:
+  MaxLineLength:
+    active: false
