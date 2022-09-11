@@ -1,30 +1,24 @@
 @file:Suppress("UnstableApiUsage")
 
-import org.gradle.api.internal.FeaturePreviews
 
 rootProject.name = "Gradm"
 
 pluginManagement {
     includeBuild("build-logic")
+    includeBuild("build-logic/initialization")
     repositories {
         gradlePluginPortal {
             content {
-                excludeGroupByRegex("me.omico.*") // reduce build time
+                includeGroupByRegex("com.gradle.*")
             }
         }
         mavenCentral()
-        mavenLocal()
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
     }
 }
 
-buildscript {
-    configurations.all {
-        resolutionStrategy.cacheChangingModulesFor(0, TimeUnit.SECONDS)
-    }
-}
-
 plugins {
+    id("initialization")
     id("com.gradle.enterprise") version "3.11.1"
 }
 
@@ -36,21 +30,6 @@ gradleEnterprise {
     }
 }
 
-dependencyResolutionManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-        mavenLocal()
-        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
-    }
-}
-
-buildCache {
-    local {
-        removeUnusedEntriesAfterDays = 1
-    }
-}
-
 include(":gradm-codegen")
 include(":gradm-gradle-plugin")
 include(":gradm-integration")
@@ -58,7 +37,3 @@ include(":gradm-integration:api")
 include(":gradm-integration:github")
 include(":gradm-runtime")
 include(":integration-testing")
-
-FeaturePreviews.Feature.values()
-    .filter { it.isActive }
-    .forEach { enableFeaturePreview(it.name) }
