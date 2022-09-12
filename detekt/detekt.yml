@@ -2,6 +2,10 @@ complexity:
   LongParameterList:
     ignoreDefaultParameters: true
 
+naming:
+  MatchingDeclarationName:
+    active: false
+
 style:
   MaxLineLength:
     active: false
