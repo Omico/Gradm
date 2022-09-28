@@ -71,7 +71,7 @@ fun YamlScope.repositoriesSequence(document: YamlDocument) {
             mapping(id) {
                 when {
                     attributes.find("noUpdates", false) -> scalar("noUpdates", true)
-                    else -> scalar("url", attributes.require<String>("url").fixedUrl())
+                    else -> scalar("url", attributes.require<String>("url").fixedUrl(), ScalarStyle.DoubleQuoted)
                 }
             }
         }
