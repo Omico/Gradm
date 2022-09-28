@@ -35,9 +35,9 @@ versions:
 
 repositories:
   google:
-    url: https://maven.google.com
+    url: "https://maven.google.com"
   your-repo: # your own repo id
-    url: https://repo.example.com # your repo url
+    url: "https://repo.example.com" # your repo url
   # A repo named "noUpdates" is already build-in.
   # You can use it directly or define your own like below.
   your-repo-2:
