@@ -1,6 +1,8 @@
 complexity:
   LongParameterList:
     ignoreDefaultParameters: true
+  TooManyFunctions:
+    active: false
 
 naming:
   MatchingDeclarationName:
