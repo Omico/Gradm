@@ -11,3 +11,5 @@ naming:
 style:
   MaxLineLength:
     active: false
+  ReturnCount:
+    active: false
