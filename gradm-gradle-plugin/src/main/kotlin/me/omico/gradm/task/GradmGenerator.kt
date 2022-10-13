@@ -18,6 +18,7 @@ package me.omico.gradm.task
 import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.codegen.generateDependenciesSourceFiles
 import me.omico.gradm.internal.codegen.generatePluginSourceFiles
+import me.omico.gradm.internal.codegen.generateSelfSourceFiles
 import me.omico.gradm.internal.codegen.generateVersionsSourceFile
 import me.omico.gradm.internal.config.format.formatGradmConfig
 import me.omico.gradm.internal.maven.resolveVersionsMeta
@@ -49,5 +50,6 @@ abstract class GradmGenerator : GradmTask() {
         generateDependenciesSourceFiles(outputDirectory, document, versionsMeta)
         generateVersionsSourceFile(gradmProjectPaths, outputDirectory, document)
         generatePluginSourceFiles(outputDirectory, document)
+        generateSelfSourceFiles(gradmProjectPaths, outputDirectory)
     }
 }

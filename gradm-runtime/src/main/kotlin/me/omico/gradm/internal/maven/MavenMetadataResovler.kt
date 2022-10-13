@@ -23,11 +23,8 @@ import me.omico.gradm.VersionsMeta
 import me.omico.gradm.debug
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
-import me.omico.gradm.internal.config.Plugin
-import me.omico.gradm.internal.config.dependencies
+import me.omico.gradm.internal.config.collectAllDependencies
 import me.omico.gradm.internal.config.localMetadataFile
-import me.omico.gradm.internal.config.plugins
-import me.omico.gradm.internal.config.toDependency
 import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.metadataDirectory
 import java.nio.file.Files
@@ -52,9 +49,7 @@ fun resolveVersionsMeta(
 }
 
 private fun YamlDocument.collectAllRequiredMetadata(metadataFolder: Path): Map<Dependency, Path> =
-    ArrayList<Dependency>()
-        .apply { addAll(plugins.map(Plugin::toDependency)) }
-        .apply { addAll(dependencies) }
+    collectAllDependencies()
         .filterNot(Dependency::noUpdates)
         .filterNot(Dependency::noSpecificVersion)
         .associateWith { it.localMetadataFile(metadataFolder).absolute() }

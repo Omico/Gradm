@@ -20,15 +20,22 @@ import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 import java.nio.file.Path
 import kotlin.io.path.div
+import kotlin.io.path.name
 
 @JvmInline
-value class GradmProjectPaths(override val path: Path) : ProjectPaths
+value class GradmProjectPaths(val path: Path)
 
 inline val Project.gradmGeneratedSourcesDirectory: Provider<Directory>
     get() = layout.buildDirectory.dir("generated/sources/gradm/kotlin/main")
 
 inline val Project.gradmProjectPaths: GradmProjectPaths
     get() = GradmProjectPaths(buildDir.toPath() / "gradm")
+
+inline val GradmProjectPaths.projectDirectory: Path
+    get() = (path / ".." / "..").normalize()
+
+inline val GradmProjectPaths.projectName: String
+    get() = projectDirectory.name
 
 inline val GradmProjectPaths.integrationDirectory: Path
     get() = path / "integration"
@@ -41,3 +48,6 @@ inline val GradmProjectPaths.updatesDirectory: Path
 
 inline val GradmProjectPaths.updatesAvailableFile: Path
     get() = updatesDirectory / "available.yml"
+
+inline val GradmProjectPaths.generatedJar: Path
+    get() = (path / ".." / "libs" / "$projectName.jar").normalize()

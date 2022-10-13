@@ -66,5 +66,10 @@ data class Dependency(
     val metadataUrl: URL by lazy { URL("$repository/${group.replace(".", "/")}/$artifact/maven-metadata.xml") }
 }
 
+fun YamlDocument.collectAllDependencies(): List<Dependency> =
+    ArrayList<Dependency>()
+        .apply { addAll(plugins.map(Plugin::toDependency)) }
+        .apply { addAll(dependencies) }
+
 internal fun Dependency.localMetadataFile(metadataFolder: Path): Path =
     metadataFolder / group / artifact / "maven-metadata.xml"

@@ -25,7 +25,7 @@ import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
-import me.omico.gradm.internal.config.dependencies
+import me.omico.gradm.internal.config.collectAllDependencies
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
 import java.nio.file.Path
 import java.util.TreeMap
@@ -63,7 +63,7 @@ fun generateDependenciesSourceFiles(
 
 private fun YamlDocument.createCodegenDependencies(versionsMeta: VersionsMeta): CodegenDependencies =
     CodegenDependencies().apply {
-        this@createCodegenDependencies.dependencies.forEach { dependency ->
+        this@createCodegenDependencies.collectAllDependencies().forEach { dependency ->
             addDependency(versionsMeta, dependency)
         }
     }
