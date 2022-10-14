@@ -29,4 +29,4 @@ interface GradmIntegration {
 }
 
 fun GradmProjectPaths.integrationConfigFile(configuration: GradmIntegrationConfiguration) =
-    path / ".." / ".." / configuration.configFilePath
+    path / configuration.configFilePath

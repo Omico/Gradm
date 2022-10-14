@@ -29,25 +29,28 @@ inline val Project.gradmGeneratedSourcesDirectory: Provider<Directory>
     get() = layout.buildDirectory.dir("generated/sources/gradm/kotlin/main")
 
 inline val Project.gradmProjectPaths: GradmProjectPaths
-    get() = GradmProjectPaths(buildDir.toPath() / "gradm")
-
-inline val GradmProjectPaths.projectDirectory: Path
-    get() = (path / ".." / "..").normalize()
+    get() = GradmProjectPaths(projectDir.toPath())
 
 inline val GradmProjectPaths.projectName: String
-    get() = projectDirectory.name
+    get() = path.name
+
+inline val GradmProjectPaths.buildDirectory: Path
+    get() = path / "build"
+
+inline val GradmProjectPaths.gradmBuildDirectory: Path
+    get() = buildDirectory / "gradm"
 
 inline val GradmProjectPaths.integrationDirectory: Path
-    get() = path / "integration"
+    get() = gradmBuildDirectory / "integration"
 
 inline val GradmProjectPaths.metadataDirectory: Path
-    get() = path / "metadata"
+    get() = gradmBuildDirectory / "metadata"
 
 inline val GradmProjectPaths.updatesDirectory: Path
-    get() = path / "updates"
+    get() = gradmBuildDirectory / "updates"
 
 inline val GradmProjectPaths.updatesAvailableFile: Path
     get() = updatesDirectory / "available.yml"
 
 inline val GradmProjectPaths.generatedJar: Path
-    get() = (path / ".." / "libs" / "$projectName.jar").normalize()
+    get() = (buildDirectory / "libs" / "$projectName.jar").normalize()
