@@ -21,10 +21,8 @@ val syncExamples by tasks.registering {
             }.let { file.writeText(it) }
         }
     listOf(
-        "examples/gradm-getting-started/gradm.yml",
-        "examples/gradm-getting-started-v3/gradm/gradm3.yml",
-        "examples/gradm-with-build-logic/build-logic/gradm.yml",
-        "examples/gradm-with-buildSrc/gradm.yml",
+        "examples/gradm-getting-started/gradm/gradm3.yml",
+        "examples/gradm-with-composite-build/build-logic/gradm/gradm.yml",
     ).forEach {
         file("examples/template/gradm.yml").copyTo(file(it), overwrite = true)
     }
