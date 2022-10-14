@@ -30,8 +30,8 @@ class IntegrationTesting {
             gradleCommand(
                 directory = "../examples/gradm-getting-started",
                 arguments = arrayOf(
-                    "spotlessApply", "clean",
-                    "gradmClean", "gradmUpdateDependencies",
+                    "clean",
+                    ":gradm:gradmDependencyUpdates",
                     "build", "--no-daemon",
                 ),
             )
@@ -39,29 +39,15 @@ class IntegrationTesting {
     }
 
     @Test
-    fun `test examples gradm-with-build-logic`() {
+    fun `test examples gradm-with-composite-build`() {
         assertDoesNotThrow {
             gradleCommand(
-                directory = "../examples/gradm-with-build-logic",
+                directory = "../examples/gradm-with-composite-build",
                 arguments = arrayOf(
                     "spotlessApply", "clean",
-                    ":build-logic:gradmClean", ":build-logic:gradmUpdateDependencies",
+                    ":gradm:gradmDependencyUpdates",
                     "build", "--no-daemon",
                 ),
-            )
-        }
-    }
-
-    @Test
-    fun `test examples gradm-with-buildSrc`() {
-        assertDoesNotThrow {
-            gradleCommand(
-                directory = "../examples/gradm-with-buildSrc",
-                arguments = arrayOf("-p", "buildSrc", "gradmClean", "gradmUpdateDependencies", "--no-daemon"),
-            )
-            gradleCommand(
-                directory = "../examples/gradm-with-buildSrc",
-                arguments = arrayOf("clean", "build", "--no-daemon"),
             )
         }
     }
