@@ -39,7 +39,7 @@ internal data class CodegenDependency(
     val subDependencies: CodegenDependencies = CodegenDependencies(),
 ) {
     val module: String by lazy { "$group:$artifact" }
-    val noSpecificVersion: Boolean by lazy { version?.isBlank() ?: false }
+    val noSpecificVersion: Boolean by lazy { version.isNullOrBlank() }
 }
 
 internal val CodegenDependency.hasDependency
@@ -129,7 +129,7 @@ private fun CodegenDependencies.addDependency(
                     hasParent = hasParent,
                     group = dependency.group,
                     artifact = dependency.artifact,
-                    version = dependency.version ?: versionsMeta[dependency.module]!!,
+                    version = dependency.version ?: versionsMeta[dependency.module],
                 )
                 .also { put(alias, it) }
     }
@@ -154,7 +154,7 @@ private fun TypeSpec.Builder.addDependencySuperClass(dependency: CodegenDependen
         superclass(DefaultExternalModuleDependency::class)
         addSuperclassConstructorParameter("%S", dependency.group)
         addSuperclassConstructorParameter("%S", dependency.artifact)
-        addSuperclassConstructorParameter("%S", dependency.version ?: "")
+        addSuperclassConstructorParameter("%S", dependency.version ?: "+")
         FunSpec.builder("invoke")
             .addModifiers(KModifier.OPERATOR)
             .addParameter("version", String::class)
