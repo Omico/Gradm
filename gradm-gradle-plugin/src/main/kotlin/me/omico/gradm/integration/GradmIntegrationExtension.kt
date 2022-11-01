@@ -16,7 +16,6 @@
 package me.omico.gradm.integration
 
 interface GradmIntegrationExtension {
-    val id: String
     var enabled: Boolean
     var configFilePath: String
 }

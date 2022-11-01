@@ -18,7 +18,7 @@ package me.omico.gradm.integration.internal
 import me.omico.gradm.integration.GradmIntegrationExtension
 
 internal class GradmIntegrationExtensionImpl(
-    override val id: String,
+    val id: String,
 ) : GradmIntegrationExtension {
     override var enabled: Boolean = true
     override var configFilePath: String = "gradm.integration.$id.yml"

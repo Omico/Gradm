@@ -30,7 +30,7 @@ internal abstract class GradmIntegrationsExtensionImpl : GradmIntegrationsExtens
             .let(GradmIntegrationConfigurations::save)
 }
 
-private fun GradmIntegrationExtension.toConfiguration() =
+private fun GradmIntegrationExtensionImpl.toConfiguration() =
     GradmIntegrationConfiguration(
         id = id,
         enabled = enabled,
