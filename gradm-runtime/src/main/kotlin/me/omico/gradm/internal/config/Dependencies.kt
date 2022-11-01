@@ -37,7 +37,7 @@ val YamlDocument.dependencies: List<Dependency>
                         attributes as YamlObject
                         val noSpecificVersion = attributes.find("noSpecificVersion", false)
                         val version = when {
-                            noSpecificVersion -> ""
+                            noSpecificVersion -> null
                             else -> attributes.find<String>("version").let(versions::resolveVariable)
                         }
                         Dependency(
