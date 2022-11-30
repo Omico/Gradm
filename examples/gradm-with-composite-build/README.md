@@ -2,13 +2,13 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/me.omico.gradm/gradm-runtime)
 
-**Assuming you have read [getting-started](../gradm-getting-started-v3).**
+**Assuming you have read [getting-started](../gradm-getting-started).**
 
 Create a folder named `build-logic` in your root directory.
 
-Create `build-logic/settings.gradle.kts`. The content is exactly the same as `settings.gradle.kts` in [getting-started](../gradm-getting-started-v3).
+Create `build-logic/settings.gradle.kts`. The content is exactly the same as `settings.gradle.kts` in [getting-started](../gradm-getting-started).
 
-Copy `gradm` folder from [getting-started](../gradm-getting-started-v3) to `build-logic`.
+Copy `gradm` folder from [getting-started](../gradm-getting-started) to `build-logic`.
 
 In `settings.gradle.kts`, add the following:
 
