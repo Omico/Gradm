@@ -26,9 +26,8 @@ import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.dependencies
-import me.omico.gradm.path.gradmGeneratedDependenciesProjectPaths
-import me.omico.gradm.path.sourceFolder
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
+import java.nio.file.Path
 import java.util.TreeMap
 
 internal data class CodegenDependency(
@@ -50,13 +49,16 @@ internal val CodegenDependency.hasSubDependencies
 
 internal typealias CodegenDependencies = TreeMap<String, CodegenDependency>
 
-internal fun generateDependenciesSourceFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
-    val generatedDependenciesSourceFolder = gradmGeneratedDependenciesProjectPaths.sourceFolder
+fun generateDependenciesSourceFiles(
+    generatedSourcesDirectory: Path,
+    document: YamlDocument,
+    versionsMeta: VersionsMeta,
+) {
     val dependencies = document.createCodegenDependencies(versionsMeta)
     dependencies.forEach { (name, dependency) ->
-        dependency.toFileSpec(name).writeTo(generatedDependenciesSourceFolder)
+        dependency.toFileSpec(name).writeTo(generatedSourcesDirectory)
     }
-    dependencies.toDslFileSpec().writeTo(generatedDependenciesSourceFolder)
+    dependencies.toDslFileSpec().writeTo(generatedSourcesDirectory)
 }
 
 private fun YamlDocument.createCodegenDependencies(versionsMeta: VersionsMeta): CodegenDependencies =

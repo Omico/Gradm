@@ -26,3 +26,7 @@ dependencies {
     implementation(projects.gradmIntegration)
     implementation(projects.gradmRuntime)
 }
+
+dependencies {
+    implementation("org.gradle.kotlin:gradle-kotlin-dsl-plugins:2.3.3")
+}

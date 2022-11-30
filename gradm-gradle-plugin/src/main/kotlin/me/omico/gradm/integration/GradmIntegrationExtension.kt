@@ -13,15 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.task
+package me.omico.gradm.integration
 
-import me.omico.gradm.refreshGradmSourceFiles
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.TaskAction
-import org.gradle.work.DisableCachingByDefault
-
-@DisableCachingByDefault(because = "Not worth caching")
-abstract class GradmUpdateDependencies : DefaultTask() {
-    @TaskAction
-    protected fun execute() = refreshGradmSourceFiles()
+interface GradmIntegrationExtension {
+    val id: String
+    var enabled: Boolean
+    var configFilePath: String
 }

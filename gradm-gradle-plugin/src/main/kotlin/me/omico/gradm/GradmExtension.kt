@@ -15,4 +15,28 @@
  */
 package me.omico.gradm
 
-interface GradmExtension
+import org.gradle.api.plugins.ExtensionAware
+
+interface GradmExtension : ExtensionAware {
+
+    /**
+     * The plugin id of the Gradm plugin.
+     *
+     * The default value is `me.omico.gradm.generated`.
+     */
+    var pluginId: String
+
+    /**
+     * The Gradm config file path.
+     *
+     * The default value is `./gradm.yml`.
+     */
+    var configFilePath: String
+
+    /**
+     * Enable debug mode for Gradm.
+     *
+     * The default value is `false`.
+     */
+    var debug: Boolean
+}

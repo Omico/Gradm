@@ -15,40 +15,12 @@
  */
 package me.omico.gradm
 
-import me.omico.gradm.path.GradleRootProjectPaths
-import me.omico.gradm.path.buildSourceProjectPaths
-import me.omico.gradm.path.gitIgnoreFile
-import me.omico.gradm.path.gradmConfigFile
-import me.omico.gradm.path.gradmGeneratedDependenciesProjectPaths
-import me.omico.gradm.path.sourceFolder
-import java.nio.file.Path
-import kotlin.io.path.exists
-import kotlin.io.path.readText
-
 const val GRADM_DEPENDENCY_PACKAGE_NAME = "me.omico.gradm.dependency"
-
-val hasGradmConfig: Boolean
-    get() = gradmConfigFile.exists()
-
-val shouldIgnoredByGit: Boolean
-    get() = when (GradmConfigs.mode) {
-        GradmMode.Normal,
-        GradmMode.BuildLogic,
-        -> !GradleRootProjectPaths.gitIgnoreFile.hasIgnoredGradmGeneratedFolder
-        GradmMode.BuildSource -> !GradleRootProjectPaths.buildSourceProjectPaths.gitIgnoreFile.hasIgnoredGradmGeneratedFolder
-        GradmMode.Unspecified -> false
-    }
-
-private val Path.hasIgnoredGradmGeneratedFolder: Boolean
-    get() = exists() && ".gradm" in readText()
-
-val isGradmGeneratedDependenciesSourcesExists: Boolean
-    get() = gradmGeneratedDependenciesProjectPaths.sourceFolder.exists()
 
 fun info(message: () -> String) {
     println("[Gradm] ${message()}")
 }
 
 fun debug(message: () -> String) {
-    if (GradmConfigs.debug) info(message)
+    if (GradmConfiguration.debug) info(message)
 }

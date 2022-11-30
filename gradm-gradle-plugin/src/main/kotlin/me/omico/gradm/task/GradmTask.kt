@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.path
+package me.omico.gradm.task
 
-import java.nio.file.Path
+import org.gradle.api.DefaultTask
 
-interface ProjectPaths {
-    val path: Path
+abstract class GradmTask : DefaultTask() {
+    final override fun getGroup(): String = "gradm"
 }

@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.path
+package me.omico.gradm.integration
 
-import java.nio.file.Path
+import org.gradle.api.Action
+import org.gradle.api.plugins.ExtensionAware
 
-interface ProjectPaths {
-    val path: Path
+interface GradmIntegrationsExtension : ExtensionAware {
+    fun apply(id: String)
+    fun apply(id: String, configure: Action<GradmIntegrationExtension>)
 }

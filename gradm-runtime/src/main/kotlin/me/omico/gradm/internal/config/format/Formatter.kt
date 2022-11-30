@@ -15,7 +15,7 @@
  */
 package me.omico.gradm.internal.config.format
 
-import me.omico.gradm.GradmConfigs
+import me.omico.gradm.GradmFormatConfiguration
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.YamlObject
 import me.omico.gradm.internal.asYamlDocument
@@ -26,17 +26,15 @@ import me.omico.gradm.internal.config.format.node.scalar
 import me.omico.gradm.internal.config.versionVariableRegex
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.require
-import me.omico.gradm.path.gradmConfigFile
 import java.nio.file.Path
 import kotlin.io.path.writeText
 
-fun formatGradmConfig() {
-    if (!GradmConfigs.format) return
-    gradmConfigFile.writeText(gradmConfigFile.createFormattedGradmConfigContent())
+fun formatGradmConfig(configFile: Path) {
+    configFile.writeText(configFile.createFormattedGradmConfigContent())
 }
 
 fun Path.createFormattedGradmConfigContent(): String =
-    yaml(formatterScope = FormatterScope(indent = GradmConfigs.indent)) {
+    yaml(formatterScope = FormatterScope(indent = GradmFormatConfiguration.indent)) {
         val document = asYamlDocument()
         versionsMapping(document)
         repositoriesSequence(document)
@@ -125,11 +123,10 @@ fun YamlScope.dependenciesMapping(document: YamlDocument) {
     }
 }
 
-private fun decideVersionStyle(version: String): ScalarStyle =
-    when {
-        versionVariableRegex.matches(version) -> ScalarStyle.Plain
-        else -> ScalarStyle.DoubleQuoted
-    }
+private fun decideVersionStyle(version: String): ScalarStyle = when {
+    versionVariableRegex.matches(version) -> ScalarStyle.Plain
+    else -> ScalarStyle.DoubleQuoted
+}
 
 private var requireNewline: Boolean = false
 

@@ -13,13 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm
+package me.omico.gradm.internal
 
-sealed class GradmMode {
-    object Normal : GradmMode()
-    object BuildSource : GradmMode()
-    object BuildLogic : GradmMode()
-    object Unspecified : GradmMode()
+import me.omico.gradm.GradmFormatConfiguration
+import me.omico.gradm.GradmFormatExtension
 
-    override fun toString(): String = javaClass.simpleName
+internal abstract class GradmFormatExtensionImpl : GradmFormatExtension {
+
+    override var enabled: Boolean
+        get() = GradmFormatConfiguration.enabled
+        set(value) {
+            GradmFormatConfiguration.enabled = value
+        }
+
+    override var indent: Int
+        get() = GradmFormatConfiguration.indent
+        set(value) {
+            GradmFormatConfiguration.indent = value
+        }
 }

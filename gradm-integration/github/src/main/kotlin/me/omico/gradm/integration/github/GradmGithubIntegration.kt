@@ -15,45 +15,51 @@
  */
 package me.omico.gradm.integration.github
 
-import me.omico.gradm.GradmConfigs
+import me.omico.gradm.GradmConfiguration
 import me.omico.gradm.info
 import me.omico.gradm.integration.GradmIntegration
+import me.omico.gradm.integration.GradmIntegrationConfiguration
+import me.omico.gradm.integration.github.internal.localGithubIntegrationVersionsMeta
 import me.omico.gradm.integration.github.internal.parseGithubIntegration
+import me.omico.gradm.integration.integrationConfigFile
 import me.omico.gradm.internal.config.MutableFlatVersions
-import me.omico.gradm.path.GradleRootProjectPaths
+import me.omico.gradm.path.GradmProjectPaths
+import java.nio.file.Path
 import kotlin.io.path.exists
 
-object GradmGithubIntegration : GradmIntegration() {
-
-    private val githubIntegrationConfigFile = GradleRootProjectPaths.path.resolve("gradm.integration.github.yml")
-
-    override fun applyVersions(versions: MutableFlatVersions) {
-        if (!githubIntegrationConfigFile.exists()) return
+class GradmGithubIntegration : GradmIntegration {
+    override val id: String = "github"
+    override fun applyVersions(
+        gradmProjectPaths: GradmProjectPaths,
+        configuration: GradmIntegrationConfiguration,
+        versions: MutableFlatVersions,
+    ) {
+        val configFile = gradmProjectPaths.integrationConfigFile(configuration)
         when {
-            GradmConfigs.offline -> {
+            !configFile.exists() -> return
+            GradmConfiguration.offline -> {
                 info { "Github integration config found, but the offline mode is enabled." }
-                applyVersionsByCache(versions)
+                gradmProjectPaths.applyVersionsByCache(versions)
             }
-            else -> applyVersionsIfNeeded(versions)
-        }
-    }
-
-    private fun applyVersionsByCache(versions: MutableFlatVersions) =
-        when (val versionsMeta = GradmGithubIntegrationConfigs.localVersionsMeta) {
-            null -> info { "versions-meta.txt for Github integration is not found, skipping." }
-            else -> versionsMeta.forEach { (key, value) ->
-                when {
-                    versions.containsKey(key) -> info { "$key is already in the versions, skipping." }
-                    else -> versions[key] = value
-                }
-            }
-        }
-
-    private fun applyVersionsIfNeeded(versions: MutableFlatVersions) {
-        when {
-            GradmConfigs.requireRefresh || GradmGithubIntegrationConfigs.localVersionsMeta == null ->
-                githubIntegrationConfigFile.parseGithubIntegration(versions)
-            else -> applyVersionsByCache(versions)
+            else -> gradmProjectPaths.applyVersionsIfNeeded(configFile, versions)
         }
     }
 }
+
+private fun GradmProjectPaths.applyVersionsByCache(versions: MutableFlatVersions) =
+    when (val versionsMeta = localGithubIntegrationVersionsMeta) {
+        null -> info { "versions-meta.txt for Github integration is not found, skipping." }
+        else -> versionsMeta.forEach { (key, value) ->
+            when {
+                versions.containsKey(key) -> info { "$key is already in the versions, skipping." }
+                else -> versions[key] = value
+            }
+        }
+    }
+
+private fun GradmProjectPaths.applyVersionsIfNeeded(configFile: Path, versions: MutableFlatVersions) =
+    when {
+        GradmConfiguration.requireRefresh || localGithubIntegrationVersionsMeta == null ->
+            parseGithubIntegration(configFile, versions)
+        else -> applyVersionsByCache(versions)
+    }

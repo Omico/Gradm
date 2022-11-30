@@ -13,10 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.path
+package me.omico.gradm
 
-import java.nio.file.Path
+object GradmConfiguration {
+    var debug: Boolean = false
+    var offline: Boolean = false
+    var requireRefresh: Boolean = false
+}
 
-interface ProjectPaths {
-    val path: Path
+object GradmFormatConfiguration {
+    var enabled: Boolean = true
+    var indent: Int = 2
 }

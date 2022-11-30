@@ -13,10 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.integration
+package me.omico.gradm
 
-import me.omico.gradm.integration.github.GradmGithubIntegration
+interface GradmFormatExtension {
 
-val gradmIntegrations: List<GradmIntegration> = listOf(
-    GradmGithubIntegration,
-)
+    /**
+     * Enable or disable format for Gradm.
+     *
+     * The default value is `2`.
+     */
+    var enabled: Boolean
+
+    /**
+     * Format indent for Gradm config file.
+     *
+     * The default value is `2`.
+     */
+    var indent: Int
+}

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.path
+package me.omico.gradm.integration
 
-import java.nio.file.Path
-
-interface ProjectPaths {
-    val path: Path
-}
+data class GradmIntegrationConfiguration(
+    val id: String,
+    val enabled: Boolean = true,
+    val configFilePath: String = "gradm.integration.$id.yml",
+)

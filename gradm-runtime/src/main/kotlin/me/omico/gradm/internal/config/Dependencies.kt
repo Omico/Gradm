@@ -19,10 +19,9 @@ import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.YamlObject
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.require
-import me.omico.gradm.path.gradmProjectPaths
-import me.omico.gradm.path.metadataFolder
 import java.net.URL
 import java.nio.file.Path
+import kotlin.io.path.div
 
 val YamlDocument.dependencies: List<Dependency>
     @Suppress("UNCHECKED_CAST")
@@ -67,5 +66,5 @@ data class Dependency(
     val metadataUrl: URL by lazy { URL("$repository/${group.replace(".", "/")}/$artifact/maven-metadata.xml") }
 }
 
-internal inline val Dependency.localMetadataFile: Path
-    get() = gradmProjectPaths.metadataFolder.resolve(group).resolve(artifact).resolve("maven-metadata.xml")
+internal fun Dependency.localMetadataFile(metadataFolder: Path): Path =
+    metadataFolder / group / artifact / "maven-metadata.xml"

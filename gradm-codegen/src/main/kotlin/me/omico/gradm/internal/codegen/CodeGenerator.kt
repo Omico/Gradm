@@ -17,26 +17,7 @@ package me.omico.gradm.internal.codegen
 
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
-import me.omico.gradm.VersionsMeta
-import me.omico.gradm.internal.YamlDocument
-import me.omico.gradm.path.gradmGeneratedDependenciesProjectPaths
-import me.omico.gradm.path.sourceFolder
-import me.omico.gradm.utility.clearDirectory
 import java.util.Locale
-import kotlin.io.path.createDirectories
-
-internal fun generateGradleFiles() {
-    gradmGeneratedDependenciesProjectPaths.path.createDirectories()
-    generateGradleBuildScript()
-    generateGradleSettingsScript()
-}
-
-internal fun generateSourceFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
-    if (versionsMeta.isEmpty()) return
-    gradmGeneratedDependenciesProjectPaths.sourceFolder.clearDirectory()
-    generateDependenciesSourceFiles(document, versionsMeta)
-    generateVersionsSourceFile(document)
-}
 
 private val defaultSuppressWarningTypes = arrayOf(
     "MemberVisibilityCanBePrivate",
