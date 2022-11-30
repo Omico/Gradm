@@ -27,20 +27,19 @@ import me.omico.gradm.task.GradmGenerator
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSetContainer
-import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.kotlin
-import org.gradle.kotlin.dsl.plugins.base.KotlinDslBasePlugin
 import org.gradle.kotlin.dsl.register
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
-import org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin
 
 class GradmPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
-        apply<JavaGradlePluginPlugin>()
-        apply<KotlinDslBasePlugin>()
+        require(plugins.hasPlugin("org.gradle.kotlin.kotlin-dsl")) {
+            "Please add `kotlin-dsl` to your plugins block.\n" +
+                "Gradm plugin requires the Kotlin DSL plugin to be applied."
+        }
         val gradlePlugins = extensions.getByType<GradlePluginDevelopmentExtension>()
         val gradmExtension = extensions.create(
             publicType = GradmExtension::class,
