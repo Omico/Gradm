@@ -73,20 +73,24 @@ internal fun YamlDocument.refreshAvailableUpdates() {
         return
     }
     val mavenUpdatesContent = yaml {
-        if (pluginsMavenUpdates.isNotEmpty()) mapping("plugins") {
-            pluginsMavenUpdates.entries.forEach { (id, pluginUpdates) ->
-                sequence(id) {
-                    pluginUpdates.forEach { (_, versions) ->
-                        versions.forEach { scalar(it) }
+        if (pluginsMavenUpdates.isNotEmpty()) {
+            mapping("plugins") {
+                pluginsMavenUpdates.entries.forEach { (id, pluginUpdates) ->
+                    sequence(id) {
+                        pluginUpdates.forEach { (_, versions) ->
+                            versions.forEach { scalar(it) }
+                        }
                     }
                 }
             }
         }
-        if (dependenciesMavenUpdates.isNotEmpty()) mapping("dependencies") {
-            dependenciesMavenUpdates.entries.forEach { (group, artifactUpdates) ->
-                mapping(group) {
-                    artifactUpdates.forEach { (artifact, versions) ->
-                        sequence(artifact) { versions.forEach { scalar(it) } }
+        if (dependenciesMavenUpdates.isNotEmpty()) {
+            mapping("dependencies") {
+                dependenciesMavenUpdates.entries.forEach { (group, artifactUpdates) ->
+                    mapping(group) {
+                        artifactUpdates.forEach { (artifact, versions) ->
+                            sequence(artifact) { versions.forEach { scalar(it) } }
+                        }
                     }
                 }
             }

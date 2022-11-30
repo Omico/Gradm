@@ -143,16 +143,20 @@ class GradmPlugin : Plugin<Settings> {
     private fun Project.registerGradmTasks() {
         tasks.register("gradmCheckGitIgnore") {
             group = "gradm"
-            if (shouldIgnoredByGit) doLast {
-                logger.warn("The generated directory \".gradm\" should be ignored by Git.")
+            if (shouldIgnoredByGit) {
+                doLast {
+                    logger.warn("The generated directory \".gradm\" should be ignored by Git.")
+                }
             }
         }
         tasks.register("gradmUpdateDependencies", GradmUpdateDependencies::class) {
             group = "gradm"
             finalizedBy("gradmCheckGitIgnore")
         }
-        if (GradmConfigs.mode == GradmMode.Normal) tasks.register("gradmDependenciesAnalysis", GradmDependenciesAnalysis::class) {
-            group = "gradm"
+        if (GradmConfigs.mode == GradmMode.Normal) {
+            tasks.register("gradmDependenciesAnalysis", GradmDependenciesAnalysis::class) {
+                group = "gradm"
+            }
         }
         tasks.register("gradmClean", Delete::class) {
             group = "gradm"

@@ -1,15 +1,15 @@
 versions:
-  junit: "5.9.0"
-  kotlin: "1.6.21"
-  kotlin.dsl: "2.3.3"
-  kotlinpoet: "1.11.0"
+  junit: "5.9.1"
+  kotlin: "1.7.10"
+  kotlin.dsl: "2.4.1"
+  kotlinpoet: "1.12.0"
   kotlinx:
     coroutines: "1.6.4"
-    serialization: "1.3.3"
+    serialization: "1.4.1"
   plugins:
     age: "1.0.0-SNAPSHOT"
-    spotless: "6.10.0"
-  snakeyaml: "2.4"
+    spotless: "6.12.0"
+  snakeyaml: "2.5"
 
 repositories:
   gradlePluginPortal:
@@ -50,3 +50,8 @@ dependencies:
       snakeyaml-engine:
         alias: libs.snakeyaml
         version: ${versions.snakeyaml}
+  noUpdates:
+    org.gradle.kotlin:
+      gradle-kotlin-dsl-plugins:
+        alias: libs.gradle.kotlin.dsl.plugins
+        version: ${versions.kotlin.dsl}

@@ -4,7 +4,6 @@ plugins {
 
 kotlin {
     target.compilations.all {
-        languageSettings.optIn("kotlin.RequiresOptIn")
         kotlinOptions {
             jvmTarget = "11"
         }
