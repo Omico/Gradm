@@ -39,7 +39,7 @@ buildscript {
 }
 
 plugins {
-    id("me.omico.gradm") version "2.6.0-SNAPSHOT"
+    id("me.omico.gradm") version "2.6.0"
 }
 
 gradm {
