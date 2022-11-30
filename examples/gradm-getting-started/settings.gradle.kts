@@ -17,7 +17,7 @@ pluginManagement {
 }
 
 plugins {
-    id("me.omico.gradm") version "2.6.0"
+    id("me.omico.gradm") version "3.0.0-SNAPSHOT"
 }
 
 gradm {
