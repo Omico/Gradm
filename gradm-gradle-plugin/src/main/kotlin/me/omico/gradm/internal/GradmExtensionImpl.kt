@@ -22,7 +22,7 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import javax.inject.Inject
 
-abstract class GradmExtensionImpl @Inject constructor(
+internal abstract class GradmExtensionImpl @Inject constructor(
     private val project: Project,
     pluginDevelopmentExtension: GradlePluginDevelopmentExtension,
 ) : GradmExtension {
