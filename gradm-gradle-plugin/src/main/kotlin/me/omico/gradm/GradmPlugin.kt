@@ -30,7 +30,6 @@ import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
-import org.gradle.kotlin.dsl.kotlin
 import org.gradle.kotlin.dsl.register
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 
@@ -57,7 +56,6 @@ class GradmPlugin : Plugin<Project> {
             name = "integrations",
             instanceType = GradmIntegrationsExtensionImpl::class,
         )
-        dependencies.add("compileOnly", dependencies.kotlin("gradle-plugin"))
         configureGradmGenerator(gradmExtension)
         configureGradmDependencyUpdates(gradmExtension)
         GradmConfiguration.offline = gradle.startParameter.isOffline
