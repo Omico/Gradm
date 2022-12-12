@@ -22,6 +22,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
+import me.omico.gradm.GradmExperimentalConfiguration
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
@@ -83,16 +84,19 @@ private fun CodegenDependencies.toDslFileSpec(): FileSpec =
             keys.forEach { name ->
                 addDslProperty(
                     name = name,
-                    receivers = arrayOf(
-                        ClassName("org.gradle.api.artifacts.dsl", "DependencyHandler"),
-                        ClassName("org.jetbrains.kotlin.gradle.plugin", "KotlinDependencyHandler"),
-                    ),
+                    receivers = mutableSetOf<ClassName>().apply {
+                        // For normal module, rollback to the DependencyHandler to prevent naming conflict.
+                        ClassName("org.gradle.api.artifacts.dsl", "DependencyHandler").let(::add)
+                        if (GradmExperimentalConfiguration.kotlinMultiplatformSupport) {
+                            ClassName("org.gradle.api", "Project").let(::add)
+                        }
+                    },
                 )
             }
         }
         .build()
 
-internal fun FileSpec.Builder.addDslProperty(name: String, receivers: Array<ClassName>): FileSpec.Builder =
+internal fun FileSpec.Builder.addDslProperty(name: String, receivers: Set<ClassName>): FileSpec.Builder =
     apply {
         receivers.forEach { className ->
             PropertySpec

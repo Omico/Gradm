@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm
+package me.omico.gradm.internal
 
-object GradmConfiguration {
-    var debug: Boolean = false
-    var offline: Boolean = false
-    var requireRefresh: Boolean = false
-}
+import me.omico.gradm.GradmExperimentalConfiguration
+import me.omico.gradm.GradmExperimentalExtension
 
-object GradmFormatConfiguration {
-    var enabled: Boolean = true
-    var indent: Int = 2
-}
+internal abstract class GradmExperimentalExtensionImpl : GradmExperimentalExtension {
 
-object GradmExperimentalConfiguration {
-    var kotlinMultiplatformSupport: Boolean = false
+    override var kotlinMultiplatformSupport: Boolean
+        get() = GradmExperimentalConfiguration.kotlinMultiplatformSupport
+        set(value) {
+            GradmExperimentalConfiguration.kotlinMultiplatformSupport = value
+        }
 }

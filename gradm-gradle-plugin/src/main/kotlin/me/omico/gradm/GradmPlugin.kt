@@ -19,6 +19,7 @@ package me.omico.gradm
 
 import me.omico.gradm.integration.GradmIntegrationsExtension
 import me.omico.gradm.integration.internal.GradmIntegrationsExtensionImpl
+import me.omico.gradm.internal.GradmExperimentalExtensionImpl
 import me.omico.gradm.internal.GradmExtensionImpl
 import me.omico.gradm.internal.GradmFormatExtensionImpl
 import me.omico.gradm.path.gradmGeneratedSourcesDirectory
@@ -55,6 +56,11 @@ class GradmPlugin : Plugin<Project> {
             publicType = GradmIntegrationsExtension::class,
             name = "integrations",
             instanceType = GradmIntegrationsExtensionImpl::class,
+        )
+        gradmExtension.extensions.create(
+            publicType = GradmExperimentalExtension::class,
+            name = "experimental",
+            instanceType = GradmExperimentalExtensionImpl::class,
         )
         configureGradmGenerator(gradmExtension)
         configureGradmDependencyUpdates(gradmExtension)

@@ -15,17 +15,11 @@
  */
 package me.omico.gradm
 
-object GradmConfiguration {
-    var debug: Boolean = false
-    var offline: Boolean = false
-    var requireRefresh: Boolean = false
-}
-
-object GradmFormatConfiguration {
-    var enabled: Boolean = true
-    var indent: Int = 2
-}
-
-object GradmExperimentalConfiguration {
-    var kotlinMultiplatformSupport: Boolean = false
+interface GradmExperimentalExtension {
+    /**
+     * Enable experimental Kotlin Multiplatform support for Gradm.
+     *
+     * The default value is `false`.
+     */
+    var kotlinMultiplatformSupport: Boolean
 }
