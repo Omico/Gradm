@@ -17,4 +17,7 @@ gradm {
             configFilePath = "gradm.integration.github.yml" // default: "gradm.integration.github.yml"
         }
     }
+    experimental {
+        kotlinMultiplatformSupport = false // default: false
+    }
 }

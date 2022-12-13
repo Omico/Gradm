@@ -120,7 +120,7 @@ You can modify the generated plugin id in `gradm/build.gradle.kts`:
 
 ```kotlin
 gradm {
-    pluginId = "gradm" // default is "me.omico.gradm.generated" 
+    pluginId = "gradm" // default is "me.omico.gradm.generated"
 }
 ```
 
@@ -155,6 +155,38 @@ gradm {
     format {
         enabled = true // default: true
         indent = 2 // default: 2
+    }
+}
+```
+
+### Additional integrations support
+
+Currently, Gradm supports the following integrations:
+
+* Github: `github`
+
+In `gradm/build.gradle.kts`:
+
+```kotlin
+gradm {
+    integrations {
+        apply("github") {
+            // We can temporarily disable the integration, without delete the whole configuration.
+            enabled = true // default: true
+            configFilePath = "gradm.integration.github.yml" // default: "gradm.integration.github.yml"
+        }
+    }
+}
+```
+
+### Enable experimental features
+
+In `gradm/build.gradle.kts`:
+
+```kotlin
+gradm {
+    experimental {
+        kotlinMultiplatformSupport = true // default: false
     }
 }
 ```
