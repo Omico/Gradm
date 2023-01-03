@@ -6,28 +6,64 @@ In `settings.gradle.kts`, add the following:
 
 ```kotlin
 pluginManagement {
+    includeBuild("gradm") // include Gradm here
     repositories {
+        gradlePluginPortal {
+            content {
+                excludeGroupByRegex("me.omico.*") // reduce build time
+            }
+        }
         mavenCentral()
+        mavenLocal()
     }
-    plugins {
-        id("me.omico.gradm") version "<version>"
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        mavenLocal()
     }
 }
 
 plugins {
-    id("me.omico.gradm")
-}
-
-gradm {
-    configs {
-        debug = true // default: false
-        format = true // default: false
-        indent = 4 // default: 2, won't take effect if format is false.
-    }
+    // you can declare a special id via Gradm
+    // more details are in the "Customizing" section
+    id("me.omico.gradm.generated")
 }
 ```
 
-Create a file named `gradm.yml` in your root project directory, and add the following:
+Create a folder named `gradm` in the root directory of your project, and create `gradm/settings.gradle.kts`. Add the following:
+
+```kotlin
+rootProject.name = "gradm"
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal {
+            content {
+                excludeGroupByRegex("me.omico.*") // reduce build time
+            }
+        }
+        mavenCentral() // for Gradm
+        mavenLocal() // only for snapshot
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        // following repositories are related to which plugins you declared for Gradm
+        google()
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+```
+
+Create a file named `gradm.yml` in `gradm` folder, and add the following:
 
 ```yaml
 versions:
@@ -35,9 +71,9 @@ versions:
 
 repositories:
   google:
-    url: "https://maven.google.com"
+    url: https://maven.google.com
   your-repo: # your own repo id
-    url: "https://repo.example.com" # your repo url
+    url: https://repo.example.com # your repo url
   # A repo named "noUpdates" is already build-in.
   # You can use it directly or define your own like below.
   your-repo-2:
@@ -74,4 +110,83 @@ dependencies:
         # It will use the latest version, if you don't specify version.
         # version: "1.0.0"
         version: ${versions.something}
+```
+
+## Customizing
+
+### Customizing the plugin id
+
+You can modify the generated plugin id in `gradm/build.gradle.kts`:
+
+```kotlin
+gradm {
+    pluginId = "gradm" // default is "me.omico.gradm.generated"
+}
+```
+
+Be sure to change the plugin id in `settings.gradle.kts` too.
+
+### Customizing the Gradm configuration file name
+
+You can modify the Gradm configuration file name in `gradm/build.gradle.kts`:
+
+```kotlin
+gradm {
+    configFilePath = "gradm3.yml" // default: "gradm.yml"
+}
+```
+
+### Enabling Gradm debug mode
+
+You can enable Gradm debug mode in `gradm/build.gradle.kts`:
+
+```kotlin
+gradm {
+    debug = true // default: false
+}
+```
+
+### Customizing the Gradm configuration formatting
+
+In `gradm/build.gradle.kts`:
+
+```kotlin
+gradm {
+    format {
+        enabled = true // default: true
+        indent = 2 // default: 2
+    }
+}
+```
+
+### Additional integrations support
+
+Currently, Gradm supports the following integrations:
+
+* Github: `github`
+
+In `gradm/build.gradle.kts`:
+
+```kotlin
+gradm {
+    integrations {
+        apply("github") {
+            // We can temporarily disable the integration, without delete the whole configuration.
+            enabled = true // default: true
+            configFilePath = "gradm.integration.github.yml" // default: "gradm.integration.github.yml"
+        }
+    }
+}
+```
+
+### Enable experimental features
+
+In `gradm/build.gradle.kts`:
+
+```kotlin
+gradm {
+    experimental {
+        kotlinMultiplatformSupport = true // default: false
+    }
+}
 ```

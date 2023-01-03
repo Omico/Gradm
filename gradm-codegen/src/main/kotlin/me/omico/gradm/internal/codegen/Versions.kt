@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Omico
+ * Copyright 2022-2023 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,21 +21,25 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
-import me.omico.gradm.integration.gradmIntegrations
+import me.omico.gradm.integration.applyGradmIntegrations
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.TreeVersions
 import me.omico.gradm.internal.config.toFlatVersions
 import me.omico.gradm.internal.config.toTreeVersions
 import me.omico.gradm.internal.config.versions
-import me.omico.gradm.path.gradmGeneratedDependenciesProjectPaths
-import me.omico.gradm.path.sourceFolder
+import me.omico.gradm.path.GradmProjectPaths
+import java.nio.file.Path
 
-internal fun generateVersionsSourceFile(document: YamlDocument) {
+fun generateVersionsSourceFile(
+    gradmProjectPaths: GradmProjectPaths,
+    generatedSourcesDirectory: Path,
+    document: YamlDocument,
+) {
     val treeVersions = mutableMapOf<String, String>()
         .apply { putAll(document.versions.toFlatVersions()) }
-        .apply { gradmIntegrations.forEach { it.applyVersions(this) } }
+        .apply(gradmProjectPaths::applyGradmIntegrations)
         .toTreeVersions()
-    treeVersions.toFileSpec().writeTo(gradmGeneratedDependenciesProjectPaths.sourceFolder)
+    treeVersions.toFileSpec().writeTo(generatedSourcesDirectory)
 }
 
 private fun TreeVersions.toFileSpec(): FileSpec =

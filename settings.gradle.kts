@@ -1,6 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-
 rootProject.name = "Gradm"
 
 pluginManagement {

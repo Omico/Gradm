@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Omico
+ * Copyright 2022-2023 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,44 +15,42 @@
  */
 package me.omico.gradm.path
 
-import me.omico.gradm.GradmConfigs
-import me.omico.gradm.GradmMode
+import org.gradle.api.Project
+import org.gradle.api.file.Directory
+import org.gradle.api.provider.Provider
 import java.nio.file.Path
+import kotlin.io.path.div
+import kotlin.io.path.name
 
 @JvmInline
-value class GradmProjectPaths(override val path: Path) : ProjectPaths
+value class GradmProjectPaths(val path: Path)
 
-inline val gradmConfigFile: Path
-    get() = GradleRootProjectPaths.path.resolve("gradm.yml")
+inline val Project.gradmGeneratedSourcesDirectory: Provider<Directory>
+    get() = layout.buildDirectory.dir("generated/sources/gradm/kotlin/main")
 
-inline val gradmProjectPaths: GradmProjectPaths
-    get() = GradmProjectPaths(
-        path = when (GradmConfigs.mode) {
-            GradmMode.Normal,
-            GradmMode.BuildLogic,
-            GradmMode.Unspecified,
-            -> GradleRootProjectPaths.path.resolve(".gradm")
-            GradmMode.BuildSource -> GradleRootProjectPaths.buildSourceFolder.resolve(".gradm")
-        },
-    )
+inline val Project.gradmProjectPaths: GradmProjectPaths
+    get() = GradmProjectPaths(projectDir.toPath())
 
-inline val GradmProjectPaths.integrationFolder: Path
-    get() = path.resolve("integration")
+inline val GradmProjectPaths.projectName: String
+    get() = path.name
 
-inline val GradmProjectPaths.metadataFolder: Path
-    get() = path.resolve("metadata")
+inline val GradmProjectPaths.buildDirectory: Path
+    get() = path / "build"
 
-inline val GradmProjectPaths.versionsMetaHashFile: Path
-    get() = metadataFolder.resolve("versions-meta.hash")
+inline val GradmProjectPaths.gradmBuildDirectory: Path
+    get() = buildDirectory / "gradm"
 
-inline val GradmProjectPaths.generatedDependenciesFolder: Path
-    get() = path.resolve("generated-dependencies")
+inline val GradmProjectPaths.integrationDirectory: Path
+    get() = gradmBuildDirectory / "integration"
 
-inline val gradmGeneratedDependenciesProjectPaths: GradleProjectPaths
-    get() = GradleProjectPaths(gradmProjectPaths.generatedDependenciesFolder)
+inline val GradmProjectPaths.metadataDirectory: Path
+    get() = gradmBuildDirectory / "metadata"
 
-inline val GradmProjectPaths.updatesFolder: Path
-    get() = path.resolve("updates")
+inline val GradmProjectPaths.updatesDirectory: Path
+    get() = gradmBuildDirectory / "updates"
 
 inline val GradmProjectPaths.updatesAvailableFile: Path
-    get() = updatesFolder.resolve("available.yml")
+    get() = updatesDirectory / "available.yml"
+
+inline val GradmProjectPaths.generatedJar: Path
+    get() = (buildDirectory / "libs" / "$projectName.jar").normalize()

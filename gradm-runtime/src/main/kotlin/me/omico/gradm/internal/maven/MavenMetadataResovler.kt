@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Omico
+ * Copyright 2022-2023 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,88 +18,68 @@ package me.omico.gradm.internal.maven
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import me.omico.gradm.GradmConfigs
+import me.omico.gradm.GradmConfiguration
 import me.omico.gradm.VersionsMeta
-import me.omico.gradm.asVersionsMetaHash
 import me.omico.gradm.debug
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
-import me.omico.gradm.internal.config.Plugin
-import me.omico.gradm.internal.config.dependencies
+import me.omico.gradm.internal.config.collectAllDependencies
 import me.omico.gradm.internal.config.localMetadataFile
-import me.omico.gradm.internal.config.plugins
-import me.omico.gradm.internal.config.toDependency
-import me.omico.gradm.internal.sha1
-import me.omico.gradm.localVersionsMeta
-import me.omico.gradm.path.gradmProjectPaths
-import me.omico.gradm.path.versionsMetaHashFile
-import me.omico.gradm.utility.deleteDirectory
+import me.omico.gradm.path.GradmProjectPaths
+import me.omico.gradm.path.metadataDirectory
+import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.absolute
 import kotlin.io.path.createDirectories
-import kotlin.io.path.deleteExisting
-import kotlin.io.path.readBytes
 import kotlin.io.path.writeBytes
-import kotlin.io.path.writeText
+import kotlin.streams.toList
 
-fun refreshVersionsMeta(document: YamlDocument): VersionsMeta =
-    hashMapOf<String, String>()
-        .apply { document.downloadAllMetadata() }
-        .apply { putAll(document.localVersionsMeta) }
-        .also { document.refreshAvailableUpdates() }
+fun resolveVersionsMeta(
+    gradmProjectPaths: GradmProjectPaths,
+    document: YamlDocument,
+    refresh: Boolean = false,
+): VersionsMeta = run {
+    val metadataFolder = gradmProjectPaths.metadataDirectory
+    metadataFolder.createDirectories()
+    document.collectAllRequiredMetadata(metadataFolder)
+        .also { resolveMavenMetadataFiles(it, metadataFolder, refresh) }
+        .map { MavenMetadata(it.value) }
+        .also { document.refreshAvailableUpdates(gradmProjectPaths, it) }
+        .associate { it.module to it.latestVersion }
+}
 
-internal fun YamlDocument.collectAllMetadataFiles(): List<Path> =
-    ArrayList<Dependency>()
-        .apply { addAll(plugins.map(Plugin::toDependency)) }
-        .apply { addAll(dependencies) }
-        .filterNot { it.noUpdates || it.noSpecificVersion }
-        .runCatching { map { it.localMetadataFile } }
-        .onFailure { it.printStackTrace() }
-        .getOrDefault(emptyList())
+private fun YamlDocument.collectAllRequiredMetadata(metadataFolder: Path): Map<Dependency, Path> =
+    collectAllDependencies()
+        .filterNot(Dependency::noUpdates)
+        .filterNot(Dependency::noSpecificVersion)
+        .associateWith { it.localMetadataFile(metadataFolder).absolute() }
 
-internal fun YamlDocument.collectAllMetadata(): List<MavenMetadata> =
-    collectAllMetadataFiles().map(::MavenMetadata)
-
-private fun YamlDocument.downloadAllMetadata() =
+private fun resolveMavenMetadataFiles(
+    requiredMavenMetadataMap: Map<Dependency, Path>,
+    metadataFolder: Path,
+    refresh: Boolean = false,
+) {
+    val cachedMavenMetadataPaths = Files.walk(metadataFolder)
+        .filter { it.endsWith("maven-metadata.xml") }
+        .map(Path::absolute)
+        .toList()
     runBlocking {
-        if (GradmConfigs.offline) return@runBlocking
-        if (!requireUpdateMetadata) {
-            debug { "Use cached metadata, skipping download." }
-            return@runBlocking
+        val mavenMetadataMap = when {
+            refresh -> requiredMavenMetadataMap
+            else -> requiredMavenMetadataMap.filterNot { cachedMavenMetadataPaths.contains(it.value) }
         }
-        debug { "Downloading plugins metadata" }
-        plugins.forEach { plugin -> plugin.toDependency().downloadMetadata() }
-        debug { "Downloading dependencies metadata" }
-        dependencies.forEach { dependency -> dependency.downloadMetadata() }
-        refreshHash()
+        require(!GradmConfiguration.offline || mavenMetadataMap.isEmpty()) {
+            "Cannot resolve maven-metadata.xml in offline mode."
+        }
+        mavenMetadataMap.forEach { (dependency, metadataFile) -> dependency.downloadMetadata(metadataFile) }
     }
+}
 
-private suspend fun Dependency.downloadMetadata() {
-    if (noUpdates) {
-        debug { "Skipping [$module] because noUpdates is set to true" }
-        return
-    }
-    if (noSpecificVersion) {
-        debug { "Skipping [$module] because noSpecificVersion is set to true" }
-        localMetadataFile.parent.deleteDirectory()
-        return
-    }
+private suspend fun Dependency.downloadMetadata(metadataFile: Path) {
     debug { "Downloading metadata for [$module]" }
     val bytes = withContext(Dispatchers.IO) { metadataUrl.readBytes() }
-    with(localMetadataFile) {
+    with(metadataFile) {
         parent.createDirectories()
         writeBytes(bytes)
     }
 }
-
-private val YamlDocument.calculateMetadataHash
-    get() = runCatching { collectAllMetadataFiles().map(Path::readBytes).sha1() }.getOrNull()
-
-private fun YamlDocument.refreshHash() =
-    calculateMetadataHash
-        ?.let { gradmProjectPaths.versionsMetaHashFile.writeText(it) }
-        ?: gradmProjectPaths.versionsMetaHashFile.deleteExisting()
-
-private val YamlDocument.requireUpdateMetadata: Boolean
-    get() = GradmConfigs.requireRefresh ||
-        runCatching { gradmProjectPaths.versionsMetaHashFile.asVersionsMetaHash() != calculateMetadataHash }
-            .getOrDefault(GradmConfigs.requireRefresh)

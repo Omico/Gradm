@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Omico
+ * Copyright 2022-2023 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,6 +57,6 @@ internal fun Plugin.toDependency(): Dependency =
         noSpecificVersion = false,
         group = group,
         artifact = artifact,
-        alias = "",
+        alias = id,
         version = version,
     )

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Omico
+ * Copyright 2022-2023 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,6 @@
  */
 package me.omico.gradm
 
-import me.omico.gradm.internal.YamlDocument
-import me.omico.gradm.internal.maven.collectAllMetadata
-import me.omico.gradm.internal.sha1
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.readLines
@@ -25,14 +22,8 @@ import kotlin.io.path.writeText
 
 typealias VersionsMeta = Map<String, String>
 
-val YamlDocument.localVersionsMeta: VersionsMeta
-    get() = runCatching(::collectAllMetadata)
-        .getOrDefault(emptyList())
-        .associate { it.module to it.latestVersion }
-
-fun VersionsMeta.store(versionsMeta: Path, versionsMetaHash: Path) {
+fun VersionsMeta.store(versionsMeta: Path) {
     versionsMeta.writeText(versionsMetaContent)
-    versionsMetaHash.writeText(versionsMeta.sha1())
 }
 
 fun Path.asVersionsMeta(): VersionsMeta? =
@@ -41,8 +32,6 @@ fun Path.asVersionsMeta(): VersionsMeta? =
             val strings = it.split("=")
             strings.first() to strings.last()
         }
-
-fun Path.asVersionsMetaHash(): String? = takeIf(Path::exists)?.readLines()?.firstOrNull()
 
 private val VersionsMeta.versionsMetaContent: String
     get() = buildString { toSortedMap().forEach { (key, value) -> appendLine("$key=$value") } }

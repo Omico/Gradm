@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Omico
+ * Copyright 2022-2023 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,17 @@
 package me.omico.gradm.integration
 
 import me.omico.gradm.internal.config.MutableFlatVersions
+import me.omico.gradm.path.GradmProjectPaths
+import kotlin.io.path.div
 
-abstract class GradmIntegration {
-    open fun applyVersions(versions: MutableFlatVersions) = Unit
+interface GradmIntegration {
+    val id: String
+    fun applyVersions(
+        gradmProjectPaths: GradmProjectPaths,
+        configuration: GradmIntegrationConfiguration,
+        versions: MutableFlatVersions,
+    )
 }
+
+fun GradmProjectPaths.integrationConfigFile(configuration: GradmIntegrationConfiguration) =
+    path / configuration.configFilePath

@@ -11,6 +11,12 @@ plugins {
 
 allprojects {
     configureSpotless {
+        freshmark {
+            target("**/*.md")
+            trimTrailingWhitespace()
+            indentWithSpaces()
+            endWithNewline()
+        }
         intelliJIDEARunConfiguration()
         kotlin(
             licenseHeaderFile = rootProject.file("spotless/copyright.kt"),

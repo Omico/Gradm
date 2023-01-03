@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Omico
+ * Copyright 2022-2023 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,13 +33,13 @@ fun Path.hash(algorithm: String): String =
 fun hash(algorithm: String, block: MessageDigest.() -> Unit): String =
     MessageDigest.getInstance(algorithm).apply(block).digest().hex()
 
-fun ByteArray.hash(algorithm: String): String = hash(algorithm) { update(this@hash) }
+fun ByteArray.hash(algorithm: String): String = let { hash(algorithm) { update(it) } }
 
 fun Stream<ByteArray>.hash(algorithm: String): String = hash(algorithm) { forEach(::update) }
 
 fun Iterable<ByteArray>.hash(algorithm: String): String = hash(algorithm) { forEach(::update) }
 
-fun ByteArray.hex(): String = fold("") { str, it -> str + "%02x".format(it) }
+fun ByteArray.hex(): String = fold("") { str, byte -> str + "%02x".format(byte) }
 
 fun Path.sha1(): String = hash("SHA-1")
 

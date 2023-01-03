@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Omico
+ * Copyright 2022-2023 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
+import me.omico.gradm.GradmExperimentalConfiguration
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
-import me.omico.gradm.internal.config.dependencies
-import me.omico.gradm.path.gradmGeneratedDependenciesProjectPaths
-import me.omico.gradm.path.sourceFolder
+import me.omico.gradm.internal.config.collectAllDependencies
 import org.gradle.api.internal.artifacts.dependencies.DefaultExternalModuleDependency
+import java.nio.file.Path
 import java.util.TreeMap
 
 internal data class CodegenDependency(
@@ -50,18 +50,21 @@ internal val CodegenDependency.hasSubDependencies
 
 internal typealias CodegenDependencies = TreeMap<String, CodegenDependency>
 
-internal fun generateDependenciesSourceFiles(document: YamlDocument, versionsMeta: VersionsMeta) {
-    val generatedDependenciesSourceFolder = gradmGeneratedDependenciesProjectPaths.sourceFolder
+fun generateDependenciesSourceFiles(
+    generatedSourcesDirectory: Path,
+    document: YamlDocument,
+    versionsMeta: VersionsMeta,
+) {
     val dependencies = document.createCodegenDependencies(versionsMeta)
     dependencies.forEach { (name, dependency) ->
-        dependency.toFileSpec(name).writeTo(generatedDependenciesSourceFolder)
+        dependency.toFileSpec(name).writeTo(generatedSourcesDirectory)
     }
-    dependencies.toDslFileSpec().writeTo(generatedDependenciesSourceFolder)
+    dependencies.toDslFileSpec().writeTo(generatedSourcesDirectory)
 }
 
 private fun YamlDocument.createCodegenDependencies(versionsMeta: VersionsMeta): CodegenDependencies =
     CodegenDependencies().apply {
-        this@createCodegenDependencies.dependencies.forEach { dependency ->
+        this@createCodegenDependencies.collectAllDependencies().forEach { dependency ->
             addDependency(versionsMeta, dependency)
         }
     }
@@ -81,16 +84,19 @@ private fun CodegenDependencies.toDslFileSpec(): FileSpec =
             keys.forEach { name ->
                 addDslProperty(
                     name = name,
-                    receivers = arrayOf(
-                        ClassName("org.gradle.api.artifacts.dsl", "DependencyHandler"),
-                        ClassName("org.jetbrains.kotlin.gradle.plugin", "KotlinDependencyHandler"),
-                    ),
+                    receivers = mutableSetOf<ClassName>().apply {
+                        // For normal module, rollback to the DependencyHandler to prevent naming conflict.
+                        ClassName("org.gradle.api.artifacts.dsl", "DependencyHandler").let(::add)
+                        if (GradmExperimentalConfiguration.kotlinMultiplatformSupport) {
+                            ClassName("org.gradle.api", "Project").let(::add)
+                        }
+                    },
                 )
             }
         }
         .build()
 
-internal fun FileSpec.Builder.addDslProperty(name: String, receivers: Array<ClassName>): FileSpec.Builder =
+internal fun FileSpec.Builder.addDslProperty(name: String, receivers: Set<ClassName>): FileSpec.Builder =
     apply {
         receivers.forEach { className ->
             PropertySpec

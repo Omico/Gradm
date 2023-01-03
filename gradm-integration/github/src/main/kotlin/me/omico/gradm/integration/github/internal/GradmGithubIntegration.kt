@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Omico
+ * Copyright 2022-2023 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,9 @@
  */
 package me.omico.gradm.integration.github.internal
 
+import me.omico.gradm.VersionsMeta
+import me.omico.gradm.asVersionsMeta
 import me.omico.gradm.info
-import me.omico.gradm.integration.github.GradmGithubIntegrationConfigs
 import me.omico.gradm.internal.YamlArray
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.YamlObject
@@ -24,7 +25,26 @@ import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.config.MutableFlatVersions
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.require
+import me.omico.gradm.path.GradmProjectPaths
+import me.omico.gradm.path.integrationDirectory
+import me.omico.gradm.store
 import java.nio.file.Path
+import kotlin.io.path.createDirectories
+import kotlin.io.path.div
+
+internal inline val GradmProjectPaths.githubIntegrationDirectory: Path
+    get() = integrationDirectory / "github"
+
+internal inline val GradmProjectPaths.githubIntegrationVersionsMetaFile: Path
+    get() = githubIntegrationDirectory / "versions-meta.txt"
+
+internal inline val GradmProjectPaths.localGithubIntegrationVersionsMeta: VersionsMeta?
+    get() = githubIntegrationVersionsMetaFile.asVersionsMeta()
+
+internal fun GradmProjectPaths.updateLocalVersionsMeta(versionsMeta: VersionsMeta) {
+    githubIntegrationDirectory.createDirectories()
+    versionsMeta.store(githubIntegrationVersionsMetaFile)
+}
 
 internal typealias Github = YamlObject
 internal typealias GithubVersions = YamlArray
@@ -75,8 +95,8 @@ internal fun GithubVersionConfiguration(configuration: GithubVersion): GithubVer
         matchType = configuration.matchType,
     )
 
-internal fun Path.parseGithubIntegration(versions: MutableFlatVersions) =
-    asYamlDocument().github?.versions
+internal fun GradmProjectPaths.parseGithubIntegration(configFile: Path, versions: MutableFlatVersions) =
+    configFile.asYamlDocument().github?.versions
         ?.map(::GithubVersionConfiguration)
         ?.mapNotNull { configuration ->
             val tag = configuration.latestReleaseTag
@@ -103,8 +123,9 @@ internal fun Path.parseGithubIntegration(versions: MutableFlatVersions) =
                 )
         }
         ?.toMap()
-        ?.also(GradmGithubIntegrationConfigs::updateLocalVersionsMeta)
+        ?.also(::updateLocalVersionsMeta)
         ?.forEach { (key, value) -> versions[key] = value }
+        ?: Unit
 
 private val GithubVersionConfiguration.latestReleaseTag
     get() = latestReleaseTag(repository)
