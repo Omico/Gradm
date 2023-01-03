@@ -1,6 +1,6 @@
 plugins {
     `kotlin-dsl`
-    id("me.omico.gradm") version "3.0.0-SNAPSHOT"
+    id("me.omico.gradm") version "3.0.0"
 }
 
 gradm {
