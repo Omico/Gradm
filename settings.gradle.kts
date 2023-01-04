@@ -5,6 +5,7 @@ rootProject.name = "Gradm"
 pluginManagement {
     includeBuild("build-logic")
     includeBuild("build-logic/initialization")
+    includeBuild("build-logic/gradm")
     repositories {
         gradlePluginPortal {
             content {
@@ -18,6 +19,7 @@ pluginManagement {
 
 plugins {
     id("initialization")
+    id("gradm")
     id("com.gradle.enterprise") version "3.12.1"
 }
 

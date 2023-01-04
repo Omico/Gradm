@@ -4,6 +4,7 @@ rootProject.name = "build-logic"
 
 pluginManagement {
     includeBuild("initialization")
+    includeBuild("gradm")
     repositories {
         mavenCentral()
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
@@ -11,7 +12,8 @@ pluginManagement {
 }
 
 plugins {
-    id("initialization.gradm")
+    id("initialization")
+    id("gradm")
 }
 
 include(":convention")

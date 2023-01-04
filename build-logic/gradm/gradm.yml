@@ -49,3 +49,8 @@ dependencies:
       snakeyaml-engine:
         alias: libs.snakeyaml
         version: ${versions.snakeyaml}
+  noUpdates:
+    me.omico.age:
+      age-dsl:
+        alias: me.omico.age.dsl
+        version: ${versions.plugins.age}
