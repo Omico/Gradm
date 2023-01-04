@@ -2,8 +2,11 @@ plugins {
     id("me.omico.age.project.maven-publish")
 }
 
-plugins.withId("java") {
-    extensions.findByType<GradlePluginDevelopmentExtension>()?.apply {
-        isAutomatedPublishing = false
-    }
+extensions.findByType<JavaPluginExtension>()?.apply {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+extensions.findByType<GradlePluginDevelopmentExtension>()?.apply {
+    isAutomatedPublishing = false
 }
