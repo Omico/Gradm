@@ -32,7 +32,8 @@ class IntegrationTesting {
                 arguments = arrayOf(
                     "clean",
                     ":gradm:gradmDependencyUpdates",
-                    "build", "--no-daemon",
+                    "build",
+                    "--no-daemon",
                 ),
             )
         }
@@ -44,9 +45,11 @@ class IntegrationTesting {
             gradleCommand(
                 directory = "../examples/gradm-with-composite-build",
                 arguments = arrayOf(
-                    "spotlessApply", "clean",
+                    "spotlessApply",
+                    "clean",
                     ":gradm:gradmDependencyUpdates",
-                    "build", "--no-daemon",
+                    "build",
+                    "--no-daemon",
                 ),
             )
         }
