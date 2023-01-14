@@ -15,11 +15,7 @@
  */
 package me.omico.gradm.internal.maven
 
-import org.w3c.dom.Node
-import org.w3c.dom.NodeList
 import java.nio.file.Path
-import javax.xml.parsers.DocumentBuilder
-import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.io.path.absolutePathString
 
 data class MavenMetadata(
@@ -42,8 +38,3 @@ internal fun MavenMetadata(metadataPath: Path): MavenMetadata =
                     .mapNotNull { if (it.nodeName == "version") it.textContent else null },
             )
         }
-
-private val documentBuilder: DocumentBuilder by lazy { DocumentBuilderFactory.newInstance().newDocumentBuilder() }
-
-private fun <T> NodeList.mapNotNull(transform: (Node) -> T?): List<T> =
-    (0 until length).mapNotNull { transform(item(it)) }

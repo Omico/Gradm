@@ -39,10 +39,15 @@ val YamlDocument.dependencies: List<Dependency>
                             noSpecificVersion -> null
                             else -> attributes.find<String>("version").let(versions::resolveVariable)
                         }
+                        val bom = attributes.find("bom", false)
+                        if (bom && !repository.noUpdates) {
+                            requireNotNull(version) { "BOM dependency must have a version." }
+                        }
                         Dependency(
                             repository = repository.url,
                             noUpdates = repository.noUpdates,
                             noSpecificVersion = noSpecificVersion,
+                            bom = bom,
                             group = group,
                             artifact = artifact,
                             alias = attributes.require("alias"),
@@ -57,6 +62,7 @@ data class Dependency(
     val repository: String,
     val noUpdates: Boolean,
     val noSpecificVersion: Boolean,
+    val bom: Boolean,
     val group: String,
     val artifact: String,
     val alias: String,

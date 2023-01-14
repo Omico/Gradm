@@ -25,8 +25,10 @@ import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.collectAllDependencies
 import me.omico.gradm.internal.config.localMetadataFile
+import me.omico.gradm.internal.maven.bom.resolveBomVersionsMeta
 import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.metadataDirectory
+import org.gradle.api.Project
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.absolute
@@ -34,7 +36,7 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.writeBytes
 import kotlin.streams.toList
 
-fun resolveVersionsMeta(
+fun Project.resolveVersionsMeta(
     gradmProjectPaths: GradmProjectPaths,
     document: YamlDocument,
     refresh: Boolean = false,
@@ -45,7 +47,7 @@ fun resolveVersionsMeta(
         .also { resolveMavenMetadataFiles(it, metadataFolder, refresh) }
         .map { MavenMetadata(it.value) }
         .also { document.refreshAvailableUpdates(gradmProjectPaths, it) }
-        .associate { it.module to it.latestVersion }
+        .associate { it.module to it.latestVersion } + resolveBomVersionsMeta(document)
 }
 
 private fun YamlDocument.collectAllRequiredMetadata(metadataFolder: Path): Map<Dependency, Path> =
