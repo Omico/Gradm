@@ -46,7 +46,7 @@ abstract class GradmGenerator : GradmTask() {
         formatGradmConfig(gradmConfigFile)
         outputDirectory.clearDirectory()
         val document = gradmConfigFile.asYamlDocument()
-        val versionsMeta = resolveVersionsMeta(gradmProjectPaths, document)
+        val versionsMeta = project.resolveVersionsMeta(gradmProjectPaths, document)
         generateDependenciesSourceFiles(outputDirectory, document, versionsMeta)
         generateVersionsSourceFile(gradmProjectPaths, outputDirectory, document)
         generatePluginSourceFiles(outputDirectory, document)

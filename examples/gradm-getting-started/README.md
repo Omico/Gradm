@@ -90,6 +90,21 @@ dependencies:
         # Generated code won't contain version.
         # For example, androidx.activity:activity-ktx.
         noSpecificVersion: true
+    androidx.compose:
+      # To let Gradm recognize this dependency is a BOM dependency,
+      # you need to specify a "bom: true" property like the one below.
+      # You don't need to add something like "implementation(platform(androidx.compose.bom))".
+      # Note that if you want to use the version defined in BOM,
+      # you need to add "noSpecificVersion: true".
+      compose-bom:
+        alias: androidx.compose.bom
+        version: ${versions.androidx.compose.bom}
+        bom: true
+      # Gradm will use the version defined in BOM.
+      androidx.compose.animation:
+        animation:
+          alias: androidx.compose.animation
+          noSpecificVersion: true
   noUpdates: # use build-in repo "noUpdates"
     com.example.group:
       noUpdates:

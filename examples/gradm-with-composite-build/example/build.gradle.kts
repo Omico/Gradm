@@ -36,7 +36,6 @@ dependencies {
     // Material
     compileOnly(material)
     // Square
-    compileOnly(platform(okhttp.bom))
     compileOnly(okhttp)
     compileOnly(okhttp.dnsOverHttps)
     compileOnly(okhttp.interceptor.logging)
