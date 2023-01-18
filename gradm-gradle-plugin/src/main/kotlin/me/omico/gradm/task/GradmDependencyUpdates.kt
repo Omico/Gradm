@@ -33,6 +33,6 @@ abstract class GradmDependencyUpdates : GradmTask() {
         GradmConfiguration.requireRefresh = true
         val gradmConfigFile = configFileProperty.get().asFile.toPath()
         val document = gradmConfigFile.asYamlDocument()
-        project.resolveVersionsMeta(project.gradmProjectPaths, document, refresh = true)
+        project.resolveVersionsMeta(project.gradmProjectPaths, document)
     }
 }

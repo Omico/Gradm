@@ -39,12 +39,11 @@ import kotlin.streams.toList
 fun Project.resolveVersionsMeta(
     gradmProjectPaths: GradmProjectPaths,
     document: YamlDocument,
-    refresh: Boolean = false,
 ): VersionsMeta = run {
     val metadataFolder = gradmProjectPaths.metadataDirectory
     metadataFolder.createDirectories()
     document.collectAllRequiredMetadata(metadataFolder)
-        .also { resolveMavenMetadataFiles(it, metadataFolder, refresh) }
+        .also { resolveMavenMetadataFiles(it, metadataFolder) }
         .map { MavenMetadata(it.value) }
         .also { document.refreshAvailableUpdates(gradmProjectPaths, it) }
         .associate { it.module to it.latestVersion } + resolveBomVersionsMeta(document)
@@ -59,7 +58,6 @@ private fun YamlDocument.collectAllRequiredMetadata(metadataFolder: Path): Map<D
 private fun resolveMavenMetadataFiles(
     requiredMavenMetadataMap: Map<Dependency, Path>,
     metadataFolder: Path,
-    refresh: Boolean = false,
 ) {
     val cachedMavenMetadataPaths = Files.walk(metadataFolder)
         .filter { it.endsWith("maven-metadata.xml") }
@@ -67,7 +65,7 @@ private fun resolveMavenMetadataFiles(
         .toList()
     runBlocking {
         val mavenMetadataMap = when {
-            refresh -> requiredMavenMetadataMap
+            GradmConfiguration.requireRefresh -> requiredMavenMetadataMap
             else -> requiredMavenMetadataMap.filterNot { cachedMavenMetadataPaths.contains(it.value) }
         }
         require(!GradmConfiguration.offline || mavenMetadataMap.isEmpty()) {
