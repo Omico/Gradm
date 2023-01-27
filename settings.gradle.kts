@@ -3,7 +3,6 @@
 rootProject.name = "Gradm"
 
 pluginManagement {
-    includeBuild("build-logic")
     includeBuild("build-logic/initialization")
     includeBuild("build-logic/gradm")
     repositories {
@@ -30,6 +29,8 @@ gradleEnterprise {
         publishAlwaysIf(!gradle.startParameter.isOffline)
     }
 }
+
+includeBuild("build-logic")
 
 include(":gradm-codegen")
 include(":gradm-gradle-plugin")
