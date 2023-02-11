@@ -19,10 +19,5 @@ import me.omico.gradm.GradmExperimentalConfiguration
 import me.omico.gradm.GradmExperimentalExtension
 
 internal abstract class GradmExperimentalExtensionImpl : GradmExperimentalExtension {
-
-    override var kotlinMultiplatformSupport: Boolean
-        get() = GradmExperimentalConfiguration.kotlinMultiplatformSupport
-        set(value) {
-            GradmExperimentalConfiguration.kotlinMultiplatformSupport = value
-        }
+    override var kotlinMultiplatformSupport: Boolean by GradmExperimentalConfiguration::kotlinMultiplatformSupport
 }

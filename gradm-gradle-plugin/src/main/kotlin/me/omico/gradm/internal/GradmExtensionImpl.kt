@@ -17,9 +17,12 @@ package me.omico.gradm.internal
 
 import me.omico.gradm.GradmConfiguration
 import me.omico.gradm.GradmExtension
+import me.omico.gradm.GradmGeneratedPluginType
+import me.omico.gradm.createGradmGeneratedPluginDeclaration
 import org.gradle.api.Project
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
+import org.gradle.plugin.devel.PluginDeclaration
 import javax.inject.Inject
 
 internal abstract class GradmExtensionImpl @Inject constructor(
@@ -27,18 +30,13 @@ internal abstract class GradmExtensionImpl @Inject constructor(
     pluginDevelopmentExtension: GradlePluginDevelopmentExtension,
 ) : GradmExtension {
 
-    private val pluginDeclaration = pluginDevelopmentExtension.plugins.create("gradm") {
-        id = "me.omico.gradm.generated"
-        implementationClass = "me.omico.gradm.generated.GradmPlugin"
+    private val pluginDeclaration: PluginDeclaration by lazy {
+        pluginDevelopmentExtension.createGradmGeneratedPluginDeclaration(GradmGeneratedPluginType.General)
     }
 
     private val configFileProperty: RegularFileProperty = project.objects.fileProperty()
 
-    override var pluginId: String
-        get() = pluginDeclaration.id
-        set(value) {
-            pluginDeclaration.id = value
-        }
+    override var pluginId: String by pluginDeclaration::id
 
     override var configFilePath: String
         get() = configFileProperty.asFile.getOrElse(project.file("gradm.yml")).absolutePath
@@ -49,9 +47,5 @@ internal abstract class GradmExtensionImpl @Inject constructor(
             configFileProperty.set(file)
         }
 
-    override var debug: Boolean
-        get() = GradmConfiguration.debug
-        set(value) {
-            GradmConfiguration.debug = value
-        }
+    override var debug: Boolean by GradmConfiguration::debug
 }

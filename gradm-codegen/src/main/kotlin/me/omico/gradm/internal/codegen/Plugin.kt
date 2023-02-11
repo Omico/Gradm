@@ -20,40 +20,51 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeSpec
+import me.omico.gradm.GradmGeneratedPluginType
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.plugins
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
 import java.nio.file.Path
 
-fun generatePluginSourceFiles(
-    generatedSourcesDirectory: Path,
-    document: YamlDocument,
-) {
-    FileSpec.builder("me.omico.gradm.generated", "GradmPlugin")
-        .addSuppressWarningTypes()
-        .addGradmComment()
-        .apply {
-            TypeSpec.classBuilder("GradmPlugin")
-                .addSuperinterface(Plugin::class.parameterizedBy(Settings::class))
-                .addOverrideApplyFunction(document)
-                .build()
-                .also(::addType)
-        }
-        .build()
-        .writeTo(generatedSourcesDirectory)
-}
+fun generatePluginSourceFile(generatedSourcesDirectory: Path, document: YamlDocument) =
+    generatePluginSourceFile<Settings>(
+        generatedSourcesDirectory = generatedSourcesDirectory,
+        type = GradmGeneratedPluginType.General,
+        overrideApplyFunctionBuilder = {
+            beginControlFlow("target.pluginManagement.plugins")
+            document.plugins
+                .sortedBy { plugin -> plugin.id }
+                .forEach { plugin -> addStatement("id(\"${plugin.id}\").version(\"${plugin.version}\")") }
+            endControlFlow()
+        },
+    )
 
-private fun TypeSpec.Builder.addOverrideApplyFunction(document: YamlDocument): TypeSpec.Builder =
+private inline fun <reified T> generatePluginSourceFile(
+    generatedSourcesDirectory: Path,
+    type: GradmGeneratedPluginType,
+    overrideApplyFunctionBuilder: FunSpec.Builder.() -> Unit = {},
+) = FileSpec.builder(type.packageName, type.className)
+    .addSuppressWarningTypes()
+    .addGradmComment()
+    .apply {
+        TypeSpec.classBuilder(type.className)
+            .addSuperinterface(Plugin::class.parameterizedBy(T::class))
+            .addOverrideApplyFunction<T>(overrideApplyFunctionBuilder)
+            .build()
+            .also(::addType)
+    }
+    .build()
+    .writeTo(generatedSourcesDirectory)
+
+private inline fun <reified T> TypeSpec.Builder.addOverrideApplyFunction(
+    overrideApplyFunctionBuilder: FunSpec.Builder.() -> Unit = {},
+): TypeSpec.Builder =
     apply {
         FunSpec.builder("apply")
             .addModifiers(KModifier.OVERRIDE)
-            .addParameter("target", Settings::class)
-            .apply {
-                document.plugins.forEach { plugin ->
-                    addStatement("target.pluginManagement.plugins.id(\"${plugin.id}\").version(\"${plugin.version}\")")
-                }
-            }
+            .addParameter("target", T::class)
+            .apply(overrideApplyFunctionBuilder)
             .build()
             .also(::addFunction)
     }

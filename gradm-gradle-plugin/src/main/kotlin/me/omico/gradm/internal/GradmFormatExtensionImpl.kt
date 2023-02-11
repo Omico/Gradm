@@ -19,16 +19,6 @@ import me.omico.gradm.GradmFormatConfiguration
 import me.omico.gradm.GradmFormatExtension
 
 internal abstract class GradmFormatExtensionImpl : GradmFormatExtension {
-
-    override var enabled: Boolean
-        get() = GradmFormatConfiguration.enabled
-        set(value) {
-            GradmFormatConfiguration.enabled = value
-        }
-
-    override var indent: Int
-        get() = GradmFormatConfiguration.indent
-        set(value) {
-            GradmFormatConfiguration.indent = value
-        }
+    override var enabled: Boolean by GradmFormatConfiguration::enabled
+    override var indent: Int by GradmFormatConfiguration::indent
 }

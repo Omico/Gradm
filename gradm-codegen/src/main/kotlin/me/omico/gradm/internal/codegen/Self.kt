@@ -26,7 +26,7 @@ import org.gradle.api.file.ConfigurableFileCollection
 import java.nio.file.Path
 import kotlin.io.path.invariantSeparatorsPathString
 
-fun generateSelfSourceFiles(
+fun generateSelfSourceFile(
     gradmProjectPaths: GradmProjectPaths,
     generatedSourcesDirectory: Path,
 ) {
