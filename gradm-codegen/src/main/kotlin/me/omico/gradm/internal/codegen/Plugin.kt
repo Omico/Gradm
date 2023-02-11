@@ -35,7 +35,7 @@ fun generatePluginSourceFile(generatedSourcesDirectory: Path, document: YamlDocu
             beginControlFlow("target.pluginManagement.plugins")
             document.plugins
                 .sortedBy { plugin -> plugin.id }
-                .forEach { plugin -> addStatement("id(\"${plugin.id}\").version(\"${plugin.version}\")") }
+                .forEach { plugin -> addStatement("id(\"${plugin.id}\").version(\"${plugin.version}\").apply(false)") }
             endControlFlow()
         },
     )
