@@ -1,5 +1,5 @@
 versions:
-  junit: "5.9.1"
+  junit: "5.9.2"
   kotlin: "1.7.10"
   kotlinpoet: "1.12.0"
   kotlinx:
@@ -7,8 +7,8 @@ versions:
     serialization: "1.4.1"
   plugins:
     age: "1.0.0-SNAPSHOT"
-    spotless: "6.12.1"
-  snakeyaml: "2.5"
+    spotless: "6.15.0"
+  snakeyaml: "2.6"
 
 repositories:
   gradlePluginPortal:
