@@ -132,3 +132,6 @@ internal fun FlatVersions.resolveVariable(version: String?): String? =
         ?.groupValues?.getOrNull(1)
         ?.let { this[it] }
         ?: version
+
+fun matchesVariableVersion(version: String): Boolean =
+    versionVariableRegex.matches(version)

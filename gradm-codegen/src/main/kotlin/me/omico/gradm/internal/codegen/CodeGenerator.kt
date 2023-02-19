@@ -17,6 +17,8 @@ package me.omico.gradm.internal.codegen
 
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
+import me.omico.gradm.VersionsMeta
+import me.omico.gradm.internal.config.matchesVariableVersion
 import java.util.Locale
 
 private val defaultSuppressWarningTypes = arrayOf(
@@ -47,3 +49,10 @@ internal fun String.camelCase() =
     split("-", "_")
         .mapIndexed { index, s -> if (index == 0) s else s.capitalize() }
         .joinToString("")
+
+internal fun VersionsMeta.resolveVariable(module: String, version: String?): String? =
+    when {
+        version == null -> null
+        matchesVariableVersion(version) -> this[module]
+        else -> version
+    }

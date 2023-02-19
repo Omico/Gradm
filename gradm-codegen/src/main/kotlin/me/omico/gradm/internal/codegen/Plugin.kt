@@ -21,13 +21,14 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeSpec
 import me.omico.gradm.GradmGeneratedPluginType
+import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.plugins
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
 import java.nio.file.Path
 
-fun generatePluginSourceFile(generatedSourcesDirectory: Path, document: YamlDocument) =
+fun generatePluginSourceFile(generatedSourcesDirectory: Path, document: YamlDocument, versionsMeta: VersionsMeta) =
     generatePluginSourceFile<Settings>(
         generatedSourcesDirectory = generatedSourcesDirectory,
         type = GradmGeneratedPluginType.General,
@@ -35,7 +36,10 @@ fun generatePluginSourceFile(generatedSourcesDirectory: Path, document: YamlDocu
             beginControlFlow("target.pluginManagement.plugins")
             document.plugins
                 .sortedBy { plugin -> plugin.id }
-                .forEach { plugin -> addStatement("id(\"${plugin.id}\").version(\"${plugin.version}\").apply(false)") }
+                .forEach { plugin ->
+                    val version = versionsMeta.resolveVariable(plugin.module, plugin.version)
+                    addStatement("id(\"${plugin.id}\").version(\"${version}\").apply(false)")
+                }
             endControlFlow()
         },
     )
