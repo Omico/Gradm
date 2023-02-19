@@ -49,7 +49,7 @@ abstract class GradmGenerator : GradmTask() {
         val versionsMeta = project.resolveVersionsMeta(gradmProjectPaths, document)
         generateDependenciesSourceFiles(outputDirectory, document, versionsMeta)
         generateVersionsSourceFile(gradmProjectPaths, outputDirectory, document)
-        generatePluginSourceFile(outputDirectory, document)
+        generatePluginSourceFile(outputDirectory, document, versionsMeta)
         generateSelfSourceFile(gradmProjectPaths, outputDirectory)
     }
 }

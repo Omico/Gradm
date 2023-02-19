@@ -135,7 +135,10 @@ private fun CodegenDependencies.addDependency(
                     hasParent = hasParent,
                     group = dependency.group,
                     artifact = dependency.artifact,
-                    version = dependency.version ?: versionsMeta[dependency.module],
+                    version = when {
+                        dependency.noSpecificVersion -> versionsMeta[dependency.module]
+                        else -> versionsMeta.resolveVariable(dependency.module, dependency.version)
+                    },
                 )
                 .also { put(alias, it) }
     }
