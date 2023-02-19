@@ -27,11 +27,13 @@ import me.omico.gradm.task.GradmDependencyUpdates
 import me.omico.gradm.task.GradmGenerator
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.registerIfAbsent
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 
 class GradmPlugin : Plugin<Project> {
@@ -62,14 +64,24 @@ class GradmPlugin : Plugin<Project> {
             name = "experimental",
             instanceType = GradmExperimentalExtensionImpl::class,
         )
-        configureGradmGenerator(gradmExtension)
-        configureGradmDependencyUpdates(gradmExtension)
+        val gradmWorkerServiceProvider = gradle.sharedServices.registerIfAbsent(
+            name = "gradmWorkerService",
+            implementationType = GradmWorkerService::class,
+            configureAction = {},
+        )
+        configureGradmGenerator(gradmExtension, gradmWorkerServiceProvider)
+        configureGradmDependencyUpdates(gradmExtension, gradmWorkerServiceProvider)
         GradmConfiguration.offline = gradle.startParameter.isOffline
     }
 }
 
-private fun Project.configureGradmGenerator(gradmExtension: GradmExtension) {
+private fun Project.configureGradmGenerator(
+    gradmExtension: GradmExtension,
+    gradmWorkerServiceProvider: Provider<GradmWorkerService>,
+) {
     val generateGradmSources = tasks.register<GradmGenerator>("generateGradmSources") {
+        usesService(gradmWorkerServiceProvider)
+        workerServiceProperty.set(gradmWorkerServiceProvider)
         configFileProperty.convention { file(gradmExtension.configFilePath) }
         outputDirectoryProperty.convention(gradmGeneratedSourcesDirectory)
     }
@@ -77,9 +89,13 @@ private fun Project.configureGradmGenerator(gradmExtension: GradmExtension) {
     sourceSets["main"].java.srcDir(generateGradmSources.flatMap(GradmGenerator::outputDirectoryProperty))
 }
 
-private fun Project.configureGradmDependencyUpdates(gradmExtension: GradmExtension) {
+private fun Project.configureGradmDependencyUpdates(
+    gradmExtension: GradmExtension,
+    gradmWorkerServiceProvider: Provider<GradmWorkerService>,
+) {
     tasks.register<GradmDependencyUpdates>("gradmDependencyUpdates") {
+        workerServiceProperty.set(gradmWorkerServiceProvider)
+        usesService(gradmWorkerServiceProvider)
         configFileProperty.convention { file(gradmExtension.configFilePath) }
-        finalizedBy(tasks["generateGradmSources"])
     }
 }

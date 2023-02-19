@@ -15,7 +15,6 @@
  */
 package me.omico.gradm.internal.maven
 
-import me.omico.gradm.info
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.dependencies
@@ -29,7 +28,6 @@ import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.updatesAvailableFile
 import me.omico.gradm.path.updatesDirectory
 import me.omico.gradm.utility.deleteDirectory
-import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 
@@ -101,7 +99,6 @@ internal fun YamlDocument.refreshAvailableUpdates(
     with(gradmProjectPaths) {
         updatesDirectory.createDirectories()
         updatesAvailableFile.writeText(mavenUpdatesContent)
-        info { "Available updates found, see ${updatesAvailableFile.absolutePathString()}" }
     }
 }
 
