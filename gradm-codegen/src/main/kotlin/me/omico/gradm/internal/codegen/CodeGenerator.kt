@@ -17,6 +17,7 @@ package me.omico.gradm.internal.codegen
 
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.config.matchesVariableVersion
 import java.util.Locale
@@ -41,6 +42,16 @@ internal fun FileSpec.Builder.addGradmComment(): FileSpec.Builder =
 
         """.trimIndent(),
     )
+
+internal fun FunSpec.Builder.controlFlow(
+    controlFlow: String,
+    vararg args: Any,
+    block: FunSpec.Builder.() -> Unit,
+) {
+    beginControlFlow(controlFlow, args)
+    apply(block)
+    endControlFlow()
+}
 
 internal fun String.capitalize() =
     replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }

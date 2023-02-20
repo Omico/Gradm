@@ -33,14 +33,7 @@ fun generatePluginSourceFile(generatedSourcesDirectory: Path, document: YamlDocu
         generatedSourcesDirectory = generatedSourcesDirectory,
         type = GradmGeneratedPluginType.General,
         overrideApplyFunctionBuilder = {
-            beginControlFlow("target.pluginManagement.plugins")
-            document.plugins
-                .sortedBy { plugin -> plugin.id }
-                .forEach { plugin ->
-                    val version = versionsMeta.resolveVariable(plugin.module, plugin.version)
-                    addStatement("id(\"${plugin.id}\").version(\"${version}\").apply(false)")
-                }
-            endControlFlow()
+            declarePlugins(document, versionsMeta)
         },
     )
 
@@ -71,4 +64,14 @@ private inline fun <reified T> TypeSpec.Builder.addOverrideApplyFunction(
             .apply(overrideApplyFunctionBuilder)
             .build()
             .also(::addFunction)
+    }
+
+private fun FunSpec.Builder.declarePlugins(document: YamlDocument, versionsMeta: VersionsMeta) =
+    controlFlow("target.pluginManagement.plugins") {
+        document.plugins
+            .sortedBy { plugin -> plugin.id }
+            .forEach { plugin ->
+                val version = versionsMeta.resolveVariable(plugin.module, plugin.version)
+                addStatement("id(\"${plugin.id}\").version(\"${version}\").apply(false)")
+            }
     }
