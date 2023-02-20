@@ -15,41 +15,21 @@
  */
 package me.omico.gradm.task
 
-import me.omico.gradm.internal.asYamlDocument
-import me.omico.gradm.internal.codegen.generateDependenciesSourceFiles
-import me.omico.gradm.internal.codegen.generatePluginSourceFile
-import me.omico.gradm.internal.codegen.generateSelfSourceFile
-import me.omico.gradm.internal.codegen.generateVersionsSourceFile
-import me.omico.gradm.internal.config.format.formatGradmConfig
-import me.omico.gradm.internal.maven.resolveVersionsMeta
-import me.omico.gradm.path.gradmProjectPaths
-import me.omico.gradm.utility.clearDirectory
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
 abstract class GradmGenerator : GradmTask() {
 
-    abstract val configFileProperty: RegularFileProperty
-        @InputFile get
-
     abstract val outputDirectoryProperty: DirectoryProperty
         @OutputDirectory get
 
     @TaskAction
-    fun generate() {
-        val gradmConfigFile = configFileProperty.get().asFile.toPath()
-        val outputDirectory = outputDirectoryProperty.asFile.get().toPath()
-        val gradmProjectPaths = project.gradmProjectPaths
-        formatGradmConfig(gradmConfigFile)
-        outputDirectory.clearDirectory()
-        val document = gradmConfigFile.asYamlDocument()
-        val versionsMeta = project.resolveVersionsMeta(gradmProjectPaths, document)
-        generateDependenciesSourceFiles(outputDirectory, document, versionsMeta)
-        generateVersionsSourceFile(gradmProjectPaths, outputDirectory, document)
-        generatePluginSourceFile(outputDirectory, document, versionsMeta)
-        generateSelfSourceFile(gradmProjectPaths, outputDirectory)
+    fun execute() {
+        workerService.generate(
+            project = project,
+            gradmConfigFile = gradmConfigFile,
+            outputDirectory = outputDirectoryProperty.asFile.get().toPath(),
+        )
     }
 }

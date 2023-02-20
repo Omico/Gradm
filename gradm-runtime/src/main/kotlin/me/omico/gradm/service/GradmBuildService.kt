@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Omico
+ * Copyright 2023 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.task
+package me.omico.gradm.service
 
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.services.BuildService
+import org.gradle.api.services.BuildServiceParameters
 
-abstract class GradmDependencyUpdates : GradmTask() {
-
-    @TaskAction
-    fun execute() {
-        workerService.refresh(
-            project = project,
-            gradmConfigFile = gradmConfigFile,
-        )
-    }
-}
+interface GradmBuildService<Parameters : BuildServiceParameters> : BuildService<Parameters>, AutoCloseable
