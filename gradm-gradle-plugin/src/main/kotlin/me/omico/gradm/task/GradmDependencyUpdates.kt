@@ -15,13 +15,14 @@
  */
 package me.omico.gradm.task
 
+import me.omico.gradm.GradmWorkerService
 import org.gradle.api.tasks.TaskAction
 
-abstract class GradmDependencyUpdates : GradmTask() {
+abstract class GradmDependencyUpdates : GradmTask<GradmWorkerService>() {
 
     @TaskAction
     fun execute() {
-        workerService.refresh(
+        service.refresh(
             project = project,
             gradmConfigFile = gradmConfigFile,
         )

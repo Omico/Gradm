@@ -1,5 +1,14 @@
 plugins {
     id("build-logic.android.library")
+    id("org.jetbrains.kotlin.android")
+}
+
+// Gradm type-safe project accessors substitution
+dependencies {
+    compileOnly(gradmProjects.module1)
+    compileOnly(gradmProjects.module1.sub)
+    compileOnly(gradmProjects.module2)
+    compileOnly(gradmProjects.module2.sub)
 }
 
 dependencies {

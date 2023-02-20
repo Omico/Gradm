@@ -11,4 +11,8 @@ plugins {
 
 gradm {
     debug = true
+    experimental {
+        kotlinMultiplatformSupport = true
+        typesafeProjectAccessorsSubstitution = true
+    }
 }

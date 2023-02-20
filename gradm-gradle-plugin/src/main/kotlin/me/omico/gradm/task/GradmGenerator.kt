@@ -15,18 +15,19 @@
  */
 package me.omico.gradm.task
 
+import me.omico.gradm.GradmWorkerService
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
-abstract class GradmGenerator : GradmTask() {
+abstract class GradmGenerator : GradmTask<GradmWorkerService>() {
 
     abstract val outputDirectoryProperty: DirectoryProperty
         @OutputDirectory get
 
     @TaskAction
     fun execute() {
-        workerService.generate(
+        service.generate(
             project = project,
             gradmConfigFile = gradmConfigFile,
             outputDirectory = outputDirectoryProperty.asFile.get().toPath(),

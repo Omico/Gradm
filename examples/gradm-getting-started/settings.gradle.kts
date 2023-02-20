@@ -39,3 +39,7 @@ gradleEnterprise {
         publishAlwaysIf(!gradle.startParameter.isOffline)
     }
 }
+
+includeBuild("gradm/typesafe")
+
+include(":example")

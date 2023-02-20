@@ -25,5 +25,6 @@ gradm {
     }
     experimental {
         kotlinMultiplatformSupport = false // default: false
+        typesafeProjectAccessorsSubstitution = true // default: false
     }
 }

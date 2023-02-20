@@ -24,3 +24,7 @@ fun info(message: () -> String) {
 fun debug(message: () -> String) {
     if (GradmConfiguration.debug) info(message)
 }
+
+fun experimentalInfo(name: String) {
+    info { "Experimental feature $name is enabled." }
+}

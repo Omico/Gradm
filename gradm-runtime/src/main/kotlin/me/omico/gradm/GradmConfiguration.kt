@@ -28,4 +28,5 @@ object GradmFormatConfiguration {
 
 object GradmExperimentalConfiguration {
     var kotlinMultiplatformSupport: Boolean = false
+    var typesafeProjectAccessorsSubstitution: Boolean = false
 }

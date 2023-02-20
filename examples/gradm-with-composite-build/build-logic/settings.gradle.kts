@@ -33,14 +33,9 @@ dependencyResolutionManagement {
     }
 }
 
-buildscript {
-    configurations.all {
-        resolutionStrategy.cacheChangingModulesFor(0, TimeUnit.SECONDS)
-    }
-}
-
 plugins {
     id("me.omico.gradm.generated")
 }
 
 include(":convention")
+include(":typesafe")

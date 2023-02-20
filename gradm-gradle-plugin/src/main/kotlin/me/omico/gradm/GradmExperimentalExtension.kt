@@ -22,4 +22,11 @@ interface GradmExperimentalExtension {
      * The default value is `false`.
      */
     var kotlinMultiplatformSupport: Boolean
+
+    /**
+     * Enable experimental typesafe project accessors substitution for Gradm.
+     *
+     * The default value is `false`.
+     */
+    var typesafeProjectAccessorsSubstitution: Boolean
 }

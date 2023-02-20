@@ -15,7 +15,7 @@
  */
 package me.omico.gradm.task
 
-import me.omico.gradm.GradmWorkerService
+import me.omico.gradm.service.GradmBuildService
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
@@ -23,8 +23,8 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import java.nio.file.Path
 
-abstract class GradmTask : DefaultTask() {
-    abstract val workerServiceProperty: Property<GradmWorkerService>
+abstract class GradmTask<Service : GradmBuildService<*>> : DefaultTask() {
+    abstract val serviceProperty: Property<Service>
         @Internal get
 
     abstract val configFileProperty: RegularFileProperty
@@ -32,8 +32,8 @@ abstract class GradmTask : DefaultTask() {
 
     final override fun getGroup(): String = "gradm"
 
-    protected val workerService: GradmWorkerService
-        @Internal get() = workerServiceProperty.get()
+    protected val service: Service
+        @Internal get() = serviceProperty.get()
 
     protected val gradmConfigFile: Path
         @Internal get() = configFileProperty.get().asFile.toPath()

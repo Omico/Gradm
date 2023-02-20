@@ -202,6 +202,7 @@ In `gradm/build.gradle.kts`:
 gradm {
     experimental {
         kotlinMultiplatformSupport = true // default: false
+        typesafeProjectAccessorsSubstitution = true // default: false
     }
 }
 ```

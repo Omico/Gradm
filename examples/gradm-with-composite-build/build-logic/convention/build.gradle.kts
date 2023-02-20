@@ -3,8 +3,12 @@ plugins {
 }
 
 dependencies {
+    implementation(gradmGeneratedJar)
+    implementation(project(":typesafe"))
+}
+
+dependencies {
     implementation(com.android.library)
     implementation(com.diffplug.spotless)
-    implementation(gradmGeneratedJar)
     implementation(me.omico.age.spotless)
 }

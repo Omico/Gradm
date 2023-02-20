@@ -5,7 +5,6 @@ rootProject.name = "gradm-with-composite-build"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
-    includeBuild("build-logic")
     includeBuild("build-logic/gradm")
     repositories {
         google()
@@ -53,4 +52,10 @@ gradleEnterprise {
     }
 }
 
+includeBuild("build-logic")
+
 include(":example")
+include(":module1")
+include(":module1:sub")
+include(":module2")
+include(":module2:sub")

@@ -32,6 +32,13 @@ sealed class GradmGeneratedPluginType(
         packageName = "me.omico.gradm.generated",
         className = "GradmPlugin",
     )
+
+    object Typesafe : GradmGeneratedPluginType(
+        name = "gradmTypesafeGenerated",
+        pluginId = "me.omico.gradm.typesafe.generated",
+        packageName = "me.omico.gradm.typesafe.generated",
+        className = "GradmTypesafePlugin",
+    )
 }
 
 fun GradlePluginDevelopmentExtension.createGradmGeneratedPluginDeclaration(type: GradmGeneratedPluginType): PluginDeclaration =

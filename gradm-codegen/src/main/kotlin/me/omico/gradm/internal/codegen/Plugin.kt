@@ -37,6 +37,12 @@ fun generatePluginSourceFile(generatedSourcesDirectory: Path, document: YamlDocu
         },
     )
 
+fun generateTypesafePluginSourceFile(generatedSourcesDirectory: Path) =
+    generatePluginSourceFile<Any>(
+        generatedSourcesDirectory = generatedSourcesDirectory,
+        type = GradmGeneratedPluginType.Typesafe,
+    )
+
 private inline fun <reified T> generatePluginSourceFile(
     generatedSourcesDirectory: Path,
     type: GradmGeneratedPluginType,
