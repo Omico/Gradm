@@ -25,10 +25,6 @@ allprojects {
                 yearSeparator("-")
             },
         )
-        kotlinGradle(
-            additionalExcludeTargets = setOf(
-                ".gradm/**/*.gradle.kts",
-            ),
-        )
+        kotlinGradle()
     }
 }
