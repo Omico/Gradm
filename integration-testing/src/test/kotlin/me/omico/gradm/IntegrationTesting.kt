@@ -47,7 +47,7 @@ class IntegrationTesting {
                 arguments = arrayOf(
                     "spotlessApply",
                     "clean",
-                    ":gradm:gradmDependencyUpdates",
+                    ":build-logic:gradm:gradmDependencyUpdates",
                     "build",
                     "--no-daemon",
                 ),

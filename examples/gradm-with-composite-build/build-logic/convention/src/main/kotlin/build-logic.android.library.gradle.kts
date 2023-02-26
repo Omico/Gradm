@@ -5,11 +5,10 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
     namespace = "me.omico.gradm.example"
     defaultConfig {
         minSdk = 21
-        targetSdk = 32
     }
     composeOptions {
         // You must add gradmGeneratedJar to dependencies, otherwise you won't be able to use.

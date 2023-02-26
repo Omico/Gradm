@@ -7,5 +7,4 @@ dependencies {
     implementation(gradmGeneratedJar)
     implementation(me.omico.age.dsl)
     implementation(me.omico.age.spotless)
-    implementation(me.omico.age.project)
 }

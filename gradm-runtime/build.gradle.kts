@@ -6,7 +6,7 @@ plugins {
 kotlin {
     target.compilations.all {
         kotlinOptions {
-            jvmTarget = "1.8"
+            jvmTarget = "11"
         }
     }
     sourceSets["main"].kotlin.srcDir("$buildDir/generated/sources/kotlinTemplates")
