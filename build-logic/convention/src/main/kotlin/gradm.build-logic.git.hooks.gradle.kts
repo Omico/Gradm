@@ -1,20 +1,20 @@
-import org.gradle.internal.os.OperatingSystem
-import java.nio.file.Files
+import me.omico.build.gitPreCommitHook
 
 plugins {
     id("gradm.build-logic.root-project.base")
 }
 
-installGitHooks()
+rootDir.addPreCommitHook()
 
-fun Project.installGitHooks() {
-    val rootDir = rootProject.rootDir
-    val target = File(rootDir, ".git/hooks")
-    val source = File(rootDir, ".git-hooks")
-    if (target.canonicalFile == source) return
-    target.deleteRecursively()
-    when {
-        OperatingSystem.current().isWindows -> source.copyRecursively(target)
-        else -> Files.createSymbolicLink(target.toPath(), source.toPath())
-    }
+fun File.addPreCommitHook() {
+    if (!gitPreCommitHook.parentFile.exists()) gitPreCommitHook.parentFile.mkdirs()
+    if (!gitPreCommitHook.isFile) gitPreCommitHook.delete()
+    buildString {
+        appendLine("#!/bin/sh")
+        appendLine()
+        if (file("gradlew").exists()) {
+            appendLine("# Chmod Gradle wrapper")
+            appendLine("git ls-files \"*gradlew\" | xargs git update-index --add --chmod=+x")
+        }
+    }.let(gitPreCommitHook::writeText)
 }
