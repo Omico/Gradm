@@ -1,18 +1,18 @@
 versions:
-  accompanist: "0.24.13-rc"
+  accompanist: "0.30.1"
   androidx:
-    activity: "1.6.0-alpha05"
-    annotation: "1.4.0"
-    appcompat: "1.6.0-alpha05"
+    activity: "1.7.0"
+    annotation: "1.6.0"
+    appcompat: "1.6.1"
     browser: "1.4.0"
-    camera: "1.2.0-alpha03"
+    camera: "1.2.2"
     compose:
-      bom: "2023.01.00"
+      bom: "2023.04.00"
       compiler: "1.4.0-alpha02"
-    core: "1.9.0-alpha05"
+    core: "1.10.0"
     datastore: "1.0.0"
-    lifecycle: "2.6.0-alpha01"
-    navigation: "2.5.0"
+    lifecycle: "2.6.1"
+    navigation: "2.5.3"
   kotlin: "1.7.10"
   material: "1.7.0-alpha03"
   okhttp: "5.0.0-alpha.10"
@@ -21,8 +21,8 @@ versions:
     cryonics: "1.0.0-SNAPSHOT"
   plugins:
     age: "1.0.0-SNAPSHOT"
-    android: "7.4.0-beta02"
-    spotless: "6.10.0"
+    android: "7.4.1"
+    spotless: "6.18.0"
 
 repositories:
   customNoUpdates:
