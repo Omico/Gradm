@@ -1,13 +1,13 @@
 versions:
   junit: "5.9.2"
-  kotlin: "1.7.10"
-  kotlinpoet: "1.12.0"
+  kotlin: "1.8.10"
+  kotlinpoet: "1.13.0"
   kotlinx:
     coroutines: "1.6.4"
-    serialization: "1.4.1"
+    serialization: "1.5.0"
   plugins:
     age: "1.0.0-SNAPSHOT"
-    spotless: "6.15.0"
+    spotless: "6.18.0"
   snakeyaml: "2.6"
 
 repositories:
