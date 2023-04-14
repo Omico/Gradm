@@ -7,12 +7,7 @@ plugins {
     id("me.omico.age.spotless")
 }
 
-when (project) {
-    rootProject -> allprojects { configureSpotless() }
-    else -> configureSpotless()
-}
-
-fun Project.configureSpotless() {
+allprojects {
     configureSpotless {
         kotlin()
         kotlinGradle()
