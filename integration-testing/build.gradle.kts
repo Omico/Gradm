@@ -3,11 +3,7 @@ plugins {
 }
 
 kotlin {
-    target.compilations.all {
-        kotlinOptions {
-            jvmTarget = "11"
-        }
-    }
+    jvmToolchain(11)
 }
 
 dependencies {

@@ -4,11 +4,7 @@ plugins {
 }
 
 kotlin {
-    target.compilations.all {
-        kotlinOptions {
-            jvmTarget = "11"
-        }
-    }
+    jvmToolchain(11)
     sourceSets["main"].kotlin.srcDir("$buildDir/generated/sources/kotlinTemplates")
 }
 
