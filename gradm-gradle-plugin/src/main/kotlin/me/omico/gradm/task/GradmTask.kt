@@ -37,4 +37,11 @@ abstract class GradmTask : DefaultTask() {
 
     protected val gradmConfigFile: Path
         @Internal get() = configFileProperty.get().asFile.toPath()
+
+    init {
+        notCompatibleWithConfigurationCache()
+    }
+
+    private fun notCompatibleWithConfigurationCache() =
+        notCompatibleWithConfigurationCache("Gradm is not compatible with the Gradle configuration cache yet.")
 }
