@@ -13,6 +13,7 @@ allprojects {
     configureSpotless {
         freshmark {
             target("**/*.md")
+            targetExclude("**/node_modules/**")
             trimTrailingWhitespace()
             indentWithSpaces()
             endWithNewline()
