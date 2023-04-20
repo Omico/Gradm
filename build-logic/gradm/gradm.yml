@@ -7,6 +7,7 @@ versions:
     serialization: "1.5.0"
   plugins:
     age: "1.0.0-SNAPSHOT"
+    gradle.enterprise: "3.13"
     spotless: "6.18.0"
   snakeyaml: "2.6"
 
@@ -19,6 +20,7 @@ repositories:
 plugins:
   gradlePluginPortal:
     com.diffplug.spotless: ${versions.plugins.spotless}
+    com.gradle.enterprise: ${versions.plugins.gradle.enterprise}
   noUpdates:
     me.omico.age.project: ${versions.plugins.age}
     me.omico.age.spotless: ${versions.plugins.age}
