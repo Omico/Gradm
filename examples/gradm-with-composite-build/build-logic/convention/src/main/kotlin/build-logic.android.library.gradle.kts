@@ -1,6 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
 plugins {
+    kotlin("android")
     id("com.android.library")
 }
 
@@ -14,4 +15,12 @@ android {
         // You must add gradmGeneratedJar to dependencies, otherwise you won't be able to use.
         kotlinCompilerExtensionVersion = versions.androidx.compose.compiler
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+}
+
+kotlin {
+    jvmToolchain(11)
 }

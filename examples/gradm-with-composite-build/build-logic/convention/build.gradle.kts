@@ -7,4 +7,5 @@ dependencies {
     implementation(com.diffplug.spotless)
     implementation(gradmGeneratedJar)
     implementation(me.omico.age.spotless)
+    implementation(org.jetbrains.kotlin.android)
 }
