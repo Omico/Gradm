@@ -13,7 +13,7 @@ val syncGradleEnterpriseVersion by tasks.registering {
                 file.readLines().forEach {
                     val line = when {
                         it.startsWith("    id(\"com.gradle.enterprise\") version") ->
-                            "    id(\"com.gradle.enterprise\") version \"${properties["versions.gradle.enterprise"]}\""
+                            "    id(\"com.gradle.enterprise\") version \"${versions.plugins.gradle.enterprise}\""
                         else -> it
                     }
                     appendLine(line)

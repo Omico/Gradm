@@ -28,7 +28,7 @@ dependencyResolutionManagement {
 }
 
 plugins {
-    `gradle-enterprise`
+    id("com.gradle.enterprise") version "3.13"
     id("gradm") // configured by GradmExtension
 }
 

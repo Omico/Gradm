@@ -41,7 +41,7 @@ buildscript {
 }
 
 plugins {
-    `gradle-enterprise`
+    id("com.gradle.enterprise") version "3.13"
     id("me.omico.gradm.generated")
 }
 
