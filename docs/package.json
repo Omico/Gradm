@@ -1,0 +1,16 @@
+{
+  "name": "gradm-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "npm:update": "npm update",
+    "docs:dev": "vuepress dev",
+    "docs:build": "vuepress build"
+  },
+  "devDependencies": {
+    "@vuepress/bundler-vite": "next",
+    "@vuepress/plugin-back-to-top": "next",
+    "@vuepress/plugin-git": "next",
+    "vuepress": "next"
+  }
+}

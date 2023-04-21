@@ -1,4 +1,4 @@
-# Gradm Getting Started
+# Getting Started
 
 ![Maven Central](https://img.shields.io/maven-central/v/me.omico.gradm/gradm-runtime)
 
