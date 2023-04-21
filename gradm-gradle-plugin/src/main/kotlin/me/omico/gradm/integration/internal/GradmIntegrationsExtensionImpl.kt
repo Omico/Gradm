@@ -22,8 +22,14 @@ import me.omico.gradm.integration.GradmIntegrationsExtension
 import org.gradle.api.Action
 
 internal abstract class GradmIntegrationsExtensionImpl : GradmIntegrationsExtension {
-    override fun apply(id: String) = apply(id) {}
-    override fun apply(id: String, configure: Action<GradmIntegrationExtension>) =
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun apply(id: String) = register(id)
+
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun apply(id: String, configure: Action<GradmIntegrationExtension>) = register(id, configure)
+
+    override fun register(id: String) = register(id) {}
+    override fun register(id: String, configure: Action<GradmIntegrationExtension>) =
         GradmIntegrationExtensionImpl(id)
             .apply(configure::execute)
             .toConfiguration()

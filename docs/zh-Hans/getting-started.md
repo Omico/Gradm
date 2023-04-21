@@ -180,7 +180,7 @@ gradm {
 ```kotlin
 gradm {
     integrations {
-        apply("github") {
+        register("github") {
             // 我们可以暂时禁用集成，而不删除整个配置。
             enabled = true // 默认为 true
             configFilePath = "gradm.integration.github.yml" // 默认为 "gradm.integration.github.yml"
