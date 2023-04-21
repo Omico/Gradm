@@ -185,7 +185,7 @@ In `gradm/build.gradle.kts`:
 ```kotlin
 gradm {
     integrations {
-        apply("github") {
+        register("github") {
             // We can temporarily disable the integration, without delete the whole configuration.
             enabled = true // default: true
             configFilePath = "gradm.integration.github.yml" // default: "gradm.integration.github.yml"

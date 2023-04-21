@@ -18,7 +18,7 @@ gradm {
         indent = 2 // default: 2
     }
     integrations {
-        apply("github") {
+        register("github") {
             enabled = true // default: true
             configFilePath = "gradm.integration.github.yml" // default: "gradm.integration.github.yml"
         }
