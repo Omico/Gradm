@@ -13,7 +13,7 @@ versions:
     datastore: "1.0.0"
     lifecycle: "2.6.1"
     navigation: "2.5.3"
-  kotlin: "1.7.10"
+  kotlin: "1.8.20"
   material: "1.7.0-alpha03"
   okhttp: "5.0.0-alpha.10"
   omico:
