@@ -8,6 +8,5 @@ kotlin {
 }
 
 dependencies {
-    api(gradleApi())
     api(projects.gradmRuntime)
 }

@@ -3,7 +3,7 @@ versions:
   kotlin: "1.8.10"
   kotlinpoet: "1.13.0"
   kotlinx:
-    coroutines: "1.6.4"
+    coroutines: "1.7.0-Beta"
     serialization: "1.5.0"
   plugins:
     age: "1.0.0-SNAPSHOT"

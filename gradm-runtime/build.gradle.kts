@@ -9,7 +9,7 @@ kotlin {
 }
 
 dependencies {
-    compileOnly(gradleApi())
+    api(gradleApi())
     implementation(libs.snakeyaml)
     implementation(libs.kotlinx.coroutines)
 }
