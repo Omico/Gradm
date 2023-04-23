@@ -16,9 +16,11 @@
 package me.omico.gradm.task
 
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 
+@CacheableTask
 abstract class GradmGenerator : GradmTask() {
 
     abstract val outputDirectoryProperty: DirectoryProperty
