@@ -6,7 +6,7 @@ buildscript {
 
 plugins {
     `kotlin-dsl`
-    id("me.omico.gradm") version "3.2.0-SNAPSHOT"
+    id("me.omico.gradm") version "3.2.0"
 }
 
 gradm {
