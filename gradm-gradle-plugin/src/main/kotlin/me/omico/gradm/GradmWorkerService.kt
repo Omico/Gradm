@@ -15,7 +15,6 @@
  */
 package me.omico.gradm
 
-import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.codegen.generateDependenciesSourceFiles
 import me.omico.gradm.internal.codegen.generatePluginSourceFile
@@ -24,11 +23,10 @@ import me.omico.gradm.internal.codegen.generateVersionsSourceFile
 import me.omico.gradm.internal.config.format.formatGradmConfig
 import me.omico.gradm.internal.maven.resolveVersionsMeta
 import me.omico.gradm.path.GradmProjectPaths
-import me.omico.gradm.path.gradmProjectPaths
 import me.omico.gradm.path.updatesAvailableFile
 import me.omico.gradm.service.GradmBuildService
 import me.omico.gradm.utility.clearDirectory
-import org.gradle.api.Project
+import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.services.BuildServiceParameters
 import java.nio.file.Files
 import java.nio.file.Path
@@ -37,29 +35,36 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
 
     private var updatesAvailableFile: Path? = null
 
-    fun generate(project: Project, gradmConfigFile: Path, outputDirectory: Path) {
+    fun generate(
+        dependencies: DependencyHandler,
+        gradmProjectPaths: GradmProjectPaths,
+        gradmConfigFile: Path,
+        outputDirectory: Path,
+    ) {
         formatGradmConfig(gradmConfigFile)
         val document = gradmConfigFile.asYamlDocument()
-        val gradmProjectPaths = project.gradmProjectPaths
-        val versionsMeta = resolveVersionsMeta(project, gradmProjectPaths, document)
+        val versionsMeta = resolveVersionsMeta(dependencies, gradmProjectPaths, document)
         outputDirectory.clearDirectory()
         generateDependenciesSourceFiles(outputDirectory, document, versionsMeta)
         generateVersionsSourceFile(gradmProjectPaths, outputDirectory, document)
         generatePluginSourceFile(outputDirectory, document, versionsMeta)
         generateSelfSourceFile(gradmProjectPaths, outputDirectory)
+        checkUpdatesAvailable(gradmProjectPaths)
     }
 
     fun refresh(
-        project: Project,
+        dependencies: DependencyHandler,
+        gradmProjectPaths: GradmProjectPaths,
         gradmConfigFile: Path,
     ) {
         GradmConfiguration.requireRefresh = true
         formatGradmConfig(gradmConfigFile)
         resolveVersionsMeta(
-            project = project,
-            gradmProjectPaths = project.gradmProjectPaths,
+            dependencies = dependencies,
+            gradmProjectPaths = gradmProjectPaths,
             document = gradmConfigFile.asYamlDocument(),
         )
+        checkUpdatesAvailable(gradmProjectPaths)
     }
 
     override fun close() {
@@ -68,16 +73,10 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
         }
     }
 
-    private fun resolveVersionsMeta(
-        project: Project,
-        gradmProjectPaths: GradmProjectPaths,
-        document: YamlDocument,
-    ): VersionsMeta =
-        project.resolveVersionsMeta(gradmProjectPaths, document)
-            .also {
-                updatesAvailableFile = when {
-                    Files.exists(gradmProjectPaths.updatesAvailableFile) -> gradmProjectPaths.updatesAvailableFile
-                    else -> null
-                }
-            }
+    private fun checkUpdatesAvailable(gradmProjectPaths: GradmProjectPaths) {
+        updatesAvailableFile = when {
+            Files.exists(gradmProjectPaths.updatesAvailableFile) -> gradmProjectPaths.updatesAvailableFile
+            else -> null
+        }
+    }
 }

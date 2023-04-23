@@ -17,6 +17,8 @@ package me.omico.gradm.path
 
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
+import org.gradle.api.file.ProjectLayout
+import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import java.nio.file.Path
 import kotlin.io.path.div
@@ -25,11 +27,10 @@ import kotlin.io.path.name
 @JvmInline
 value class GradmProjectPaths(val path: Path)
 
+fun ProjectLayout.gradmConfigFile(path: String): RegularFile = projectDirectory.file(path)
+
 inline val Project.gradmGeneratedSourcesDirectory: Provider<Directory>
     get() = layout.buildDirectory.dir("generated/sources/gradm/kotlin/main")
-
-inline val Project.gradmProjectPaths: GradmProjectPaths
-    get() = GradmProjectPaths(projectDir.toPath())
 
 inline val GradmProjectPaths.projectName: String
     get() = path.name

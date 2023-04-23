@@ -19,12 +19,12 @@ import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.dependencies
-import org.gradle.api.Project
+import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.artifacts.result.ResolvedArtifactResult
 import org.gradle.maven.MavenModule
 import org.gradle.maven.MavenPomArtifact
 
-internal fun Project.resolveBomVersionsMeta(document: YamlDocument): VersionsMeta =
+internal fun DependencyHandler.resolveBomVersionsMeta(document: YamlDocument): VersionsMeta =
     document
         .dependencies
         .filter(Dependency::bom)
@@ -32,9 +32,8 @@ internal fun Project.resolveBomVersionsMeta(document: YamlDocument): VersionsMet
         .flatMap(MavenBomPom::dependencies)
         .associate { it.module to it.version }
 
-private fun Project.MavenBomPom(dependency: Dependency): MavenBomPom =
-    dependencies
-        .createArtifactResolutionQuery()
+private fun DependencyHandler.MavenBomPom(dependency: Dependency): MavenBomPom =
+    createArtifactResolutionQuery()
         .forModule(dependency.group, dependency.artifact, dependency.version!!)
         .withArtifacts(MavenModule::class.java, MavenPomArtifact::class.java)
         .execute()
