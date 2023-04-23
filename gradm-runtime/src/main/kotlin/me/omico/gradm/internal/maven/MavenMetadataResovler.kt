@@ -28,25 +28,28 @@ import me.omico.gradm.internal.config.localMetadataFile
 import me.omico.gradm.internal.maven.bom.resolveBomVersionsMeta
 import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.metadataDirectory
-import org.gradle.api.Project
-import java.nio.file.Files
+import org.gradle.api.artifacts.dsl.DependencyHandler
 import java.nio.file.Path
+import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.absolute
 import kotlin.io.path.createDirectories
+import kotlin.io.path.isRegularFile
+import kotlin.io.path.name
+import kotlin.io.path.walk
 import kotlin.io.path.writeBytes
-import kotlin.streams.toList
 
-fun Project.resolveVersionsMeta(
+fun resolveVersionsMeta(
+    dependencies: DependencyHandler,
     gradmProjectPaths: GradmProjectPaths,
     document: YamlDocument,
 ): VersionsMeta = run {
-    val metadataFolder = gradmProjectPaths.metadataDirectory
-    metadataFolder.createDirectories()
-    document.collectAllRequiredMetadata(metadataFolder)
-        .also { resolveMavenMetadataFiles(it, metadataFolder) }
+    val metadataDirectory = gradmProjectPaths.metadataDirectory
+    metadataDirectory.createDirectories()
+    document.collectAllRequiredMetadata(metadataDirectory)
+        .also { resolveMavenMetadataFiles(it, metadataDirectory) }
         .map { MavenMetadata(it.value) }
         .also { document.refreshAvailableUpdates(gradmProjectPaths, it) }
-        .associate { it.module to it.latestVersion } + resolveBomVersionsMeta(document)
+        .associate { it.module to it.latestVersion } + dependencies.resolveBomVersionsMeta(document)
 }
 
 private fun YamlDocument.collectAllRequiredMetadata(metadataFolder: Path): Map<Dependency, Path> =
@@ -57,16 +60,13 @@ private fun YamlDocument.collectAllRequiredMetadata(metadataFolder: Path): Map<D
 
 private fun resolveMavenMetadataFiles(
     requiredMavenMetadataMap: Map<Dependency, Path>,
-    metadataFolder: Path,
+    metadataDirectory: Path,
 ) {
-    val cachedMavenMetadataPaths = Files.walk(metadataFolder)
-        .filter { it.endsWith("maven-metadata.xml") }
-        .map(Path::absolute)
-        .toList()
+    val localMetadataFiles = collectLocalMetadataFiles(metadataDirectory)
     runBlocking {
         val mavenMetadataMap = when {
             GradmConfiguration.requireRefresh -> requiredMavenMetadataMap
-            else -> requiredMavenMetadataMap.filterNot { cachedMavenMetadataPaths.contains(it.value) }
+            else -> requiredMavenMetadataMap.filterNot { localMetadataFiles.contains(it.value) }
         }
         require(!GradmConfiguration.offline || mavenMetadataMap.isEmpty()) {
             "Cannot resolve maven-metadata.xml in offline mode."
@@ -83,3 +83,11 @@ private suspend fun Dependency.downloadMetadata(metadataFile: Path) {
         writeBytes(bytes)
     }
 }
+
+@OptIn(ExperimentalPathApi::class)
+private fun collectLocalMetadataFiles(metadataDirectory: Path): List<Path> =
+    metadataDirectory.walk()
+        .filter(Path::isRegularFile)
+        .filter { it.name == "maven-metadata.xml" }
+        .map(Path::absolute)
+        .toList()

@@ -25,6 +25,7 @@ import me.omico.gradm.internal.GradmFormatExtensionImpl
 import me.omico.gradm.path.gradmGeneratedSourcesDirectory
 import me.omico.gradm.task.GradmDependencyUpdates
 import me.omico.gradm.task.GradmGenerator
+import me.omico.gradm.task.setup
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.provider.Provider
@@ -80,13 +81,11 @@ private fun Project.configureGradmGenerator(
     gradmWorkerServiceProvider: Provider<GradmWorkerService>,
 ) {
     val generateGradmSources = tasks.register<GradmGenerator>("generateGradmSources") {
-        usesService(gradmWorkerServiceProvider)
-        workerServiceProperty.set(gradmWorkerServiceProvider)
-        configFileProperty.convention { file(gradmExtension.configFilePath) }
-        outputDirectoryProperty.convention(gradmGeneratedSourcesDirectory)
+        setup(gradmExtension, gradmWorkerServiceProvider)
+        gradmGeneratedSourcesDirectoryProperty.convention(gradmGeneratedSourcesDirectory)
     }
     val sourceSets = extensions.getByType<SourceSetContainer>()
-    sourceSets["main"].java.srcDir(generateGradmSources.flatMap(GradmGenerator::outputDirectoryProperty))
+    sourceSets["main"].java.srcDir(generateGradmSources.flatMap(GradmGenerator::gradmGeneratedSourcesDirectoryProperty))
 }
 
 private fun Project.configureGradmDependencyUpdates(
@@ -94,8 +93,6 @@ private fun Project.configureGradmDependencyUpdates(
     gradmWorkerServiceProvider: Provider<GradmWorkerService>,
 ) {
     tasks.register<GradmDependencyUpdates>("gradmDependencyUpdates") {
-        workerServiceProperty.set(gradmWorkerServiceProvider)
-        usesService(gradmWorkerServiceProvider)
-        configFileProperty.convention { file(gradmExtension.configFilePath) }
+        setup(gradmExtension, gradmWorkerServiceProvider)
     }
 }

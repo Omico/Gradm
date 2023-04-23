@@ -23,15 +23,16 @@ import org.gradle.api.tasks.TaskAction
 @CacheableTask
 abstract class GradmGenerator : GradmTask() {
 
-    abstract val outputDirectoryProperty: DirectoryProperty
+    abstract val gradmGeneratedSourcesDirectoryProperty: DirectoryProperty
         @OutputDirectory get
 
     @TaskAction
     fun execute() {
         workerService.generate(
-            project = project,
+            dependencies = dependencies,
+            gradmProjectPaths = gradmProjectPaths,
             gradmConfigFile = gradmConfigFile,
-            outputDirectory = outputDirectoryProperty.asFile.get().toPath(),
+            outputDirectory = gradmGeneratedSourcesDirectoryProperty.asFile.get().toPath(),
         )
     }
 }
