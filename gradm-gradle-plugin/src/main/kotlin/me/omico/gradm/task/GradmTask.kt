@@ -21,6 +21,8 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import java.nio.file.Path
 
 abstract class GradmTask : DefaultTask() {
@@ -28,7 +30,9 @@ abstract class GradmTask : DefaultTask() {
         @Internal get
 
     abstract val configFileProperty: RegularFileProperty
-        @InputFile get
+        @PathSensitive(PathSensitivity.ABSOLUTE)
+        @InputFile
+        get
 
     final override fun getGroup(): String = "gradm"
 
