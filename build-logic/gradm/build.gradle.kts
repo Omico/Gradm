@@ -1,12 +1,12 @@
 plugins {
     `kotlin-dsl`
-    id("me.omico.gradm") version "3.1.2"
+    id("me.omico.gradm") version "3.2.1"
 }
 
 gradm {
     pluginId = "gradm"
     debug = true
     integrations {
-        apply("github")
+        register("github")
     }
 }
