@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Omico
+ * Copyright 2023 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,38 +16,18 @@
 package me.omico.gradm
 
 import me.omico.gradm.utility.gradleCommand
-import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestMethodOrder
 import org.junit.jupiter.api.assertDoesNotThrow
 
-@TestMethodOrder(MethodOrderer.MethodName::class)
-class IntegrationTesting {
-
+class GettingStartedTest {
     @Test
-    fun `test examples gradm-getting-started`() {
+    fun `test gradm-getting-started`() {
         assertDoesNotThrow {
             gradleCommand(
                 directory = "../examples/gradm-getting-started",
                 arguments = arrayOf(
                     "clean",
                     ":gradm:gradmDependencyUpdates",
-                    "build",
-                    "--no-daemon",
-                ),
-            )
-        }
-    }
-
-    @Test
-    fun `test examples gradm-with-composite-build`() {
-        assertDoesNotThrow {
-            gradleCommand(
-                directory = "../examples/gradm-with-composite-build",
-                arguments = arrayOf(
-                    "spotlessApply",
-                    "clean",
-                    ":build-logic:gradm:gradmDependencyUpdates",
                     "build",
                     "--no-daemon",
                 ),
