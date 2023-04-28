@@ -22,7 +22,7 @@ import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.config.matchesVariableVersion
 import java.util.Locale
 
-private val defaultSuppressWarningTypes = arrayOf(
+internal val defaultSuppressWarningTypes = arrayOf(
     "MemberVisibilityCanBePrivate",
     "RedundantVisibilityModifier",
     "unused",

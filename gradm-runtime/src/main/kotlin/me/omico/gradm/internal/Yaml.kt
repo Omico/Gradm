@@ -22,7 +22,7 @@ import java.nio.file.Path
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.readText
 
-typealias YamlObject = Map<String, Any>
+typealias YamlObject = Map<String, Any?>
 typealias YamlArray = List<YamlObject>
 typealias YamlDocument = YamlObject
 

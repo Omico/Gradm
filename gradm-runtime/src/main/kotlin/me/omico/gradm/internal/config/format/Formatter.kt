@@ -19,10 +19,11 @@ import me.omico.gradm.GradmFormatConfiguration
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.YamlObject
 import me.omico.gradm.internal.asYamlDocument
-import me.omico.gradm.internal.config.fixedUrl
+import me.omico.gradm.internal.config.buildInRepositories
 import me.omico.gradm.internal.config.format.node.MappingNodeScope
 import me.omico.gradm.internal.config.format.node.mapping
 import me.omico.gradm.internal.config.format.node.scalar
+import me.omico.gradm.internal.config.repositories
 import me.omico.gradm.internal.config.versionVariableRegex
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.require
@@ -59,20 +60,32 @@ fun MappingNodeScope.recursiveVersionsMapping(versions: Map<*, *>): Unit =
         }
     }
 
-@Suppress("UNCHECKED_CAST")
 fun YamlScope.repositoriesSequence(document: YamlDocument) {
-    val repositories = document.find<YamlObject>("repositories") ?: return
+    val repositories = document.repositories
+    if (repositories.isEmpty()) return
     newlineIfNeeded()
     mapping("repositories") {
-        repositories.toSortedMap().forEach { (id, attributes) ->
-            attributes as YamlObject
-            mapping(id) {
-                when {
-                    attributes.find("noUpdates", false) -> scalar("noUpdates", true)
-                    else -> scalar("url", attributes.require<String>("url").fixedUrl(), ScalarStyle.DoubleQuoted)
+        repositories
+            .filter { !it.noUpdates || it.id == "mavenLocal" }
+            .forEach { repository ->
+                mapping(repository.id) repository@{
+                    if (buildInRepositories.any { it.id == repository.id }) return@repository
+                    scalar("url", repository.url, ScalarStyle.DoubleQuoted)
                 }
             }
-        }
+        repositories.find { it.id == "noUpdates" }?.id?.let(::mapping)
+        repositories
+            .filterNot { it.id == "noUpdates" }
+            .filter { it.noUpdates && it.id != "mavenLocal" }
+            .sortedBy { it.id }
+            .forEach { repository ->
+                mapping(repository.id) {
+                    if (repository.url.isNotBlank()) {
+                        scalar("url", repository.url, ScalarStyle.DoubleQuoted)
+                    }
+                    scalar("noUpdates", true)
+                }
+            }
     }
     requireNewline = true
 }

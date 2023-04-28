@@ -23,9 +23,12 @@ import com.squareup.kotlinpoet.TypeSpec
 import me.omico.gradm.GradmGeneratedPluginType
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
+import me.omico.gradm.internal.config.buildInRepositories
 import me.omico.gradm.internal.config.plugins
+import me.omico.gradm.internal.config.repositories
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
+import java.net.URI
 import java.nio.file.Path
 
 fun generatePluginSourceFile(generatedSourcesDirectory: Path, document: YamlDocument, versionsMeta: VersionsMeta) =
@@ -34,6 +37,7 @@ fun generatePluginSourceFile(generatedSourcesDirectory: Path, document: YamlDocu
         type = GradmGeneratedPluginType.General,
         overrideApplyFunctionBuilder = {
             declarePlugins(document, versionsMeta)
+            declareDependencies(document)
         },
     )
 
@@ -42,7 +46,7 @@ private inline fun <reified T> generatePluginSourceFile(
     type: GradmGeneratedPluginType,
     overrideApplyFunctionBuilder: FunSpec.Builder.() -> Unit = {},
 ) = FileSpec.builder(type.packageName, type.className)
-    .addSuppressWarningTypes()
+    .addSuppressWarningTypes(types = defaultSuppressWarningTypes + "UnstableApiUsage")
     .addGradmComment()
     .apply {
         TypeSpec.classBuilder(type.className)
@@ -74,4 +78,18 @@ private fun FunSpec.Builder.declarePlugins(document: YamlDocument, versionsMeta:
                 val version = versionsMeta.resolveVariable(plugin.module, plugin.version)
                 addStatement("id(\"${plugin.id}\").version(\"${version}\").apply(false)")
             }
+    }
+
+private fun FunSpec.Builder.declareDependencies(document: YamlDocument) =
+    controlFlow("target.dependencyResolutionManagement.repositories") {
+        document.repositories.forEach { repository ->
+            if (repository.id == "mavenLocal") {
+                addStatement("mavenLocal()")
+                return@forEach
+            }
+            if (repository.noUpdates) return@forEach
+            buildInRepositories.find { it.id == repository.id && !it.noUpdates }
+                ?.let { addStatement("${it.id}()") }
+                ?: addStatement("maven { url = %T.create(\"${repository.url}\") }", URI::class)
+        }
     }

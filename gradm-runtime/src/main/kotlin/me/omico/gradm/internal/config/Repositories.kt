@@ -18,28 +18,18 @@ package me.omico.gradm.internal.config
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.YamlObject
 import me.omico.gradm.internal.find
-import me.omico.gradm.internal.require
 
 val YamlDocument.repositories: List<Repository>
     @Suppress("UNCHECKED_CAST")
-    get() = ArrayList<Repository>().apply {
-        add(noUpdatesRepository)
-        find<YamlObject>("repositories", emptyMap())
-            .map { (id, attributes) ->
-                attributes as YamlObject
-                val noUpdates = attributes.find("noUpdates", false)
-                val url = when {
-                    noUpdates -> ""
-                    else -> attributes.require<String>("url").fixedUrl()
-                }
-                Repository(
-                    id = id,
-                    noUpdates = noUpdates,
-                    url = url,
-                )
-            }
-            .let(::addAll)
-    }
+    get() = find<YamlObject>("repositories", emptyMap())
+        .map { (id, attributes) ->
+            val buildInRepository = buildInRepositories.find { it.id == id }
+            if (buildInRepository != null) return@map buildInRepository
+            Repository(
+                id = id,
+                attributes = attributes as YamlObject,
+            )
+        }
 
 data class Repository(
     val id: String,
@@ -47,12 +37,35 @@ data class Repository(
     val url: String,
 )
 
-internal val noUpdatesRepository: Repository =
-    Repository(
-        id = "noUpdates",
-        noUpdates = true,
-        url = "",
+val buildInRepositories: List<Repository> by lazy {
+    listOf(
+        Repository(
+            id = "google",
+            noUpdates = false,
+            url = "https://maven.google.com",
+        ),
+        Repository(
+            id = "mavenCentral",
+            noUpdates = false,
+            url = "https://repo1.maven.org/maven2",
+        ),
+        Repository(
+            id = "gradlePluginPortal",
+            noUpdates = false,
+            url = "https://plugins.gradle.org/m2",
+        ),
+        Repository(
+            id = "mavenLocal",
+            noUpdates = true,
+            url = "",
+        ),
+        Repository(
+            id = "noUpdates",
+            noUpdates = true,
+            url = "",
+        ),
     )
+}
 
 internal fun String.fixedUrl(): String =
     when {
@@ -62,3 +75,10 @@ internal fun String.fixedUrl(): String =
 
 internal fun List<Repository>.requireRepository(id: String): Repository =
     requireNotNull(find { it.id == id }) { "Repository $id not found." }
+
+private fun Repository(id: String, attributes: YamlObject): Repository =
+    Repository(
+        id = id,
+        noUpdates = attributes.find("noUpdates", false),
+        url = attributes.find<String>("url")?.fixedUrl() ?: "",
+    )

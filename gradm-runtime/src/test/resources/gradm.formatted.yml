@@ -14,10 +14,15 @@ versions:
   okhttp: "4.9.3"
 
 repositories:
+  mavenLocal:
   google:
-    url: "https://maven.google.com"
   mavenCentral:
-    url: "https://repo1.maven.org/maven2"
+  jetbrainsCompose:
+    url: "https://maven.pkg.jetbrains.space/public/p/compose/dev"
+  gradlePluginPortal:
+  noUpdates:
+  customNoUpdates:
+    noUpdates: true
 
 dependencies:
   google:

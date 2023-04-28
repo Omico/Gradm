@@ -58,7 +58,7 @@ fun MappingNodeScope.mapping(
 fun MappingNodeScope.mapping(
     key: String,
     comment: Comment = Comment(),
-    block: YamlMappingBuilder.() -> Unit,
+    block: YamlMappingBuilder.() -> Unit = {},
 ) = mapping(key, mapping(block), comment)
 
 class YamlMappingBuilder : MappingNodeScope, Builder<YamlMapping> {
