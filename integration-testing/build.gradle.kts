@@ -12,8 +12,13 @@ dependencies {
 }
 
 tasks.test {
-    rootProject.allprojects
-        .mapNotNull { project -> project.tasks.findByName("publishToMavenLocal") }
-        .forEach { task -> dependsOn(task) }
+    val requiredTasks = listOf("test", "publishToMavenLocal")
+    rootProject.allprojects {
+        requiredTasks.forEach {
+            val task = tasks.findByName(it) ?: return@forEach
+            if (task == this@test) return@forEach
+            this@test.dependsOn(task)
+        }
+    }
     useJUnitPlatform()
 }
