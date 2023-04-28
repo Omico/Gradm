@@ -2,28 +2,19 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/me.omico.gradm/gradm-runtime)
 
+Before the guidance, you must notice that the order of Gradle's repositories is matter!!! See also [Gradle's documentation](https://docs.gradle.org/current/userguide/declaring_repositories.html#sec:declaring_multiple_repositories).
+
 In `settings.gradle.kts`, add the following:
 
 ```kotlin
 pluginManagement {
     includeBuild("gradm") // include Gradm here
     repositories {
-        gradlePluginPortal {
-            content {
-                excludeGroupByRegex("me.omico.*") // reduce build time
-            }
-        }
         mavenCentral()
+        // Below two lines are optional, for Gradm's snapshots.
         mavenLocal()
-    }
-}
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-        mavenLocal()
+        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
+        gradlePluginPortal()
     }
 }
 
@@ -41,26 +32,12 @@ rootProject.name = "gradm"
 
 pluginManagement {
     repositories {
-        gradlePluginPortal {
-            content {
-                excludeGroupByRegex("me.omico.*") // reduce build time
-            }
-        }
-        mavenCentral() // for Gradm
-        mavenLocal() // only for snapshot
-    }
-}
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        // following repositories are related to which plugins you declared for Gradm
-        google()
         mavenCentral()
         mavenLocal()
+        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
+        gradlePluginPortal()
     }
 }
-
 ```
 
 Create a file named `gradm.yml` in `gradm` folder, and add the following:
@@ -69,13 +46,21 @@ Create a file named `gradm.yml` in `gradm` folder, and add the following:
 versions:
   something: "1.0.0" # create your own version
 
+# Note that the order of repositories is matter!!!
+# The purpose is to allow Gradle to correctly obtain dependencies.
+# The following repositories are build-in:
+#   google: https://maven.google.com
+#   mavenCentral: https://repo1.maven.org/maven2
+#   gradlePluginPortal: https://plugins.gradle.org/m2
+#   mavenLocal:
+#   noUpdates:
 repositories:
-  google:
-    url: https://maven.google.com
+  google: # a repo named "google" is already build-in.
+  mavenCentral:
+  mavenLocal:
   your-repo: # your own repo id
     url: https://repo.example.com # your repo url
-  # A repo named "noUpdates" is already build-in.
-  # You can use it directly or define your own like below.
+  # Instead of using "noUpdates" directly, you can also define your own like below.
   your-repo-2:
     noUpdates: true # disable updates for this repo
 

@@ -2,28 +2,19 @@
 
 ![Maven Central](https://img.shields.io/maven-central/v/me.omico.gradm/gradm-runtime)
 
+在教学开始之前，您必须注意 Gradle 的存储库 `(repositories)` 的顺序是有意义的！！！请参阅 [Gradle 的文档](https://docs.gradle.org/current/userguide/declaring_repositories.html#sec:declaring_multiple_repositories)。
+
 在 `settings.gradle.kts` 中，添加以下代码：
 
 ```kotlin
 pluginManagement {
     includeBuild("gradm") // 在此处加入 Gradm
     repositories {
-        gradlePluginPortal {
-            content {
-                excludeGroupByRegex("me.omico.*") // 减少构建时间
-            }
-        }
         mavenCentral()
+        // 下面两行是可选的，用于 Gradm 的快照。
         mavenLocal()
-    }
-}
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-        mavenLocal()
+        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
+        gradlePluginPortal()
     }
 }
 
@@ -46,17 +37,6 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        // 以下存储库与您为 Gradm 声明的插件相关
-        google()
-        mavenCentral()
-        mavenLocal()
-    }
-}
-
 ```
 
 在 `gradm` 文件夹中创建一个名为 `gradm.yml` 的文件，并添加以下内容：
@@ -65,13 +45,22 @@ dependencyResolutionManagement {
 versions:
   something: "1.0.0" # 声明依赖版本
 
+# 注意 Gradle 的存储库的顺序是有意义的！！！
+# 目的是允许 Gradle 正确地获取依赖项。
+# 下面的存储库是内置的：
+#   google: https://maven.google.com
+#   mavenCentral: https://repo1.maven.org/maven2
+#   gradlePluginPortal: https://plugins.gradle.org/m2
+#   mavenLocal:
+#   noUpdates:
 repositories:
-  google:
-    url: https://maven.google.com
+  google: # "google" 已经被内置了
+  mavenCentral:
+  mavenLocal:
   your-repo: # 自定义储存库的 ID
     url: https://repo.example.com # 自定义仓库的 URL
   # Gradm 内置了名为 "noUpdates" 的存储库，它不会更新依赖项的版本。
-  # 您可以直接使用它，也可以像下面这样定义您自己的。
+  # 除去直接使用 "noUpdates"，您也可以像下面这样定义您自己的。
   your-repo-2:
     noUpdates: true # 禁用此储存库的更新
 
