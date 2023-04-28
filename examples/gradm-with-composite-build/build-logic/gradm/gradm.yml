@@ -13,6 +13,7 @@ versions:
     datastore: "1.0.0"
     lifecycle: "2.6.1"
     navigation: "2.5.3"
+  jetbrains.compose: "1.4.0"
   kotlin: "1.8.20"
   material: "1.7.0-alpha03"
   okhttp: "5.0.0-alpha.10"
@@ -25,14 +26,17 @@ versions:
     spotless: "6.18.0"
 
 repositories:
+  google:
+  mavenCentral:
+  jetbrainsCompose:
+    url: "https://maven.pkg.jetbrains.space/public/p/compose/dev"
+  mavenLocal:
+  sonatypeSnapshots:
+    url: "https://s01.oss.sonatype.org/content/repositories/snapshots"
+  gradlePluginPortal:
+  noUpdates:
   customNoUpdates:
     noUpdates: true
-  google:
-    url: "https://maven.google.com"
-  gradlePluginPortal:
-    url: "https://plugins.gradle.org/m2"
-  mavenCentral:
-    url: "https://repo1.maven.org/maven2"
 
 plugins:
   customNoUpdates:
@@ -40,6 +44,8 @@ plugins:
     me.omico.age.spotless: ${versions.plugins.age}
   gradlePluginPortal:
     com.diffplug.spotless: ${versions.plugins.spotless}
+  jetbrainsCompose:
+    org.jetbrains.compose: ${versions.jetbrains.compose}
   noUpdates:
     com.android.library: ${versions.plugins.android}
     org.jetbrains.kotlin.android: ${versions.kotlin}

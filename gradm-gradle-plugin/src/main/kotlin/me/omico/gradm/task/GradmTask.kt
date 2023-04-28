@@ -21,6 +21,7 @@ import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.gradmConfigFile
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
@@ -42,6 +43,9 @@ abstract class GradmTask : DefaultTask() {
         get
 
     abstract val projectLayout: ProjectLayout
+        @Inject get
+
+    abstract val repositories: RepositoryHandler
         @Inject get
 
     abstract val dependencies: DependencyHandler
