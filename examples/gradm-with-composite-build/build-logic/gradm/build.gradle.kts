@@ -9,6 +9,10 @@ plugins {
     id("me.omico.gradm") version "3.3.0-SNAPSHOT"
 }
 
+repositories {
+    mavenCentral()
+}
+
 gradm {
     debug = true
 }

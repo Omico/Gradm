@@ -15,19 +15,24 @@
  */
 package me.omico.gradm
 
+import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.codegen.generateDependenciesSourceFiles
 import me.omico.gradm.internal.codegen.generatePluginSourceFile
 import me.omico.gradm.internal.codegen.generateSelfSourceFile
 import me.omico.gradm.internal.codegen.generateVersionsSourceFile
+import me.omico.gradm.internal.config.Repository
 import me.omico.gradm.internal.config.format.formatGradmConfig
+import me.omico.gradm.internal.config.repositories
 import me.omico.gradm.internal.maven.resolveVersionsMeta
 import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.updatesAvailableFile
 import me.omico.gradm.service.GradmBuildService
 import me.omico.gradm.utility.clearDirectory
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.services.BuildServiceParameters
+import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -36,6 +41,7 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
     private var updatesAvailableFile: Path? = null
 
     fun generate(
+        repositories: RepositoryHandler,
         dependencies: DependencyHandler,
         gradmProjectPaths: GradmProjectPaths,
         gradmConfigFile: Path,
@@ -43,6 +49,7 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
     ) {
         formatGradmConfig(gradmConfigFile)
         val document = gradmConfigFile.asYamlDocument()
+        repositories.setup(document)
         val versionsMeta = resolveVersionsMeta(dependencies, gradmProjectPaths, document)
         outputDirectory.clearDirectory()
         generateDependenciesSourceFiles(outputDirectory, document, versionsMeta)
@@ -53,16 +60,19 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
     }
 
     fun refresh(
+        repositories: RepositoryHandler,
         dependencies: DependencyHandler,
         gradmProjectPaths: GradmProjectPaths,
         gradmConfigFile: Path,
     ) {
         GradmConfiguration.requireRefresh = true
         formatGradmConfig(gradmConfigFile)
+        val document = gradmConfigFile.asYamlDocument()
+        repositories.setup(document)
         resolveVersionsMeta(
             dependencies = dependencies,
             gradmProjectPaths = gradmProjectPaths,
-            document = gradmConfigFile.asYamlDocument(),
+            document = document,
         )
         checkUpdatesAvailable(gradmProjectPaths)
     }
@@ -71,6 +81,20 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
         updatesAvailableFile?.let { file ->
             info { "Available updates found, see ${file.toAbsolutePath()}" }
         }
+    }
+
+    private fun RepositoryHandler.setup(document: YamlDocument) {
+        document.repositories
+            .filterNot(Repository::noUpdates)
+            .forEach { repository ->
+                when (repository.id) {
+                    "google" -> google()
+                    "mavenCentral" -> mavenCentral()
+                    "gradlePluginPortal" -> gradlePluginPortal()
+                    "mavenLocal" -> mavenLocal()
+                    else -> maven { url = URI.create(repository.url) }
+                }
+            }
     }
 
     private fun checkUpdatesAvailable(gradmProjectPaths: GradmProjectPaths) {

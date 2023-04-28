@@ -29,6 +29,7 @@ abstract class GradmGenerator : GradmTask() {
     @TaskAction
     fun execute() {
         workerService.generate(
+            repositories = repositories,
             dependencies = dependencies,
             gradmProjectPaths = gradmProjectPaths,
             gradmConfigFile = gradmConfigFile,

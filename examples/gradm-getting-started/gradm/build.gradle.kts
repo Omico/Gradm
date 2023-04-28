@@ -9,6 +9,10 @@ plugins {
     id("me.omico.gradm") version "3.3.0-SNAPSHOT"
 }
 
+repositories {
+    mavenCentral()
+}
+
 gradm {
     pluginId = "gradm" // default: "me.omico.gradm.generated"
     configFilePath = "gradm3.yml" // default: "gradm.yml"

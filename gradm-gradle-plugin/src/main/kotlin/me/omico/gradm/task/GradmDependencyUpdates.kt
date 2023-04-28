@@ -22,6 +22,7 @@ abstract class GradmDependencyUpdates : GradmTask() {
     @TaskAction
     fun execute() {
         workerService.refresh(
+            repositories = repositories,
             dependencies = dependencies,
             gradmProjectPaths = gradmProjectPaths,
             gradmConfigFile = gradmConfigFile,
