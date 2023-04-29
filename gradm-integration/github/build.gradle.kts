@@ -10,5 +10,5 @@ kotlin {
 
 dependencies {
     compileOnly(projects.gradmIntegration.api)
-    implementation(libs.kotlinx.serialization)
+    implementation(libs.kotlinx.serialization.json)
 }

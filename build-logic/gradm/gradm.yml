@@ -37,7 +37,7 @@ dependencies:
         alias: libs.kotlinx.coroutines
         version: ${versions.kotlinx.coroutines}
       kotlinx-serialization-json:
-        alias: libs.kotlinx.serialization
+        alias: libs.kotlinx.serialization.json
         version: ${versions.kotlinx.serialization}
     org.junit:
       junit-bom:
