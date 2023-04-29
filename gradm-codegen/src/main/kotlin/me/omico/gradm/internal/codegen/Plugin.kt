@@ -88,7 +88,7 @@ private fun FunSpec.Builder.declareDependencies(document: YamlDocument) =
                 return@forEach
             }
             if (repository.noUpdates) return@forEach
-            buildInRepositories.find { it.id == repository.id && !it.noUpdates }
+            buildInRepositories.find { it.id == repository.id }
                 ?.let { addStatement("${it.id}()") }
                 ?: addStatement("maven { url = %T.create(\"${repository.url}\") }", URI::class)
         }
