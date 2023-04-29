@@ -9,6 +9,8 @@ naming:
     active: false
 
 style:
+  MagicNumber:
+    active: false
   MaxLineLength:
     active: false
   ReturnCount:
