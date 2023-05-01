@@ -13,26 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.test.config.format
+package me.omico.gradm.internal.config.format
 
-import me.omico.gradm.internal.config.format.Comment
-import me.omico.gradm.internal.config.format.ScalarStyle
-import me.omico.gradm.internal.config.format.comments
-import me.omico.gradm.internal.config.format.createFormattedGradmConfigContent
 import me.omico.gradm.internal.config.format.node.mapping
 import me.omico.gradm.internal.config.format.node.scalar
 import me.omico.gradm.internal.config.format.node.sequence
-import me.omico.gradm.internal.config.format.yaml
+import me.omico.gradm.testPath
 import org.junit.jupiter.api.Test
-import java.nio.file.Paths
 import kotlin.io.path.readText
 
 class FormatterTest {
-
-    private val testResourcesPath = Paths.get("src", "test", "resources")
-
     @Test
-    fun format() {
+    fun `test YAML DSL builder`() {
         val content = yaml {
             comment("Top comment")
             newline()
@@ -69,13 +61,13 @@ class FormatterTest {
             }
             comment("End comment")
         }
-        assert(content == testResourcesPath.resolve("format-test.yml").readText())
+        assert(content == testPath("format-test.yml").readText())
     }
 
     @Test
-    fun formatGradmConfigFile() {
-        val unformattedConfig = testResourcesPath.resolve("gradm.unformatted.yml")
-        val formattedConfig = testResourcesPath.resolve("gradm.formatted.yml")
+    fun `test format Gradm configuration`() {
+        val unformattedConfig = testPath("gradm.unformatted.yml")
+        val formattedConfig = testPath("gradm.formatted.yml")
         assert(unformattedConfig.createFormattedGradmConfigContent() == formattedConfig.readText())
     }
 }
