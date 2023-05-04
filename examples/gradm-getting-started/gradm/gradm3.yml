@@ -14,7 +14,7 @@ versions:
     lifecycle: "2.6.1"
     navigation: "2.5.3"
   jetbrains.compose: "1.4.0"
-  kotlin: "1.8.20"
+  kotlin: "1.8.21"
   material: "1.7.0-alpha03"
   okhttp: "5.0.0-alpha.10"
   omico:
