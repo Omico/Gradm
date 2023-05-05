@@ -16,13 +16,11 @@
 package me.omico.gradm
 
 import me.omico.gradm.internal.YamlDocument
-import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.codegen.generateDependenciesSourceFiles
 import me.omico.gradm.internal.codegen.generatePluginSourceFile
 import me.omico.gradm.internal.codegen.generateSelfSourceFile
 import me.omico.gradm.internal.codegen.generateVersionsSourceFile
 import me.omico.gradm.internal.config.Repository
-import me.omico.gradm.internal.config.format.formatGradmConfig
 import me.omico.gradm.internal.config.repositories
 import me.omico.gradm.internal.maven.resolveVersionsMeta
 import me.omico.gradm.path.GradmProjectPaths
@@ -40,39 +38,43 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
 
     private var updatesAvailableFile: Path? = null
 
-    fun generate(
+    fun initialize(
         repositories: RepositoryHandler,
+        gradmConfigDocument: YamlDocument,
+    ) {
+        repositories.setupRepositories(gradmConfigDocument)
+    }
+
+    fun generate(
         dependencies: DependencyHandler,
         gradmProjectPaths: GradmProjectPaths,
-        gradmConfigFile: Path,
+        gradmConfigDocument: YamlDocument,
         outputDirectory: Path,
     ) {
-        formatGradmConfig(gradmConfigFile)
-        val document = gradmConfigFile.asYamlDocument()
-        repositories.setup(document)
-        val versionsMeta = resolveVersionsMeta(dependencies, gradmProjectPaths, document)
+        GradmConfiguration.requireRefresh = false
+        val versionsMeta = resolveVersionsMeta(
+            dependencies = dependencies,
+            gradmProjectPaths = gradmProjectPaths,
+            document = gradmConfigDocument,
+        )
         outputDirectory.clearDirectory()
-        generateDependenciesSourceFiles(outputDirectory, document, versionsMeta)
-        generateVersionsSourceFile(gradmProjectPaths, outputDirectory, document)
-        generatePluginSourceFile(outputDirectory, document, versionsMeta)
+        generateDependenciesSourceFiles(outputDirectory, gradmConfigDocument, versionsMeta)
+        generateVersionsSourceFile(gradmProjectPaths, outputDirectory, gradmConfigDocument)
+        generatePluginSourceFile(outputDirectory, gradmConfigDocument, versionsMeta)
         generateSelfSourceFile(gradmProjectPaths, outputDirectory)
         checkUpdatesAvailable(gradmProjectPaths)
     }
 
     fun refresh(
-        repositories: RepositoryHandler,
         dependencies: DependencyHandler,
         gradmProjectPaths: GradmProjectPaths,
-        gradmConfigFile: Path,
+        gradmConfigDocument: YamlDocument,
     ) {
         GradmConfiguration.requireRefresh = true
-        formatGradmConfig(gradmConfigFile)
-        val document = gradmConfigFile.asYamlDocument()
-        repositories.setup(document)
         resolveVersionsMeta(
             dependencies = dependencies,
             gradmProjectPaths = gradmProjectPaths,
-            document = document,
+            document = gradmConfigDocument,
         )
         checkUpdatesAvailable(gradmProjectPaths)
     }
@@ -83,7 +85,7 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
         }
     }
 
-    private fun RepositoryHandler.setup(document: YamlDocument) {
+    private fun RepositoryHandler.setupRepositories(document: YamlDocument) {
         document.repositories
             .filterNot(Repository::noUpdates)
             .forEach { repository ->

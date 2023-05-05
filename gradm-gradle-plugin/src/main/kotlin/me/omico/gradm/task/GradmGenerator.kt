@@ -18,21 +18,18 @@ package me.omico.gradm.task
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.TaskAction
 
 @CacheableTask
 abstract class GradmGenerator : GradmTask() {
-
     abstract val gradmGeneratedSourcesDirectoryProperty: DirectoryProperty
         @OutputDirectory get
 
-    @TaskAction
-    fun execute() {
+    override fun execute() {
+        super.execute()
         workerService.generate(
-            repositories = repositories,
             dependencies = dependencies,
             gradmProjectPaths = gradmProjectPaths,
-            gradmConfigFile = gradmConfigFile,
+            gradmConfigDocument = gradmConfigDocument,
             outputDirectory = gradmGeneratedSourcesDirectoryProperty.asFile.get().toPath(),
         )
     }

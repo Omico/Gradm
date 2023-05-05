@@ -17,6 +17,9 @@ package me.omico.gradm.task
 
 import me.omico.gradm.GradmExtension
 import me.omico.gradm.GradmWorkerService
+import me.omico.gradm.internal.YamlDocument
+import me.omico.gradm.internal.asYamlDocument
+import me.omico.gradm.internal.config.format.formatGradmConfig
 import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.gradmConfigFile
 import org.gradle.api.DefaultTask
@@ -30,7 +33,7 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
-import java.nio.file.Path
+import org.gradle.api.tasks.TaskAction
 import javax.inject.Inject
 
 abstract class GradmTask : DefaultTask() {
@@ -59,8 +62,20 @@ abstract class GradmTask : DefaultTask() {
     protected val gradmProjectPaths: GradmProjectPaths
         @Internal get() = GradmProjectPaths(projectLayout.projectDirectory.asFile.toPath())
 
-    protected val gradmConfigFile: Path
-        @Internal get() = configFileProperty.get().asFile.toPath()
+    protected val gradmConfigDocument: YamlDocument
+        @Internal get() = run {
+            val gradmConfigFile = configFileProperty.get().asFile.toPath()
+            formatGradmConfig(gradmConfigFile)
+            gradmConfigFile.asYamlDocument()
+        }
+
+    @TaskAction
+    protected open fun execute() {
+        workerService.initialize(
+            repositories = repositories,
+            gradmConfigDocument = gradmConfigDocument,
+        )
+    }
 
     init {
         notCompatibleWithConfigurationCache()

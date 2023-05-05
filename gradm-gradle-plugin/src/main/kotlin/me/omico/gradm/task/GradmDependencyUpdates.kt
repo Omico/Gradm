@@ -15,17 +15,13 @@
  */
 package me.omico.gradm.task
 
-import org.gradle.api.tasks.TaskAction
-
 abstract class GradmDependencyUpdates : GradmTask() {
-
-    @TaskAction
-    fun execute() {
+    override fun execute() {
+        super.execute()
         workerService.refresh(
-            repositories = repositories,
             dependencies = dependencies,
             gradmProjectPaths = gradmProjectPaths,
-            gradmConfigFile = gradmConfigFile,
+            gradmConfigDocument = gradmConfigDocument,
         )
     }
 }
