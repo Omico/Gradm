@@ -17,6 +17,7 @@ package me.omico.gradm.internal.maven
 
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
+import me.omico.gradm.internal.config.Plugin
 import me.omico.gradm.internal.config.dependencies
 import me.omico.gradm.internal.config.format.node.mapping
 import me.omico.gradm.internal.config.format.node.scalar
@@ -45,29 +46,12 @@ internal data class ArtifactUpdates(
     val availableVersions: List<String>,
 )
 
-internal sealed interface UpdateStatus {
-
-    object UpToDate : UpdateStatus
-
-    data class UpdatesAvailable(
-        val versions: List<String>,
-    ) : UpdateStatus
-
-    object UpdateNotFound : UpdateStatus
-}
-
 internal fun YamlDocument.refreshAvailableUpdates(
     gradmProjectPaths: GradmProjectPaths,
     metadataList: List<MavenMetadata>,
 ) {
-    val pluginsMavenUpdates = plugins
-        .map { MavenUpdates(it.toDependency(), metadataList) }
-        .filter { it.availableVersions.isNotEmpty() }
-        .toTreeMavenUpdates()
-    val dependenciesMavenUpdates = dependencies
-        .map { MavenUpdates(it, metadataList) }
-        .filter { it.availableVersions.isNotEmpty() }
-        .toTreeMavenUpdates()
+    val pluginsMavenUpdates = plugins.map(Plugin::toDependency).toTreeMavenUpdates(metadataList)
+    val dependenciesMavenUpdates = dependencies.toTreeMavenUpdates(metadataList)
     if (pluginsMavenUpdates.isEmpty() && dependenciesMavenUpdates.isEmpty()) {
         gradmProjectPaths.updatesDirectory.deleteDirectory()
         return
@@ -78,7 +62,7 @@ internal fun YamlDocument.refreshAvailableUpdates(
                 pluginsMavenUpdates.entries.forEach { (id, pluginUpdates) ->
                     sequence(id) {
                         pluginUpdates.forEach { (_, versions) ->
-                            versions.forEach { scalar(it) }
+                            versions.forEach(::scalar)
                         }
                     }
                 }
@@ -89,7 +73,7 @@ internal fun YamlDocument.refreshAvailableUpdates(
                 dependenciesMavenUpdates.entries.forEach { (group, artifactUpdates) ->
                     mapping(group) {
                         artifactUpdates.forEach { (artifact, versions) ->
-                            sequence(artifact) { versions.forEach { scalar(it) } }
+                            sequence(artifact) { versions.forEach(::scalar) }
                         }
                     }
                 }
@@ -102,16 +86,21 @@ internal fun YamlDocument.refreshAvailableUpdates(
     }
 }
 
-internal fun List<MavenUpdates>.toTreeMavenUpdates(): TreeMavenUpdates =
+private fun List<Dependency>.toTreeMavenUpdates(metadataList: List<MavenMetadata>): TreeMavenUpdates =
     hashMapOf<String, MutableList<ArtifactUpdates>>()
-        .apply { this@toTreeMavenUpdates.forEach { getOrCreate(it.group).add(ArtifactUpdates(it)) } }
+        .apply {
+            this@toTreeMavenUpdates
+                .map { dependency -> MavenUpdates(dependency, metadataList) }
+                .filter { it.availableVersions.isNotEmpty() }
+                .forEach { updates -> getOrCreate(updates.group).add(ArtifactUpdates(updates)) }
+        }
         .toSortedMap()
 
 private fun MavenUpdates(dependency: Dependency, metadataList: List<MavenMetadata>): MavenUpdates =
     MavenUpdates(
         group = dependency.group,
         artifact = dependency.artifact,
-        availableVersions = dependency.createUpdateStatus(metadataList).availableVersions(),
+        availableVersions = dependency.availableVersions(metadataList),
     )
 
 private fun ArtifactUpdates(mavenUpdates: MavenUpdates): ArtifactUpdates =
@@ -121,23 +110,19 @@ private fun ArtifactUpdates(mavenUpdates: MavenUpdates): ArtifactUpdates =
     )
 
 private fun MutableTreeMavenUpdates.getOrCreate(group: String): MutableList<ArtifactUpdates> =
-    getOrPut(group) { mutableListOf() }
+    getOrPut(group, ::mutableListOf)
 
-private fun Dependency.createUpdateStatus(metadataList: List<MavenMetadata>): UpdateStatus =
-    metadataList.find { it.module == module }?.let { metadata ->
-        if (noUpdates) return@let UpdateStatus.UpToDate
-        val newerAvailableVersions = when (val index = metadata.versions.indexOf(version)) {
-            -1 -> metadata.versions
-            else -> metadata.versions.subList(index + 1, metadata.versions.size)
-        }
-        when {
-            newerAvailableVersions.isNotEmpty() -> UpdateStatus.UpdatesAvailable(newerAvailableVersions.asReversed())
-            else -> UpdateStatus.UpToDate
-        }
-    } ?: UpdateStatus.UpdateNotFound
-
-private fun UpdateStatus.availableVersions(): List<String> =
-    when (this) {
-        is UpdateStatus.UpdatesAvailable -> versions
+private fun Dependency.availableVersions(metadataList: List<MavenMetadata>): List<String> = run {
+    val metadata = metadataList.find { it.module == module } ?: return@run emptyList()
+    if (noUpdates || version == null) return@run emptyList()
+    val version = Version.parse(version)
+    val newerAvailableVersions = metadata.versions
+        .map(Version::parse)
+        .filter { it > version }
+        .sortedDescending()
+        .map(Version::toString)
+    when {
+        newerAvailableVersions.isNotEmpty() -> newerAvailableVersions
         else -> emptyList()
     }
+}
