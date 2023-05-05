@@ -1,6 +1,6 @@
 complexity:
   LongParameterList:
-    ignoreDefaultParameters: true
+    active: false
   TooManyFunctions:
     active: false
 
