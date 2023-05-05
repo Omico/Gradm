@@ -30,6 +30,7 @@ class WithCompositeBuildTest {
                     "clean",
                     ":build-logic:gradm:gradmDependencyUpdates",
                     "build",
+                    "--stacktrace",
                     "--no-daemon",
                 ),
             )

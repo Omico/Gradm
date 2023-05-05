@@ -29,6 +29,7 @@ class GettingStartedTest {
                     "clean",
                     ":gradm:gradmDependencyUpdates",
                     "build",
+                    "--stacktrace",
                     "--no-daemon",
                 ),
             )
