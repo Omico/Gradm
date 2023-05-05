@@ -36,6 +36,7 @@ import java.nio.file.Path
 
 abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.None> {
 
+    private var updated: Boolean = false
     private var updatesAvailableFile: Path? = null
 
     fun initialize(
@@ -70,6 +71,7 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
         gradmProjectPaths: GradmProjectPaths,
         gradmConfigDocument: YamlDocument,
     ) {
+        if (updated) return
         GradmConfiguration.requireRefresh = true
         resolveVersionsMeta(
             dependencies = dependencies,
@@ -100,6 +102,7 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
     }
 
     private fun checkUpdatesAvailable(gradmProjectPaths: GradmProjectPaths) {
+        updated = true
         updatesAvailableFile = when {
             Files.exists(gradmProjectPaths.updatesAvailableFile) -> gradmProjectPaths.updatesAvailableFile
             else -> null
