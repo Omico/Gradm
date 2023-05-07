@@ -49,6 +49,7 @@ plugins:
   noUpdates:
     com.android.library: ${versions.plugins.android}
     org.jetbrains.kotlin.android: ${versions.kotlin}
+    org.jetbrains.kotlin.multiplatform: ${versions.kotlin}
 
 dependencies:
   customNoUpdates:
