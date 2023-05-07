@@ -22,4 +22,11 @@ interface GradmExperimentalExtension {
      * The default value is `false`.
      */
     var kotlinMultiplatformSupport: Boolean
+
+    /**
+     * Ignore register the specified extensions when using experimental Kotlin Multiplatform support for Gradm.
+     *
+     * The default value is `emptyList()`.
+     */
+    var kotlinMultiplatformIgnoredExtensions: List<String>
 }

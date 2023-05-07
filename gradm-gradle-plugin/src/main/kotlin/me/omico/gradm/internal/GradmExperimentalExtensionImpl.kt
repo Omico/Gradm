@@ -20,4 +20,5 @@ import me.omico.gradm.GradmExperimentalExtension
 
 internal abstract class GradmExperimentalExtensionImpl : GradmExperimentalExtension {
     override var kotlinMultiplatformSupport: Boolean by GradmExperimentalConfiguration::kotlinMultiplatformSupport
+    override var kotlinMultiplatformIgnoredExtensions: List<String> by GradmExperimentalConfiguration::kotlinMultiplatformIgnoredExtensions
 }

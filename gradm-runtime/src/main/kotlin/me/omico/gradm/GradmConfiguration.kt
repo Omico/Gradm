@@ -28,4 +28,5 @@ object GradmFormatConfiguration {
 
 object GradmExperimentalConfiguration {
     var kotlinMultiplatformSupport: Boolean = false
+    var kotlinMultiplatformIgnoredExtensions: List<String> = emptyList()
 }
