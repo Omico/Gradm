@@ -15,11 +15,14 @@
  */
 package me.omico.gradm.internal.codegen
 
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeSpec
+import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
+import me.omico.gradm.GradmExperimentalConfiguration
 import me.omico.gradm.GradmGeneratedPluginType
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
@@ -38,6 +41,7 @@ internal fun CodeGenerator.generatePluginSourceFile() =
         overrideApplyFunctionBuilder = {
             declarePlugins(gradmConfigDocument, versionsMeta)
             declareRepositories(gradmConfigDocument)
+            declareDependencies(dependencies)
         },
     )
 
@@ -93,3 +97,35 @@ private fun FunSpec.Builder.declareRepositories(document: YamlDocument) =
                 ?: addStatement("maven { url = %T.create(\"${repository.url}\") }", URI::class)
         }
     }
+
+private fun FunSpec.Builder.declareDependencies(dependencies: CodegenDependencies) =
+    controlFlow("target.gradle.rootProject") {
+        controlFlow("allprojects") {
+            dependencies.keys.forEach { name ->
+                addDependencyExtension(path = "dependencies", name = name)
+            }
+            if (GradmExperimentalConfiguration.kotlinMultiplatformSupport) {
+                addComment("Kotlin Multiplatform Support")
+                dependencies.keys.forEach { name ->
+                    addDependencyExtension(name = name)
+                }
+            }
+        }
+    }
+
+private fun FunSpec.Builder.addDependencyExtension(path: String? = null, name: String) {
+    val extensionsPath = when (path) {
+        null -> "extensions"
+        else -> {
+            require(path.isNotBlank()) { "path must not be empty or blank" }
+            require(extensionsPathRegex.matches(path)) { "path is invalid" }
+            "$path.extensions"
+        }
+    }
+    addStatement(
+        format = "$extensionsPath.add(\"$name\", %T)",
+        ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, name.capitalize()),
+    )
+}
+
+private val extensionsPathRegex = """^(\w+\.)*\w+$""".toRegex()
