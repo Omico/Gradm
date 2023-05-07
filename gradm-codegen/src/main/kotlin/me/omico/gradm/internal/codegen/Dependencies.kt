@@ -22,7 +22,6 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
-import me.omico.gradm.GradmExperimentalConfiguration
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
@@ -53,7 +52,6 @@ internal fun CodeGenerator.generateDependenciesSourceFiles() {
     dependencies.forEach { (name, dependency) ->
         dependency.toFileSpec(name).writeTo(generatedSourcesDirectory)
     }
-    dependencies.toDslFileSpec().writeTo(generatedSourcesDirectory)
 }
 
 internal fun YamlDocument.createCodegenDependencies(versionsMeta: VersionsMeta): CodegenDependencies =
@@ -69,45 +67,6 @@ private fun CodegenDependency.toFileSpec(name: String): FileSpec =
         .addGradmComment()
         .addDependencyObjects(name, this@toFileSpec)
         .build()
-
-private fun CodegenDependencies.toDslFileSpec(): FileSpec =
-    FileSpec.builder("", "Dependencies")
-        .addSuppressWarningTypes()
-        .addGradmComment()
-        .apply {
-            keys.forEach { name ->
-                addDslProperty(
-                    name = name,
-                    receivers = mutableSetOf<ClassName>().apply {
-                        // For normal module, rollback to the DependencyHandler to prevent naming conflict.
-                        ClassName("org.gradle.api.artifacts.dsl", "DependencyHandler").let(::add)
-                        if (GradmExperimentalConfiguration.kotlinMultiplatformSupport) {
-                            ClassName("org.gradle.api", "Project").let(::add)
-                        }
-                    },
-                )
-            }
-        }
-        .build()
-
-internal fun FileSpec.Builder.addDslProperty(name: String, receivers: Set<ClassName>): FileSpec.Builder =
-    apply {
-        receivers.forEach { className ->
-            PropertySpec
-                .builder(name, ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, name.capitalize()))
-                .receiver(className)
-                .getter(
-                    FunSpec.getterBuilder()
-                        .addStatement(
-                            "return ${name.capitalize()}",
-                            ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, name.capitalize()),
-                        )
-                        .build(),
-                )
-                .build()
-                .also(::addProperty)
-        }
-    }
 
 private fun CodegenDependencies.addDependency(
     versionsMeta: VersionsMeta,
