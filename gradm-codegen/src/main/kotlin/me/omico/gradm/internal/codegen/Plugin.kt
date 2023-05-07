@@ -37,7 +37,7 @@ fun generatePluginSourceFile(generatedSourcesDirectory: Path, document: YamlDocu
         type = GradmGeneratedPluginType.General,
         overrideApplyFunctionBuilder = {
             declarePlugins(document, versionsMeta)
-            declareDependencies(document)
+            declareRepositories(document)
         },
     )
 
@@ -80,7 +80,7 @@ private fun FunSpec.Builder.declarePlugins(document: YamlDocument, versionsMeta:
             }
     }
 
-private fun FunSpec.Builder.declareDependencies(document: YamlDocument) =
+private fun FunSpec.Builder.declareRepositories(document: YamlDocument) =
     controlFlow("target.dependencyResolutionManagement.repositories") {
         document.repositories.forEach { repository ->
             if (repository.id == "mavenLocal") {
