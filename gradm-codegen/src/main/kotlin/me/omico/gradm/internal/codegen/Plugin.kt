@@ -109,6 +109,7 @@ private fun FunSpec.Builder.declareDependencies(dependencies: CodegenDependencie
             if (GradmExperimentalConfiguration.kotlinMultiplatformSupport) {
                 addComment("Kotlin Multiplatform Support")
                 dependencies.keys.forEach { name ->
+                    if (name in GradmExperimentalConfiguration.kotlinMultiplatformIgnoredExtensions) return@forEach
                     addDependencyExtension(name = name)
                 }
             }
