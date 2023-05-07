@@ -21,6 +21,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import me.omico.gradm.GRADM_PACKAGE_NAME
 import me.omico.gradm.integration.applyGradmIntegrations
 import me.omico.gradm.internal.config.TreeVersions
 import me.omico.gradm.internal.config.toTreeVersions
@@ -34,10 +35,9 @@ internal fun CodeGenerator.generateVersionsSourceFile() =
         .writeTo(generatedSourcesDirectory)
 
 private fun TreeVersions.toFileSpec(): FileSpec =
-    FileSpec.builder("", "Versions")
+    FileSpec.builder(GRADM_PACKAGE_NAME, "Versions")
         .addSuppressWarningTypes()
         .addGradmComment()
-        .addVersionsDslProperty()
         .addVersionsObjects(this)
         .build()
 
@@ -100,14 +100,4 @@ private fun TypeSpec.Builder.addSubVersionsOverrideFunction(subVersions: TreeVer
             .addStatement("return \"$version\"", String::class)
             .build()
             .also(::addFunction)
-    }
-
-private fun FileSpec.Builder.addVersionsDslProperty(): FileSpec.Builder =
-    apply {
-        PropertySpec
-            .builder("versions", ClassName("", "Versions"))
-            .receiver(ClassName("org.gradle.api", "Project"))
-            .getter(FunSpec.getterBuilder().addStatement("return Versions").build())
-            .build()
-            .also(::addProperty)
     }

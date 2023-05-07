@@ -15,7 +15,8 @@
  */
 package me.omico.gradm
 
-const val GRADM_DEPENDENCY_PACKAGE_NAME = "me.omico.gradm.dependency"
+const val GRADM_PACKAGE_NAME = "me.omico.gradm"
+const val GRADM_DEPENDENCY_PACKAGE_NAME = "$GRADM_PACKAGE_NAME.dependency"
 
 fun info(message: () -> String) {
     println("[Gradm] ${message()}")
