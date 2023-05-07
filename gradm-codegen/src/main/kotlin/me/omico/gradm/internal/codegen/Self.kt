@@ -19,17 +19,12 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.asClassName
-import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.generatedJar
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
-import java.nio.file.Path
 import kotlin.io.path.invariantSeparatorsPathString
 
-fun generateSelfSourceFile(
-    gradmProjectPaths: GradmProjectPaths,
-    generatedSourcesDirectory: Path,
-) {
+internal fun CodeGenerator.generateSelfSourceFile() =
     FileSpec.builder("", "Self")
         .addSuppressWarningTypes()
         .addGradmComment()
@@ -50,4 +45,3 @@ fun generateSelfSourceFile(
         }
         .build()
         .writeTo(generatedSourcesDirectory)
-}

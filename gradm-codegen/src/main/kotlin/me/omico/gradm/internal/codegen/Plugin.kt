@@ -31,13 +31,13 @@ import org.gradle.api.initialization.Settings
 import java.net.URI
 import java.nio.file.Path
 
-fun generatePluginSourceFile(generatedSourcesDirectory: Path, document: YamlDocument, versionsMeta: VersionsMeta) =
+internal fun CodeGenerator.generatePluginSourceFile() =
     generatePluginSourceFile<Settings>(
         generatedSourcesDirectory = generatedSourcesDirectory,
         type = GradmGeneratedPluginType.General,
         overrideApplyFunctionBuilder = {
-            declarePlugins(document, versionsMeta)
-            declareRepositories(document)
+            declarePlugins(gradmConfigDocument, versionsMeta)
+            declareRepositories(gradmConfigDocument)
         },
     )
 

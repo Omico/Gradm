@@ -16,17 +16,13 @@
 package me.omico.gradm
 
 import me.omico.gradm.internal.YamlDocument
-import me.omico.gradm.internal.codegen.generateDependenciesSourceFiles
-import me.omico.gradm.internal.codegen.generatePluginSourceFile
-import me.omico.gradm.internal.codegen.generateSelfSourceFile
-import me.omico.gradm.internal.codegen.generateVersionsSourceFile
+import me.omico.gradm.internal.codegen.generateGradmGeneratedSources
 import me.omico.gradm.internal.config.Repository
 import me.omico.gradm.internal.config.repositories
 import me.omico.gradm.internal.maven.resolveVersionsMeta
 import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.updatesAvailableFile
 import me.omico.gradm.service.GradmBuildService
-import me.omico.gradm.utility.clearDirectory
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.services.BuildServiceParameters
@@ -58,11 +54,12 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
             gradmProjectPaths = gradmProjectPaths,
             document = gradmConfigDocument,
         )
-        outputDirectory.clearDirectory()
-        generateDependenciesSourceFiles(outputDirectory, gradmConfigDocument, versionsMeta)
-        generateVersionsSourceFile(gradmProjectPaths, outputDirectory, gradmConfigDocument)
-        generatePluginSourceFile(outputDirectory, gradmConfigDocument, versionsMeta)
-        generateSelfSourceFile(gradmProjectPaths, outputDirectory)
+        generateGradmGeneratedSources(
+            gradmProjectPaths = gradmProjectPaths,
+            gradmConfigDocument = gradmConfigDocument,
+            versionsMeta = versionsMeta,
+            generatedSourcesDirectory = outputDirectory,
+        )
         checkUpdatesAvailable(gradmProjectPaths)
     }
 

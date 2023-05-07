@@ -22,25 +22,16 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import me.omico.gradm.integration.applyGradmIntegrations
-import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.TreeVersions
-import me.omico.gradm.internal.config.toFlatVersions
 import me.omico.gradm.internal.config.toTreeVersions
-import me.omico.gradm.internal.config.versions
-import me.omico.gradm.path.GradmProjectPaths
-import java.nio.file.Path
 
-fun generateVersionsSourceFile(
-    gradmProjectPaths: GradmProjectPaths,
-    generatedSourcesDirectory: Path,
-    document: YamlDocument,
-) {
-    val treeVersions = mutableMapOf<String, String>()
-        .apply { putAll(document.versions.toFlatVersions()) }
+internal fun CodeGenerator.generateVersionsSourceFile() =
+    mutableMapOf<String, String>()
+        .apply { putAll(flatVersions) }
         .apply(gradmProjectPaths::applyGradmIntegrations)
         .toTreeVersions()
-    treeVersions.toFileSpec().writeTo(generatedSourcesDirectory)
-}
+        .toFileSpec()
+        .writeTo(generatedSourcesDirectory)
 
 private fun TreeVersions.toFileSpec(): FileSpec =
     FileSpec.builder("", "Versions")

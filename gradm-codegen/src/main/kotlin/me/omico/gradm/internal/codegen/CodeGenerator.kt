@@ -19,8 +19,45 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import me.omico.gradm.VersionsMeta
+import me.omico.gradm.internal.YamlDocument
+import me.omico.gradm.internal.config.FlatVersions
 import me.omico.gradm.internal.config.matchesVariableVersion
+import me.omico.gradm.internal.config.toFlatVersions
+import me.omico.gradm.internal.config.versions
+import me.omico.gradm.path.GradmProjectPaths
+import me.omico.gradm.utility.clearDirectory
+import java.nio.file.Path
 import java.util.Locale
+
+fun generateGradmGeneratedSources(
+    gradmProjectPaths: GradmProjectPaths,
+    gradmConfigDocument: YamlDocument,
+    versionsMeta: VersionsMeta,
+    generatedSourcesDirectory: Path,
+) {
+    generatedSourcesDirectory.clearDirectory()
+    CodeGenerator(
+        gradmProjectPaths = gradmProjectPaths,
+        gradmConfigDocument = gradmConfigDocument,
+        versionsMeta = versionsMeta,
+        generatedSourcesDirectory = generatedSourcesDirectory,
+    ).run {
+        generateVersionsSourceFile()
+        generatePluginSourceFile()
+        generateDependenciesSourceFiles()
+        generateSelfSourceFile()
+    }
+}
+
+internal class CodeGenerator(
+    val gradmProjectPaths: GradmProjectPaths,
+    val gradmConfigDocument: YamlDocument,
+    val versionsMeta: VersionsMeta,
+    val generatedSourcesDirectory: Path,
+) {
+    val dependencies: CodegenDependencies = gradmConfigDocument.createCodegenDependencies(versionsMeta)
+    val flatVersions: FlatVersions = gradmConfigDocument.versions.toFlatVersions()
+}
 
 internal val defaultSuppressWarningTypes = arrayOf(
     "MemberVisibilityCanBePrivate",
