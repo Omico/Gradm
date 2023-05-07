@@ -23,6 +23,7 @@ val syncExamples by tasks.registering {
     listOf(
         "examples/gradm-getting-started/gradm/gradm3.yml",
         "examples/gradm-with-composite-build/build-logic/gradm/gradm.yml",
+        "examples/gradm-with-kotlin-multiplatform/gradm/gradm.yml",
     ).forEach {
         file("examples/template/gradm.yml").copyTo(file(it), overwrite = true)
     }
