@@ -22,6 +22,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeSpec
 import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
+import me.omico.gradm.GRADM_PACKAGE_NAME
 import me.omico.gradm.GradmExperimentalConfiguration
 import me.omico.gradm.GradmGeneratedPluginType
 import me.omico.gradm.VersionsMeta
@@ -42,6 +43,7 @@ internal fun CodeGenerator.generatePluginSourceFile() =
             declarePlugins(gradmConfigDocument, versionsMeta)
             declareRepositories(gradmConfigDocument)
             declareDependencies(dependencies)
+            declareVersions()
         },
     )
 
@@ -110,6 +112,13 @@ private fun FunSpec.Builder.declareDependencies(dependencies: CodegenDependencie
                     addDependencyExtension(name = name)
                 }
             }
+        }
+    }
+
+private fun FunSpec.Builder.declareVersions() =
+    controlFlow("target.gradle.rootProject") {
+        controlFlow("allprojects") {
+            addStatement(format = "extensions.add(\"versions\", %T)", ClassName(GRADM_PACKAGE_NAME, "Versions"))
         }
     }
 
