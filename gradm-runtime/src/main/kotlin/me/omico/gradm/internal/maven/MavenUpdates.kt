@@ -69,6 +69,7 @@ internal fun YamlDocument.refreshAvailableUpdates(
             }
         }
         if (dependenciesMavenUpdates.isNotEmpty()) {
+            if (pluginsMavenUpdates.isNotEmpty()) newline()
             mapping("dependencies") {
                 dependenciesMavenUpdates.entries.forEach { (group, artifactUpdates) ->
                     mapping(group) {
