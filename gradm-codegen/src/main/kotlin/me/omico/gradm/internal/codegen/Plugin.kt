@@ -31,19 +31,27 @@ import me.omico.gradm.internal.config.buildInRepositories
 import me.omico.gradm.internal.config.plugins
 import me.omico.gradm.internal.config.repositories
 import org.gradle.api.Plugin
+import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
+import org.gradle.api.plugins.ExtensionAware
 import java.net.URI
 import java.nio.file.Path
 
 internal fun CodeGenerator.generatePluginSourceFile() =
-    generatePluginSourceFile<Settings>(
+    generatePluginSourceFile<ExtensionAware>(
         generatedSourcesDirectory = generatedSourcesDirectory,
         type = GradmGeneratedPluginType.General,
         overrideApplyFunctionBuilder = {
-            declarePlugins(gradmConfigDocument, versionsMeta)
-            declareRepositories(gradmConfigDocument)
-            declareDependencies(dependencies)
-            declareVersions()
+            controlFlow("if (target is %T)", Settings::class) {
+                declarePluginsInSettings(gradmConfigDocument, versionsMeta)
+                declareRepositoriesInSettings(gradmConfigDocument)
+                declareDependenciesInSettings(dependencies)
+                declareVersionsInSettings()
+            }
+            controlFlow("if (target is %T)", Project::class) {
+                declareDependenciesInProject(dependencies)
+                declareVersionsInProject()
+            }
         },
     )
 
@@ -76,7 +84,7 @@ private inline fun <reified T> TypeSpec.Builder.addOverrideApplyFunction(
             .also(::addFunction)
     }
 
-private fun FunSpec.Builder.declarePlugins(document: YamlDocument, versionsMeta: VersionsMeta) =
+private fun FunSpec.Builder.declarePluginsInSettings(document: YamlDocument, versionsMeta: VersionsMeta) =
     controlFlow("target.pluginManagement.plugins") {
         document.plugins
             .sortedBy { plugin -> plugin.id }
@@ -86,7 +94,7 @@ private fun FunSpec.Builder.declarePlugins(document: YamlDocument, versionsMeta:
             }
     }
 
-private fun FunSpec.Builder.declareRepositories(document: YamlDocument) =
+private fun FunSpec.Builder.declareRepositoriesInSettings(document: YamlDocument) =
     controlFlow("target.dependencyResolutionManagement.repositories") {
         document.repositories.forEach { repository ->
             if (repository.id == "mavenLocal") {
@@ -100,28 +108,28 @@ private fun FunSpec.Builder.declareRepositories(document: YamlDocument) =
         }
     }
 
-private fun FunSpec.Builder.declareDependencies(dependencies: CodegenDependencies) =
+private fun FunSpec.Builder.declareDependenciesInSettings(dependencies: CodegenDependencies) =
     controlFlow("target.gradle.rootProject") {
         controlFlow("allprojects") {
-            dependencies.keys.forEach { name ->
-                addDependencyExtension(path = "dependencies", name = name)
-            }
-            if (GradmExperimentalConfiguration.kotlinMultiplatformSupport) {
-                addComment("Kotlin Multiplatform Support")
-                dependencies.keys.forEach { name ->
-                    if (name in GradmExperimentalConfiguration.kotlinMultiplatformIgnoredExtensions) return@forEach
-                    addDependencyExtension(name = name)
-                }
-            }
+            declareDependencies(dependencies)
         }
     }
 
-private fun FunSpec.Builder.declareVersions() =
-    controlFlow("target.gradle.rootProject") {
-        controlFlow("allprojects") {
-            addStatement(format = "extensions.add(\"versions\", %T)", ClassName(GRADM_PACKAGE_NAME, "Versions"))
+private fun FunSpec.Builder.declareDependenciesInProject(dependencies: CodegenDependencies) =
+    controlFlow("with(target)") {
+        declareDependencies(dependencies)
+    }
+
+private fun FunSpec.Builder.declareDependencies(dependencies: CodegenDependencies) {
+    dependencies.keys.forEach { name -> addDependencyExtension(path = "dependencies", name = name) }
+    if (GradmExperimentalConfiguration.kotlinMultiplatformSupport) {
+        addComment("Kotlin Multiplatform Support")
+        dependencies.keys.forEach { name ->
+            if (name in GradmExperimentalConfiguration.kotlinMultiplatformIgnoredExtensions) return@forEach
+            addDependencyExtension(name = name)
         }
     }
+}
 
 private fun FunSpec.Builder.addDependencyExtension(path: String? = null, name: String) {
     val extensionsPath = when (path) {
@@ -132,10 +140,35 @@ private fun FunSpec.Builder.addDependencyExtension(path: String? = null, name: S
             "$path.extensions"
         }
     }
-    addStatement(
-        format = "$extensionsPath.add(\"$name\", %T)",
-        ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, name.capitalize()),
+    addExtensionsIfNeeds(
+        extensionsPath = extensionsPath,
+        name = name,
+        className = ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, name.capitalize())
     )
+}
+
+private fun FunSpec.Builder.declareVersionsInSettings() =
+    controlFlow("target.gradle.rootProject") {
+        controlFlow("allprojects") {
+            declareVersions()
+        }
+    }
+
+private fun FunSpec.Builder.declareVersionsInProject() =
+    controlFlow("with(target)") {
+        declareVersions()
+    }
+
+private fun FunSpec.Builder.declareVersions() {
+    addExtensionsIfNeeds(name = "versions", className = ClassName(GRADM_PACKAGE_NAME, "Versions"))
+}
+
+private fun FunSpec.Builder.addExtensionsIfNeeds(
+    extensionsPath: String = "extensions",
+    name: String,
+    className: ClassName,
+) {
+    addStatement(format = "$extensionsPath.findByName(\"${name}\") ?: $extensionsPath.add(\"${name}\", %T)", className)
 }
 
 private val extensionsPathRegex = """^(\w+\.)*\w+$""".toRegex()
