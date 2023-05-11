@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+import me.omico.gradm.Versions.androidx
+import me.omico.gradm.dependency.Androidx
+
 plugins {
     kotlin("android")
     id("com.android.library")
@@ -13,12 +16,16 @@ android {
     }
     composeOptions {
         // You must add gradmGeneratedJar to dependencies, otherwise you won't be able to use.
-        kotlinCompilerExtensionVersion = versions.androidx.compose.compiler
+        kotlinCompilerExtensionVersion = androidx.compose.compiler
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+dependencies {
+    compileOnly(Androidx.annotation)
 }
 
 kotlin {
