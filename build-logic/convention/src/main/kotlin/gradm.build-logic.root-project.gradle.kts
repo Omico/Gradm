@@ -1,5 +1,7 @@
-import java.nio.file.Files
-import kotlin.streams.toList
+import java.nio.file.Path
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.walk
 
 plugins {
     id("gradm.build-logic.root-project.base")
@@ -10,21 +12,21 @@ plugins {
 }
 
 val wrapper: Wrapper by tasks.named<Wrapper>("wrapper") {
-    gradleVersion = versions.gradle
+    gradleVersion = me.omico.gradm.Versions.gradle
     distributionType = Wrapper.DistributionType.BIN
     finalizedBy(syncGradleWrapperForExamples)
 }
 
+@OptIn(ExperimentalPathApi::class)
 val syncGradleWrapperForExamples by tasks.registering {
-    Files.list(file("examples").toPath())
-        .filter(Files::isDirectory)
+    file("examples").toPath().listDirectoryEntries()
         .filter { directory ->
-            Files.list(directory)
+            directory.walk()
                 .filter { it.fileName.toString().endsWith(".gradle.kts") }
                 .toList()
                 .isNotEmpty()
         }
-        .map { it.fileName }
+        .map(Path::getFileName)
         .forEach { example ->
             copy {
                 from(wrapper.scriptFile, wrapper.batchScript)
