@@ -80,12 +80,12 @@ internal fun FileSpec.Builder.addGradmComment(): FileSpec.Builder =
         """.trimIndent(),
     )
 
-internal fun FunSpec.Builder.controlFlow(
+internal inline fun FunSpec.Builder.controlFlow(
     controlFlow: String,
     vararg args: Any,
     block: FunSpec.Builder.() -> Unit,
 ) {
-    beginControlFlow(controlFlow, args)
+    beginControlFlow(controlFlow, *args)
     apply(block)
     endControlFlow()
 }
