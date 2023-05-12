@@ -143,7 +143,7 @@ private fun FunSpec.Builder.addDependencyExtension(path: String? = null, name: S
     addExtensionsIfNeeds(
         extensionsPath = extensionsPath,
         name = name,
-        className = ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, name.capitalize())
+        className = ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, name.capitalize()),
     )
 }
 
