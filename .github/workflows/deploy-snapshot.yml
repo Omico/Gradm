@@ -3,7 +3,7 @@ name: Deploy snapshot
 on:
   push:
     branches:
-      - snapshot
+      - main
     paths:
       - '.github/workflows/deploy-snapshot.yml'
       - 'gradm-*'
