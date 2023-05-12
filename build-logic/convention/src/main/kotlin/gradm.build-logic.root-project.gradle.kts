@@ -4,6 +4,7 @@ import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.walk
 
 plugins {
+    id("gradm")
     id("gradm.build-logic.root-project.base")
     id("gradm.build-logic.example-updater")
     id("gradm.build-logic.git.hooks")
@@ -12,7 +13,7 @@ plugins {
 }
 
 val wrapper: Wrapper by tasks.named<Wrapper>("wrapper") {
-    gradleVersion = me.omico.gradm.Versions.gradle
+    gradleVersion = versions.gradle
     distributionType = Wrapper.DistributionType.BIN
     finalizedBy(syncGradleWrapperForExamples)
 }
