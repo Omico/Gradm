@@ -18,7 +18,7 @@ The Gradle version catalogs is an excellent move for us. But it also brings a lo
 * The Generated code is fully Kotlin and can quickly obtain dependency information through code jumps.
 * Provides the same usage as the Gradle version catalog and removes naming restrictions.
 * Provide dependency update support. (Will appear in Gradle build output, if updates exist.)
-* Less configuration code, no need configurate repositories in gradle files.
+* Less configuration code, no need configure repositories in gradle files.
 * More features are under development...
 
 Want to know more about what the Gradm generated code plugin does, please check me.omico.gradm.generated.GradmPlugin for more information.
