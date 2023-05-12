@@ -23,6 +23,7 @@ plugins:
   noUpdates:
     me.omico.age.project: ${versions.plugins.age}
     me.omico.age.spotless: ${versions.plugins.age}
+    org.jetbrains.kotlin.jvm: ${versions.kotlin}
     org.jetbrains.kotlin.plugin.serialization: ${versions.kotlin}
 
 dependencies:

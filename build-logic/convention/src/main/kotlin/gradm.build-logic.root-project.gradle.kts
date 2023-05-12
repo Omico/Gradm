@@ -12,6 +12,12 @@ plugins {
     id("gradm.build-logic.spotless")
 }
 
+afterEvaluate {
+    require(embeddedKotlinVersion == versions.kotlin) {
+        "Embedded Kotlin version must be the same as the Kotlin version used by Gradm"
+    }
+}
+
 val wrapper: Wrapper by tasks.named<Wrapper>("wrapper") {
     gradleVersion = versions.gradle
     distributionType = Wrapper.DistributionType.BIN

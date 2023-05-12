@@ -1,5 +1,5 @@
 plugins {
-    `embedded-kotlin`
+    kotlin("jvm")
     kotlin("plugin.serialization")
     id("gradm.build-logic.maven-publish")
 }
