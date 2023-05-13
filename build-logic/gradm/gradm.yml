@@ -13,6 +13,8 @@ versions:
 
 repositories:
   mavenCentral:
+  sonatypeSnapshots:
+    url: "https://s01.oss.sonatype.org/content/repositories/snapshots"
   gradlePluginPortal:
   noUpdates:
 
@@ -21,10 +23,11 @@ plugins:
     com.diffplug.spotless: ${versions.plugins.spotless}
     com.gradle.enterprise: ${versions.plugins.gradle.enterprise}
   noUpdates:
-    me.omico.age.project: ${versions.plugins.age}
-    me.omico.age.spotless: ${versions.plugins.age}
     org.jetbrains.kotlin.jvm: ${versions.kotlin}
     org.jetbrains.kotlin.plugin.serialization: ${versions.kotlin}
+  sonatypeSnapshots:
+    me.omico.age.project: ${versions.plugins.age}
+    me.omico.age.spotless: ${versions.plugins.age}
 
 dependencies:
   mavenCentral:
@@ -51,7 +54,7 @@ dependencies:
       snakeyaml-engine:
         alias: libs.snakeyaml
         version: ${versions.snakeyaml}
-  noUpdates:
+  sonatypeSnapshots:
     me.omico.age:
       age-dsl:
         alias: me.omico.age.dsl

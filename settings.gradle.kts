@@ -1,23 +1,19 @@
 @file:Suppress("UnstableApiUsage")
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "Gradm"
 
 pluginManagement {
-    includeBuild("build-logic/initialization")
     includeBuild("build-logic/gradm")
     repositories {
-        gradlePluginPortal {
-            content {
-                includeGroupByRegex("com.gradle.*")
-            }
-        }
         mavenCentral()
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
+        gradlePluginPortal()
     }
 }
 
 plugins {
-    id("initialization")
     id("gradm")
     id("com.gradle.enterprise") version "3.13.2"
 }

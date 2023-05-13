@@ -3,16 +3,15 @@
 rootProject.name = "build-logic"
 
 pluginManagement {
-    includeBuild("initialization")
     includeBuild("gradm")
     repositories {
         mavenCentral()
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
+        gradlePluginPortal()
     }
 }
 
 plugins {
-    id("initialization")
     id("gradm")
 }
 
