@@ -29,3 +29,10 @@ allprojects {
         kotlinGradle()
     }
 }
+
+subprojects {
+    rootProject.tasks {
+        spotlessApply { dependsOn(this@subprojects.tasks.spotlessApply) }
+        spotlessCheck { dependsOn(this@subprojects.tasks.spotlessCheck) }
+    }
+}

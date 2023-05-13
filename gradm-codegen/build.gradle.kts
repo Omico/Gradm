@@ -11,5 +11,6 @@ dependencies {
     compileOnly(gradleApi())
     compileOnly(projects.gradmRuntime)
     compileOnly(projects.gradmIntegration)
+    implementation(libs.elucidator)
     implementation(libs.kotlinpoet)
 }

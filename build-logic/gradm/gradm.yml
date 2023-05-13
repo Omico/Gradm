@@ -54,6 +54,11 @@ dependencies:
       snakeyaml-engine:
         alias: libs.snakeyaml
         version: ${versions.snakeyaml}
+  noUpdates:
+    me.omico.elucidator:
+      elucidator:
+        alias: libs.elucidator
+        version: "0.1.0-SNAPSHOT"
   sonatypeSnapshots:
     me.omico.age:
       age-dsl:

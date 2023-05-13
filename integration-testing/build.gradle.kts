@@ -20,5 +20,6 @@ tasks.test {
             this@test.dependsOn(task)
         }
     }
+    dependsOn(gradle.includedBuild("lib-elucidator").task(":elucidator:publishToMavenLocal"))
     useJUnitPlatform()
 }
