@@ -50,3 +50,9 @@ fun TypeScope.addProperty(
 ) {
     property(name = name, type = type, modifiers = modifiers, block = block).let(builder::addProperty)
 }
+
+fun TypeScope.addType(typeSpec: TypeSpec) {
+    builder.addType(typeSpec)
+}
+
+fun TypeScope.addObjectType(name: String, block: TypeScope.() -> Unit): Unit = objectType(name, block).let(::addType)
