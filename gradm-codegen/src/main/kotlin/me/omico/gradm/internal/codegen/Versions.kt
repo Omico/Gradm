@@ -21,6 +21,14 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import me.omico.elucidator.KtFileScope
+import me.omico.elucidator.TypeScope
+import me.omico.elucidator.addObjectType
+import me.omico.elucidator.addProperty
+import me.omico.elucidator.applyDslBuilder
+import me.omico.elucidator.initializer
+import me.omico.elucidator.ktFile
+import me.omico.elucidator.modifier
 import me.omico.gradm.GRADM_PACKAGE_NAME
 import me.omico.gradm.integration.applyGradmIntegrations
 import me.omico.gradm.internal.config.TreeVersions
@@ -35,39 +43,34 @@ internal fun CodeGenerator.generateVersionsSourceFile() =
         .writeTo(generatedSourcesDirectory)
 
 private fun TreeVersions.toFileSpec(): FileSpec =
-    FileSpec.builder(GRADM_PACKAGE_NAME, "Versions")
-        .addSuppressWarningTypes()
-        .addGradmComment()
-        .addVersionsObjects(this)
-        .build()
+    ktFile(GRADM_PACKAGE_NAME, "Versions") {
+        addSuppressWarningTypes()
+        addGradmComment()
+        addVersionsObjects(this@toFileSpec)
+    }
 
-private fun FileSpec.Builder.addVersionsObjects(versions: TreeVersions): FileSpec.Builder =
-    apply {
-        TypeSpec.objectBuilder("Versions")
-            .addSubVersionsProperties(versions)
-            .build()
-            .also(::addType)
+private fun KtFileScope.addVersionsObjects(versions: TreeVersions) =
+    addObjectType("Versions") {
+        builder.addSubVersionsProperties(versions)
     }
 
 private fun TypeSpec.Builder.addSubVersionsProperties(versions: TreeVersions): TypeSpec.Builder =
-    apply {
+    applyDslBuilder {
         versions.subTreeVersions.toSortedMap().forEach { (name, subVersions) ->
             addVersionProperty(name, subVersions)
-            addSubVersionsProperty(name, subVersions)
-            addSubVersionsObjects(name, subVersions)
+            builder.addSubVersionsProperty(name, subVersions)
+            builder.addSubVersionsObjects(name, subVersions)
         }
     }
 
-private fun TypeSpec.Builder.addVersionProperty(propertyName: String, subVersions: TreeVersions): TypeSpec.Builder =
-    apply {
-        if (subVersions.subTreeVersions.isNotEmpty()) return this
-        val version = subVersions.version ?: return this
-        PropertySpec.builder(propertyName, String::class)
-            .addModifiers(KModifier.CONST)
-            .initializer("\"$version\"")
-            .build()
-            .also(::addProperty)
+private fun TypeScope.addVersionProperty(propertyName: String, subVersions: TreeVersions) {
+    if (subVersions.subTreeVersions.isNotEmpty()) return
+    val version = subVersions.version ?: return
+    addProperty<String>(propertyName) {
+        modifier(KModifier.CONST)
+        initializer("\"$version\"")
     }
+}
 
 private fun TypeSpec.Builder.addSubVersionsProperty(
     propertyName: String,
