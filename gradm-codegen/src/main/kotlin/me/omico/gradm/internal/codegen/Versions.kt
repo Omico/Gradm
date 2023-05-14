@@ -76,8 +76,8 @@ private fun TypeSpec.Builder.addSubVersionsProperty(
     propertyName: String,
     subVersions: TreeVersions,
 ): TypeSpec.Builder =
-    apply {
-        if (subVersions.subTreeVersions.isEmpty()) return this
+    applyDslBuilder {
+        if (subVersions.subTreeVersions.isEmpty()) return@applyDslBuilder
         PropertySpec.builder(propertyName, ClassName("", "${propertyName.capitalize()}Versions"))
             .initializer("${propertyName.capitalize()}Versions")
             .build()
