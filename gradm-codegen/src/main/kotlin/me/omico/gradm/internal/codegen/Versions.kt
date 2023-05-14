@@ -57,7 +57,7 @@ private fun TypeSpec.Builder.addSubVersionsProperties(versions: TreeVersions): T
     applyDslBuilder {
         versions.subTreeVersions.toSortedMap().forEach { (name, subVersions) ->
             addVersionProperty(name, subVersions)
-            builder.addSubVersionsProperty(name, subVersions)
+            addSubVersionsProperty(name, subVersions)
             builder.addSubVersionsObjects(name, subVersions)
         }
     }
@@ -71,16 +71,12 @@ private fun TypeScope.addVersionProperty(propertyName: String, subVersions: Tree
     }
 }
 
-private fun TypeSpec.Builder.addSubVersionsProperty(
-    propertyName: String,
-    subVersions: TreeVersions,
-): TypeSpec.Builder =
-    applyDslBuilder {
-        if (subVersions.subTreeVersions.isEmpty()) return@applyDslBuilder
-        addProperty(propertyName, ClassName("", "${propertyName.capitalize()}Versions")) {
-            initializer("${propertyName.capitalize()}Versions")
-        }
+private fun TypeScope.addSubVersionsProperty(propertyName: String, subVersions: TreeVersions) {
+    if (subVersions.subTreeVersions.isEmpty()) return
+    addProperty(propertyName, ClassName("", "${propertyName.capitalize()}Versions")) {
+        initializer("${propertyName.capitalize()}Versions")
     }
+}
 
 private fun TypeSpec.Builder.addSubVersionsObjects(name: String, subVersions: TreeVersions): TypeSpec.Builder =
     apply {
