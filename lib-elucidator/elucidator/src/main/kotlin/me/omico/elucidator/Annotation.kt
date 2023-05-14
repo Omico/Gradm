@@ -23,7 +23,3 @@ fun <T : Annotation> annotation(type: KClass<T>, block: AnnotationScope.() -> Un
 
 inline fun <reified T : Annotation> annotation(noinline block: AnnotationScope.() -> Unit): AnnotationSpec =
     annotation(T::class, block)
-
-fun AnnotationScope.addMember(format: String, vararg args: Any) {
-    builder.addMember(format, *args)
-}

@@ -34,10 +34,6 @@ fun property(
 ): PropertySpec =
     PropertySpec.builder(name, type, *modifiers).applyDslBuilder(block).build()
 
-fun PropertyScope.addModifiers(vararg modifiers: KModifier) {
-    builder.addModifiers(*modifiers)
-}
-
 fun PropertyScope.clearModifiers() = builder.modifiers.clear()
 
 fun PropertyScope.modifier(modifier: KModifier) = modifiers(modifier)
@@ -45,10 +41,6 @@ fun PropertyScope.modifier(modifier: KModifier) = modifiers(modifier)
 fun PropertyScope.modifiers(vararg modifiers: KModifier) {
     clearModifiers()
     addModifiers(*modifiers)
-}
-
-fun PropertyScope.initializer(format: String, vararg args: Any?) {
-    builder.initializer(format, *args)
 }
 
 inline fun <reified T> PropertyScope.receiver() {

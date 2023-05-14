@@ -18,6 +18,7 @@
 package me.omico.elucidator
 
 import com.squareup.kotlinpoet.FileSpec
+import me.omico.elucidator.function.addDslScopeExtensionFunctions
 import me.omico.elucidator.function.addInteroperabilityFunction
 import me.omico.elucidator.type.addDslBuilderClass
 import me.omico.elucidator.type.addDslScopeInterface
@@ -31,6 +32,7 @@ fun main(arguments: Array<String>) {
             .addDslScopeInterface(type)
             .addDslBuilderClass(type)
             .addInteroperabilityFunction(type)
+            .addDslScopeExtensionFunctions(type)
             .build()
             .writeTo(outputDirectory)
     }

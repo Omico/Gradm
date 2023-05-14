@@ -15,7 +15,6 @@
  */
 package me.omico.elucidator
 
-import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -32,14 +31,6 @@ fun getterFunction(block: FunctionScope.() -> Unit): FunSpec =
 fun setterFunction(block: FunctionScope.() -> Unit): FunSpec =
     FunSpec.setterBuilder().applyDslBuilder(block).build()
 
-fun FunctionScope.addModifiers(vararg modifiers: KModifier) {
-    builder.addModifiers(*modifiers)
-}
-
-fun FunctionScope.addModifiers(modifiers: Iterable<KModifier>) {
-    builder.addModifiers(modifiers)
-}
-
 fun FunctionScope.clearModifiers() = builder.modifiers.clear()
 
 fun FunctionScope.modifier(modifier: KModifier) = modifiers(modifier)
@@ -54,10 +45,6 @@ fun FunctionScope.modifiers(modifiers: Iterable<KModifier>) {
     addModifiers(modifiers)
 }
 
-fun FunctionScope.addAnnotation(annotation: AnnotationSpec) {
-    builder.addAnnotation(annotation)
-}
-
 inline fun <reified T : Annotation> FunctionScope.addAnnotation(noinline block: AnnotationScope.() -> Unit): Unit =
     annotation<T>(block).let(::addAnnotation)
 
@@ -67,10 +54,6 @@ inline fun <reified T> FunctionScope.addParameter(name: String, vararg modifiers
 
 inline fun <reified T> FunctionScope.addParameter(name: String, modifiers: Iterable<KModifier>) {
     builder.addParameter(name, T::class, modifiers)
-}
-
-fun FunctionScope.addStatement(format: String, vararg args: Any) {
-    builder.addStatement(format, *args)
 }
 
 inline fun <reified T> FunctionScope.returnType(kdoc: CodeBlock = EmptyCodeBlock) {
