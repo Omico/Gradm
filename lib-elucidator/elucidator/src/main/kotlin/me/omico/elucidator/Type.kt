@@ -16,6 +16,7 @@
 package me.omico.elucidator
 
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
@@ -34,22 +35,24 @@ fun TypeScope.addFunction(name: String, block: FunctionScope.() -> Unit) {
     function(name, block).let(builder::addFunction)
 }
 
+fun TypeScope.addProperty(propertySpec: PropertySpec) {
+    builder.addProperty(propertySpec)
+}
+
 inline fun <reified T> TypeScope.addProperty(
     name: String,
     vararg modifiers: KModifier,
     noinline block: PropertyScope.() -> Unit,
-) {
-    property<T>(name = name, modifiers = modifiers, block = block).let(builder::addProperty)
-}
+): Unit =
+    property<T>(name = name, modifiers = modifiers, block = block).let(::addProperty)
 
 fun TypeScope.addProperty(
     name: String,
     type: TypeName,
     vararg modifiers: KModifier,
     block: PropertyScope.() -> Unit,
-) {
-    property(name = name, type = type, modifiers = modifiers, block = block).let(builder::addProperty)
-}
+): Unit =
+    property(name = name, type = type, modifiers = modifiers, block = block).let(::addProperty)
 
 fun TypeScope.addType(typeSpec: TypeSpec) {
     builder.addType(typeSpec)

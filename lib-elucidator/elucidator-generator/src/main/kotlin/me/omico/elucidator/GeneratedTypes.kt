@@ -17,10 +17,19 @@ package me.omico.elucidator
 
 import com.squareup.kotlinpoet.ClassName
 
-data class Type(
+internal val generatedTypes: List<GeneratedType> = listOf(
+    GeneratedType("Annotation", "com.squareup.kotlinpoet.AnnotationSpec"),
+    GeneratedType("CodeBlock", "com.squareup.kotlinpoet.CodeBlock"),
+    GeneratedType("Function", "com.squareup.kotlinpoet.FunSpec"),
+    GeneratedType("KtFile", "com.squareup.kotlinpoet.FileSpec"),
+    GeneratedType("Property", "com.squareup.kotlinpoet.PropertySpec"),
+    GeneratedType("Type", "com.squareup.kotlinpoet.TypeSpec"),
+)
+
+internal data class GeneratedType(
     val name: String,
     val objectClass: String,
-    val builderClass: String,
+    val builderClass: String = "$objectClass.Builder",
 ) {
     val objectClassName: ClassName = ClassName.bestGuess(objectClass)
     val builderClassName: ClassName = ClassName.bestGuess(builderClass)
@@ -32,5 +41,3 @@ data class Type(
 
     val generatedBuilderName: String = "${name}Builder"
 }
-
-internal const val GENERATED_PACKAGE_NAME = "me.omico.elucidator"
