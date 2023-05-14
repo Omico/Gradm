@@ -19,7 +19,6 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import me.omico.elucidator.KtFileScope
 import me.omico.elucidator.TypeScope
@@ -78,10 +77,9 @@ private fun TypeSpec.Builder.addSubVersionsProperty(
 ): TypeSpec.Builder =
     applyDslBuilder {
         if (subVersions.subTreeVersions.isEmpty()) return@applyDslBuilder
-        PropertySpec.builder(propertyName, ClassName("", "${propertyName.capitalize()}Versions"))
-            .initializer("${propertyName.capitalize()}Versions")
-            .build()
-            .let(::addProperty)
+        addProperty(propertyName, ClassName("", "${propertyName.capitalize()}Versions")) {
+            initializer("${propertyName.capitalize()}Versions")
+        }
     }
 
 private fun TypeSpec.Builder.addSubVersionsObjects(name: String, subVersions: TreeVersions): TypeSpec.Builder =
