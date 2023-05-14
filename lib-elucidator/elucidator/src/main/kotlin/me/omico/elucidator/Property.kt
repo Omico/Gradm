@@ -50,3 +50,14 @@ fun PropertyScope.modifiers(vararg modifiers: KModifier) {
 fun PropertyScope.initializer(format: String, vararg args: Any?) {
     builder.initializer(format, *args)
 }
+
+inline fun <reified T> PropertyScope.receiver() {
+    builder.receiver(T::class)
+}
+
+fun PropertyScope.getter(block: (FunctionScope.() -> Unit)? = null) {
+    builder.getter(block?.let(::getterFunction))
+}
+
+fun PropertyScope.getter(format: String, vararg args: Any) =
+    getter { returnStatement(format = format, args = args) }
