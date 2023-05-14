@@ -23,6 +23,9 @@ tasks {
     compileKotlin {
         dependsOn(":elucidator-generator:run")
     }
+    sourcesJar {
+        dependsOn(":elucidator-generator:run")
+    }
     test {
         useJUnitPlatform()
     }
