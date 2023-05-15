@@ -16,11 +16,20 @@
 package me.omico.gradm.internal.codegen
 
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.TypeSpec
+import me.omico.elucidator.FunctionScope
+import me.omico.elucidator.addClassType
+import me.omico.elucidator.addComment
+import me.omico.elucidator.addFunction
+import me.omico.elucidator.addIfStatement
+import me.omico.elucidator.addLambdaStatement
+import me.omico.elucidator.addParameter
+import me.omico.elucidator.addStatement
+import me.omico.elucidator.ktFile
+import me.omico.elucidator.modifier
+import me.omico.elucidator.superinterface
+import me.omico.elucidator.writeTo
 import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
 import me.omico.gradm.GRADM_PACKAGE_NAME
 import me.omico.gradm.GradmExperimentalConfiguration
@@ -37,20 +46,24 @@ import org.gradle.api.plugins.ExtensionAware
 import java.net.URI
 import java.nio.file.Path
 
-internal fun CodeGenerator.generatePluginSourceFile() =
+internal fun CodeGenerator.generatePluginSourceFile(): Unit =
     generatePluginSourceFile<ExtensionAware>(
         generatedSourcesDirectory = generatedSourcesDirectory,
         type = GradmGeneratedPluginType.General,
         overrideApplyFunctionBuilder = {
-            controlFlow("if (target is %T)", Settings::class) {
-                declarePluginsInSettings(gradmConfigDocument, versionsMeta)
-                declareRepositoriesInSettings(gradmConfigDocument)
-                declareDependenciesInSettings(dependencies)
-                declareVersionsInSettings()
+            addIfStatement {
+                start("target is %T", Settings::class) {
+                    declarePluginsInSettings(gradmConfigDocument, versionsMeta)
+                    declareRepositoriesInSettings(gradmConfigDocument)
+                    declareDependenciesInSettings(dependencies)
+                    declareVersionsInSettings()
+                }
             }
-            controlFlow("if (target is %T)", Project::class) {
-                declareDependenciesInProject(dependencies)
-                declareVersionsInProject()
+            addIfStatement {
+                start("target is %T", Project::class) {
+                    declareDependenciesInProject(dependencies)
+                    declareVersionsInProject()
+                }
             }
         },
     )
@@ -58,34 +71,25 @@ internal fun CodeGenerator.generatePluginSourceFile() =
 private inline fun <reified T> generatePluginSourceFile(
     generatedSourcesDirectory: Path,
     type: GradmGeneratedPluginType,
-    overrideApplyFunctionBuilder: FunSpec.Builder.() -> Unit = {},
-) = FileSpec.builder(type.packageName, type.className)
-    .addSuppressWarningTypes(types = defaultSuppressWarningTypes + "UnstableApiUsage")
-    .addGradmComment()
-    .apply {
-        TypeSpec.classBuilder(type.className)
-            .addSuperinterface(Plugin::class.parameterizedBy(T::class))
-            .addOverrideApplyFunction<T>(overrideApplyFunctionBuilder)
-            .build()
-            .also(::addType)
+    noinline overrideApplyFunctionBuilder: FunctionScope.() -> Unit = {},
+) {
+    ktFile(type.packageName, type.className) {
+        addSuppressWarningTypes(types = defaultSuppressWarningTypes + "UnstableApiUsage")
+        addGradmComment()
+        addClassType(type.className) {
+            superinterface(Plugin::class.parameterizedBy(T::class))
+            addFunction("apply") {
+                modifier(KModifier.OVERRIDE)
+                addParameter<T>("target")
+                apply(overrideApplyFunctionBuilder)
+            }
+        }
+        writeTo(generatedSourcesDirectory)
     }
-    .build()
-    .writeTo(generatedSourcesDirectory)
+}
 
-private inline fun <reified T> TypeSpec.Builder.addOverrideApplyFunction(
-    overrideApplyFunctionBuilder: FunSpec.Builder.() -> Unit = {},
-): TypeSpec.Builder =
-    apply {
-        FunSpec.builder("apply")
-            .addModifiers(KModifier.OVERRIDE)
-            .addParameter("target", T::class)
-            .apply(overrideApplyFunctionBuilder)
-            .build()
-            .also(::addFunction)
-    }
-
-private fun FunSpec.Builder.declarePluginsInSettings(document: YamlDocument, versionsMeta: VersionsMeta) =
-    controlFlow("target.pluginManagement.plugins") {
+private fun FunctionScope.declarePluginsInSettings(document: YamlDocument, versionsMeta: VersionsMeta): Unit =
+    addLambdaStatement("target.pluginManagement.plugins") {
         document.plugins
             .sortedBy { plugin -> plugin.id }
             .forEach { plugin ->
@@ -94,8 +98,8 @@ private fun FunSpec.Builder.declarePluginsInSettings(document: YamlDocument, ver
             }
     }
 
-private fun FunSpec.Builder.declareRepositoriesInSettings(document: YamlDocument) =
-    controlFlow("target.dependencyResolutionManagement.repositories") {
+private fun FunctionScope.declareRepositoriesInSettings(document: YamlDocument): Unit =
+    addLambdaStatement("target.dependencyResolutionManagement.repositories") {
         document.repositories.forEach { repository ->
             if (repository.id == "mavenLocal") {
                 addStatement("mavenLocal()")
@@ -108,19 +112,19 @@ private fun FunSpec.Builder.declareRepositoriesInSettings(document: YamlDocument
         }
     }
 
-private fun FunSpec.Builder.declareDependenciesInSettings(dependencies: CodegenDependencies) =
-    controlFlow("target.gradle.rootProject") {
-        controlFlow("allprojects") {
+private fun FunctionScope.declareDependenciesInSettings(dependencies: CodegenDependencies): Unit =
+    addLambdaStatement("target.gradle.rootProject") {
+        addLambdaStatement("allprojects") {
             declareDependencies(dependencies)
         }
     }
 
-private fun FunSpec.Builder.declareDependenciesInProject(dependencies: CodegenDependencies) =
-    controlFlow("with(target)") {
+private fun FunctionScope.declareDependenciesInProject(dependencies: CodegenDependencies): Unit =
+    addLambdaStatement("with(target)") {
         declareDependencies(dependencies)
     }
 
-private fun FunSpec.Builder.declareDependencies(dependencies: CodegenDependencies) {
+private fun FunctionScope.declareDependencies(dependencies: CodegenDependencies) {
     dependencies.keys.forEach { name -> addDependencyExtension(path = "dependencies", name = name) }
     if (GradmExperimentalConfiguration.kotlinMultiplatformSupport) {
         addComment("Kotlin Multiplatform Support")
@@ -131,7 +135,7 @@ private fun FunSpec.Builder.declareDependencies(dependencies: CodegenDependencie
     }
 }
 
-private fun FunSpec.Builder.addDependencyExtension(path: String? = null, name: String) {
+private fun FunctionScope.addDependencyExtension(path: String? = null, name: String) {
     val extensionsPath = when (path) {
         null -> "extensions"
         else -> {
@@ -147,28 +151,24 @@ private fun FunSpec.Builder.addDependencyExtension(path: String? = null, name: S
     )
 }
 
-private fun FunSpec.Builder.declareVersionsInSettings() =
-    controlFlow("target.gradle.rootProject") {
-        controlFlow("allprojects") {
+private fun FunctionScope.declareVersionsInSettings(): Unit =
+    addLambdaStatement("target.gradle.rootProject") {
+        addLambdaStatement("allprojects") {
             declareVersions()
         }
     }
 
-private fun FunSpec.Builder.declareVersionsInProject() =
-    controlFlow("with(target)") {
-        declareVersions()
-    }
+private fun FunctionScope.declareVersionsInProject(): Unit =
+    addLambdaStatement(format = "with(target)", block = FunctionScope::declareVersions)
 
-private fun FunSpec.Builder.declareVersions() {
+private fun FunctionScope.declareVersions(): Unit =
     addExtensionsIfNeeds(name = "versions", className = ClassName(GRADM_PACKAGE_NAME, "Versions"))
-}
 
-private fun FunSpec.Builder.addExtensionsIfNeeds(
+private fun FunctionScope.addExtensionsIfNeeds(
     extensionsPath: String = "extensions",
     name: String,
     className: ClassName,
-) {
+): Unit =
     addStatement(format = "$extensionsPath.findByName(\"${name}\") ?: $extensionsPath.add(\"${name}\", %T)", className)
-}
 
 private val extensionsPathRegex = """^(\w+\.)*\w+$""".toRegex()
