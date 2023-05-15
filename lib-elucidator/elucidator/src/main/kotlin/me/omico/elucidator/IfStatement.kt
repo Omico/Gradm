@@ -15,11 +15,11 @@
  */
 package me.omico.elucidator
 
-interface IfStatementScope {
-    fun start(condition: String, vararg args: Any, block: FunctionScope.() -> Unit)
-    fun then(condition: String, vararg args: Any, block: FunctionScope.() -> Unit)
-    fun final(block: FunctionScope.() -> Unit)
-    fun build()
+public interface IfStatementScope {
+    public fun start(condition: String, vararg args: Any, block: FunctionScope.() -> Unit)
+    public fun then(condition: String, vararg args: Any, block: FunctionScope.() -> Unit)
+    public fun final(block: FunctionScope.() -> Unit)
+    public fun build()
 }
 
 internal class IfStatementBuilder(
@@ -48,5 +48,5 @@ internal class IfStatementBuilder(
     }
 }
 
-fun FunctionScope.addIfStatement(block: IfStatementScope.() -> Unit): Unit =
+public fun FunctionScope.addIfStatement(block: IfStatementScope.() -> Unit): Unit =
     ConditionalStatementBuilder(this).let(::IfStatementBuilder).apply(block).build()

@@ -5,6 +5,7 @@ plugins {
 
 kotlin {
     jvmToolchain(11)
+    explicitApi()
     sourceSets.main {
         kotlin.srcDir("build/generated/kotlin")
     }

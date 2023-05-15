@@ -19,28 +19,30 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import java.nio.file.Path
 
-fun ktFile(
+public fun ktFile(
     packageName: String = "",
     fileName: String,
     block: KtFileScope.() -> Unit,
 ): FileSpec =
     FileSpec.builder(packageName, fileName).applyDslBuilder(block).build()
 
-fun KtFileScope.addFunction(name: String, block: FunctionScope.() -> Unit): Unit =
+public fun KtFileScope.addFunction(name: String, block: FunctionScope.() -> Unit): Unit =
     function(name, block).let(::addFunction)
 
-fun KtFileScope.addObjectType(name: String, block: TypeScope.() -> Unit): Unit = objectType(name, block).let(::addType)
+public fun KtFileScope.addObjectType(name: String, block: TypeScope.() -> Unit): Unit =
+    objectType(name, block).let(::addType)
 
-fun KtFileScope.addClassType(name: String, block: TypeScope.() -> Unit): Unit = classType(name, block).let(::addType)
+public fun KtFileScope.addClassType(name: String, block: TypeScope.() -> Unit): Unit =
+    classType(name, block).let(::addType)
 
-inline fun <reified T : Annotation> KtFileScope.addAnnotation(noinline block: AnnotationScope.() -> Unit): Unit =
+public inline fun <reified T : Annotation> KtFileScope.addAnnotation(noinline block: AnnotationScope.() -> Unit): Unit =
     annotation(T::class, block).let(::addAnnotation)
 
-inline fun <reified T> KtFileScope.addProperty(
+public inline fun <reified T> KtFileScope.addProperty(
     name: String,
     vararg modifiers: KModifier,
     noinline block: PropertyScope.() -> Unit,
 ): Unit =
     property<T>(name = name, modifiers = modifiers, block = block).let(::addProperty)
 
-fun KtFileScope.writeTo(path: Path): Unit = build().writeTo(path)
+public fun KtFileScope.writeTo(path: Path): Unit = build().writeTo(path)

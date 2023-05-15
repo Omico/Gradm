@@ -19,50 +19,50 @@ import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 
-fun function(name: String, block: FunctionScope.() -> Unit): FunSpec =
+public fun function(name: String, block: FunctionScope.() -> Unit): FunSpec =
     FunSpec.builder(name).let(::FunctionBuilder).apply(block).build()
 
-fun constructorFunction(block: FunctionScope.() -> Unit): FunSpec =
+public fun constructorFunction(block: FunctionScope.() -> Unit): FunSpec =
     FunSpec.constructorBuilder().applyDslBuilder(block).build()
 
-fun getterFunction(block: FunctionScope.() -> Unit): FunSpec =
+public fun getterFunction(block: FunctionScope.() -> Unit): FunSpec =
     FunSpec.getterBuilder().applyDslBuilder(block).build()
 
-fun setterFunction(block: FunctionScope.() -> Unit): FunSpec =
+public fun setterFunction(block: FunctionScope.() -> Unit): FunSpec =
     FunSpec.setterBuilder().applyDslBuilder(block).build()
 
-fun FunctionScope.clearModifiers() = builder.modifiers.clear()
+public fun FunctionScope.clearModifiers(): Unit = builder.modifiers.clear()
 
-fun FunctionScope.modifier(modifier: KModifier) = modifiers(modifier)
+public fun FunctionScope.modifier(modifier: KModifier): Unit = modifiers(modifier)
 
-fun FunctionScope.modifiers(vararg modifiers: KModifier) {
+public fun FunctionScope.modifiers(vararg modifiers: KModifier) {
     clearModifiers()
     addModifiers(*modifiers)
 }
 
-fun FunctionScope.modifiers(modifiers: Iterable<KModifier>) {
+public fun FunctionScope.modifiers(modifiers: Iterable<KModifier>) {
     clearModifiers()
     addModifiers(modifiers)
 }
 
-inline fun <reified T : Annotation> FunctionScope.addAnnotation(noinline block: AnnotationScope.() -> Unit): Unit =
+public inline fun <reified T : Annotation> FunctionScope.addAnnotation(noinline block: AnnotationScope.() -> Unit): Unit =
     annotation<T>(block).let(::addAnnotation)
 
-inline fun <reified T> FunctionScope.addParameter(name: String, vararg modifiers: KModifier) {
+public inline fun <reified T> FunctionScope.addParameter(name: String, vararg modifiers: KModifier) {
     builder.addParameter(name, T::class, *modifiers)
 }
 
-inline fun <reified T> FunctionScope.addParameter(name: String, modifiers: Iterable<KModifier>) {
+public inline fun <reified T> FunctionScope.addParameter(name: String, modifiers: Iterable<KModifier>) {
     builder.addParameter(name, T::class, modifiers)
 }
 
-inline fun <reified T> FunctionScope.returnType(kdoc: CodeBlock = EmptyCodeBlock) {
+public inline fun <reified T> FunctionScope.returnType(kdoc: CodeBlock = EmptyCodeBlock) {
     builder.returns(T::class, kdoc)
 }
 
-fun FunctionScope.returnStatement(format: String, vararg args: Any) = addStatement("return $format", *args)
+public fun FunctionScope.returnStatement(format: String, vararg args: Any): Unit = addStatement("return $format", *args)
 
-inline fun <reified T> FunctionScope.returnStatement(
+public inline fun <reified T> FunctionScope.returnStatement(
     format: String,
     kdoc: CodeBlock = EmptyCodeBlock,
     vararg args: Any,

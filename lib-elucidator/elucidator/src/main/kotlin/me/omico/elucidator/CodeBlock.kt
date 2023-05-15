@@ -17,4 +17,4 @@ package me.omico.elucidator
 
 import com.squareup.kotlinpoet.CodeBlock
 
-val EmptyCodeBlock: CodeBlock = CodeBlock.builder().build()
+public val EmptyCodeBlock: CodeBlock = CodeBlock.builder().build()

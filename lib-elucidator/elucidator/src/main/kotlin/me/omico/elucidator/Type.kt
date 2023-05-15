@@ -20,31 +20,31 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 
-fun objectType(name: String, builder: TypeScope.() -> Unit): TypeSpec =
+public fun objectType(name: String, builder: TypeScope.() -> Unit): TypeSpec =
     TypeSpec.objectBuilder(name).applyDslBuilder(builder).build()
 
-fun classType(name: String, builder: TypeScope.() -> Unit): TypeSpec =
+public fun classType(name: String, builder: TypeScope.() -> Unit): TypeSpec =
     TypeSpec.classBuilder(name).applyDslBuilder(builder).build()
 
-inline fun <reified T> TypeScope.superclass() {
+public inline fun <reified T> TypeScope.superclass() {
     builder.superclass(T::class)
 }
 
-fun TypeScope.superinterface(type: TypeName, delegate: CodeBlock = EmptyCodeBlock) {
+public fun TypeScope.superinterface(type: TypeName, delegate: CodeBlock = EmptyCodeBlock) {
     builder.addSuperinterface(type, delegate)
 }
 
-fun TypeScope.addFunction(name: String, block: FunctionScope.() -> Unit): Unit =
+public fun TypeScope.addFunction(name: String, block: FunctionScope.() -> Unit): Unit =
     function(name, block).let(::addFunction)
 
-inline fun <reified T> TypeScope.addProperty(
+public inline fun <reified T> TypeScope.addProperty(
     name: String,
     vararg modifiers: KModifier,
     noinline block: PropertyScope.() -> Unit,
 ): Unit =
     property<T>(name = name, modifiers = modifiers, block = block).let(::addProperty)
 
-fun TypeScope.addProperty(
+public fun TypeScope.addProperty(
     name: String,
     type: TypeName,
     vararg modifiers: KModifier,
@@ -52,4 +52,5 @@ fun TypeScope.addProperty(
 ): Unit =
     property(name = name, type = type, modifiers = modifiers, block = block).let(::addProperty)
 
-fun TypeScope.addObjectType(name: String, block: TypeScope.() -> Unit): Unit = objectType(name, block).let(::addType)
+public fun TypeScope.addObjectType(name: String, block: TypeScope.() -> Unit): Unit =
+    objectType(name, block).let(::addType)

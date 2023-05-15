@@ -17,19 +17,19 @@ package me.omico.elucidator
 
 import com.squareup.kotlinpoet.TypeSpec
 
-inline fun <reified T> TypeScope.superclass(block: SuperclassConstructorParametersScope.() -> Unit) {
+public inline fun <reified T> TypeScope.superclass(block: SuperclassConstructorParametersScope.() -> Unit) {
     superclass<T>()
     SuperclassConstructorParametersApplier(builder).apply(block)
 }
 
-interface SuperclassConstructorParametersScope {
-    val builder: TypeSpec.Builder
+public interface SuperclassConstructorParametersScope {
+    public val builder: TypeSpec.Builder
 }
 
-fun SuperclassConstructorParametersScope.addParameter(format: String, vararg args: Any) {
+public fun SuperclassConstructorParametersScope.addParameter(format: String, vararg args: Any) {
     builder.addSuperclassConstructorParameter(format, *args)
 }
 
-class SuperclassConstructorParametersApplier(
+public class SuperclassConstructorParametersApplier(
     override val builder: TypeSpec.Builder,
 ) : SuperclassConstructorParametersScope

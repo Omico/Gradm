@@ -19,14 +19,14 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 
-inline fun <reified T> property(
+public inline fun <reified T> property(
     name: String,
     vararg modifiers: KModifier,
     noinline block: PropertyScope.() -> Unit,
 ): PropertySpec =
     PropertySpec.builder(name, T::class, *modifiers).applyDslBuilder(block).build()
 
-fun property(
+public fun property(
     name: String,
     type: TypeName,
     vararg modifiers: KModifier,
@@ -34,22 +34,22 @@ fun property(
 ): PropertySpec =
     PropertySpec.builder(name, type, *modifiers).applyDslBuilder(block).build()
 
-fun PropertyScope.clearModifiers() = builder.modifiers.clear()
+public fun PropertyScope.clearModifiers(): Unit = builder.modifiers.clear()
 
-fun PropertyScope.modifier(modifier: KModifier) = modifiers(modifier)
+public fun PropertyScope.modifier(modifier: KModifier): Unit = modifiers(modifier)
 
-fun PropertyScope.modifiers(vararg modifiers: KModifier) {
+public fun PropertyScope.modifiers(vararg modifiers: KModifier) {
     clearModifiers()
     addModifiers(*modifiers)
 }
 
-inline fun <reified T> PropertyScope.receiver() {
+public inline fun <reified T> PropertyScope.receiver() {
     builder.receiver(T::class)
 }
 
-fun PropertyScope.getter(block: (FunctionScope.() -> Unit)? = null) {
+public fun PropertyScope.getter(block: (FunctionScope.() -> Unit)? = null) {
     builder.getter(block?.let(::getterFunction))
 }
 
-fun PropertyScope.getter(format: String, vararg args: Any) =
+public fun PropertyScope.getter(format: String, vararg args: Any): Unit =
     getter { returnStatement(format = format, args = args) }

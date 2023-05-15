@@ -15,11 +15,11 @@
  */
 package me.omico.elucidator
 
-interface ConditionalStatementScope {
-    val scope: FunctionScope
-    fun begin(condition: String, vararg args: Any, block: FunctionScope.() -> Unit)
-    fun next(condition: String, vararg args: Any, block: FunctionScope.() -> Unit)
-    fun end()
+public interface ConditionalStatementScope {
+    public val scope: FunctionScope
+    public fun begin(condition: String, vararg args: Any, block: FunctionScope.() -> Unit)
+    public fun next(condition: String, vararg args: Any, block: FunctionScope.() -> Unit)
+    public fun end()
 }
 
 internal class ConditionalStatementBuilder(
