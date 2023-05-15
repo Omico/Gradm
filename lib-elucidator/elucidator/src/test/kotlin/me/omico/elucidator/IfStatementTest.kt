@@ -20,12 +20,52 @@ import kotlin.io.path.createTempDirectory
 import kotlin.io.path.readText
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class IfStatementTest {
     private val tempDirectory: Path = createTempDirectory()
 
     @Test
-    fun test() {
+    fun `test if statement is declared correctly`() {
+        TestFunctionScope.addIfStatement {
+            start("parameter1 == %S", "hello") {
+                addComment("TODO if")
+            }
+            then("parameter2 is %T", String::class) {
+                addComment("TODO else if")
+            }
+            final {
+                addComment("TODO else")
+            }
+        }
+        assertFailsWith<IllegalStateException>("start() must be called only once.") {
+            TestFunctionScope.addIfStatement {
+                start("parameter1 == %S", "hello") {
+                    addComment("TODO if")
+                }
+                start("parameter1 == %S", "hello") {
+                    addComment("TODO if")
+                }
+            }
+        }
+        assertFailsWith<IllegalStateException>("start() must be called before then().") {
+            TestFunctionScope.addIfStatement {
+                then("parameter2 is %T", String::class) {
+                    addComment("TODO else if")
+                }
+            }
+        }
+        assertFailsWith<IllegalStateException>("start() must be called before final().") {
+            TestFunctionScope.addIfStatement {
+                final {
+                    addComment("TODO else")
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `test output`() {
         ktFile("hello", "World") {
             addFunction("test") {
                 addAnnotation<Suppress> {

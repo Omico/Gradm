@@ -25,16 +25,27 @@ interface IfStatementScope {
 internal class IfStatementBuilder(
     private val builder: ConditionalStatementBuilder,
 ) : IfStatementScope {
-    override fun start(condition: String, vararg args: Any, block: FunctionScope.() -> Unit): Unit =
+    private var isDeclared: Boolean = false
+
+    override fun start(condition: String, vararg args: Any, block: FunctionScope.() -> Unit) {
+        check(!isDeclared) { "start() must be called only once." }
         builder.begin(condition = "if ($condition)", args = args, block = block)
+        isDeclared = true
+    }
 
-    override fun then(condition: String, vararg args: Any, block: FunctionScope.() -> Unit): Unit =
+    override fun then(condition: String, vararg args: Any, block: FunctionScope.() -> Unit) {
+        check(isDeclared) { "start() must be called before then()." }
         builder.next(condition = "else if ($condition)", args = args, block = block)
+    }
 
-    override fun final(block: FunctionScope.() -> Unit): Unit =
+    override fun final(block: FunctionScope.() -> Unit) {
+        check(isDeclared) { "start() must be called before final()." }
         builder.next(condition = "else", block = block)
+    }
 
-    override fun build(): Unit = builder.end()
+    override fun build() {
+        if (isDeclared) builder.end()
+    }
 }
 
 fun FunctionScope.addIfStatement(block: IfStatementScope.() -> Unit): Unit =
