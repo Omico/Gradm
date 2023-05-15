@@ -26,17 +26,15 @@ fun ktFile(
 ): FileSpec =
     FileSpec.builder(packageName, fileName).applyDslBuilder(block).build()
 
-fun KtFileScope.addFunction(name: String, block: FunctionScope.() -> Unit) {
+fun KtFileScope.addFunction(name: String, block: FunctionScope.() -> Unit): Unit =
     function(name, block).let(::addFunction)
-}
 
-fun KtFileScope.addObjectType(name: String, block: TypeScope.() -> Unit) {
-    objectType(name, block).let(::addType)
-}
+fun KtFileScope.addObjectType(name: String, block: TypeScope.() -> Unit): Unit = objectType(name, block).let(::addType)
 
-inline fun <reified T : Annotation> KtFileScope.addAnnotation(noinline block: AnnotationScope.() -> Unit) {
+fun KtFileScope.addClassType(name: String, block: TypeScope.() -> Unit): Unit = classType(name, block).let(::addType)
+
+inline fun <reified T : Annotation> KtFileScope.addAnnotation(noinline block: AnnotationScope.() -> Unit): Unit =
     annotation(T::class, block).let(::addAnnotation)
-}
 
 inline fun <reified T> KtFileScope.addProperty(
     name: String,
@@ -45,4 +43,4 @@ inline fun <reified T> KtFileScope.addProperty(
 ): Unit =
     property<T>(name = name, modifiers = modifiers, block = block).let(::addProperty)
 
-fun KtFileScope.writeTo(path: Path) = build().writeTo(path)
+fun KtFileScope.writeTo(path: Path): Unit = build().writeTo(path)

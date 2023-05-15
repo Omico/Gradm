@@ -15,6 +15,7 @@
  */
 package me.omico.elucidator
 
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
@@ -22,13 +23,19 @@ import com.squareup.kotlinpoet.TypeSpec
 fun objectType(name: String, builder: TypeScope.() -> Unit): TypeSpec =
     TypeSpec.objectBuilder(name).applyDslBuilder(builder).build()
 
+fun classType(name: String, builder: TypeScope.() -> Unit): TypeSpec =
+    TypeSpec.classBuilder(name).applyDslBuilder(builder).build()
+
 inline fun <reified T> TypeScope.superclass() {
     builder.superclass(T::class)
 }
 
-fun TypeScope.addFunction(name: String, block: FunctionScope.() -> Unit) {
-    function(name, block).let(::addFunction)
+fun TypeScope.superinterface(type: TypeName, delegate: CodeBlock = EmptyCodeBlock) {
+    builder.addSuperinterface(type, delegate)
 }
+
+fun TypeScope.addFunction(name: String, block: FunctionScope.() -> Unit): Unit =
+    function(name, block).let(::addFunction)
 
 inline fun <reified T> TypeScope.addProperty(
     name: String,
