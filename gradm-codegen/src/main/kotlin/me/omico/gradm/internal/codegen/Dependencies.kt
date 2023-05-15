@@ -16,7 +16,6 @@
 package me.omico.gradm.internal.codegen
 
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import me.omico.elucidator.KtFileScope
 import me.omico.elucidator.TypeScope
@@ -29,6 +28,7 @@ import me.omico.elucidator.ktFile
 import me.omico.elucidator.modifier
 import me.omico.elucidator.returnStatement
 import me.omico.elucidator.superclass
+import me.omico.elucidator.writeTo
 import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
@@ -58,7 +58,12 @@ internal typealias CodegenDependencies = TreeMap<String, CodegenDependency>
 
 internal fun CodeGenerator.generateDependenciesSourceFiles() {
     dependencies.forEach { (name, dependency) ->
-        dependency.toFileSpec(name).writeTo(generatedSourcesDirectory)
+        ktFile(GRADM_DEPENDENCY_PACKAGE_NAME, name.capitalize()) {
+            addSuppressWarningTypes()
+            addGradmComment()
+            addDependencyObjects(name, dependency)
+            writeTo(generatedSourcesDirectory)
+        }
     }
 }
 
@@ -67,13 +72,6 @@ internal fun YamlDocument.createCodegenDependencies(versionsMeta: VersionsMeta):
         this@createCodegenDependencies.collectAllDependencies().forEach { dependency ->
             addDependency(versionsMeta, dependency)
         }
-    }
-
-private fun CodegenDependency.toFileSpec(name: String): FileSpec =
-    ktFile(GRADM_DEPENDENCY_PACKAGE_NAME, name.capitalize()) {
-        addSuppressWarningTypes()
-        addGradmComment()
-        addDependencyObjects(name, this@toFileSpec)
     }
 
 private fun CodegenDependencies.addDependency(

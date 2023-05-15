@@ -16,7 +16,6 @@
 package me.omico.gradm.internal.codegen
 
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import me.omico.elucidator.KtFileScope
 import me.omico.elucidator.TypeScope
@@ -27,25 +26,26 @@ import me.omico.elucidator.initializer
 import me.omico.elucidator.ktFile
 import me.omico.elucidator.modifier
 import me.omico.elucidator.returnStatement
+import me.omico.elucidator.writeTo
 import me.omico.gradm.GRADM_PACKAGE_NAME
 import me.omico.gradm.integration.applyGradmIntegrations
 import me.omico.gradm.internal.config.TreeVersions
 import me.omico.gradm.internal.config.toTreeVersions
 
-internal fun CodeGenerator.generateVersionsSourceFile(): Unit =
+internal fun CodeGenerator.generateVersionsSourceFile() {
+    ktFile(GRADM_PACKAGE_NAME, "Versions") {
+        addSuppressWarningTypes()
+        addGradmComment()
+        addVersionsObjects(createTreeVersions())
+        writeTo(generatedSourcesDirectory)
+    }
+}
+
+private fun CodeGenerator.createTreeVersions(): TreeVersions =
     mutableMapOf<String, String>()
         .apply { putAll(flatVersions) }
         .apply(gradmProjectPaths::applyGradmIntegrations)
         .toTreeVersions()
-        .toFileSpec()
-        .writeTo(generatedSourcesDirectory)
-
-private fun TreeVersions.toFileSpec(): FileSpec =
-    ktFile(GRADM_PACKAGE_NAME, "Versions") {
-        addSuppressWarningTypes()
-        addGradmComment()
-        addVersionsObjects(this@toFileSpec)
-    }
 
 private fun KtFileScope.addVersionsObjects(versions: TreeVersions): Unit =
     addObjectType("Versions") {
