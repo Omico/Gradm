@@ -15,13 +15,10 @@
  */
 package me.omico.gradm.internal.codegen
 
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
 import me.omico.elucidator.KtFileScope
 import me.omico.elucidator.addAnnotation
 import me.omico.elucidator.addFileComment
 import me.omico.elucidator.addMember
-import me.omico.elucidator.applyDslBuilder
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.FlatVersions
@@ -63,22 +60,17 @@ internal class CodeGenerator(
     val flatVersions: FlatVersions = gradmConfigDocument.versions.toFlatVersions()
 }
 
-internal val defaultSuppressWarningTypes = arrayOf(
-    "MemberVisibilityCanBePrivate",
-    "RedundantVisibilityModifier",
-    "unused",
-)
+internal val defaultSuppressWarningTypes: Array<String> =
+    arrayOf(
+        "MemberVisibilityCanBePrivate",
+        "RedundantVisibilityModifier",
+        "unused",
+    )
 
-internal fun FileSpec.Builder.addSuppressWarningTypes(vararg types: String = defaultSuppressWarningTypes): FileSpec.Builder =
-    applyDslBuilder { addSuppressWarningTypes(*types) }
-
-internal fun KtFileScope.addSuppressWarningTypes(vararg types: String = defaultSuppressWarningTypes) =
+internal fun KtFileScope.addSuppressWarningTypes(vararg types: String = defaultSuppressWarningTypes): Unit =
     addAnnotation<Suppress> { addMember("%S,".repeat(types.count()).trimEnd(','), *types) }
 
-internal fun FileSpec.Builder.addGradmComment(): FileSpec.Builder =
-    applyDslBuilder { addGradmComment() }
-
-internal fun KtFileScope.addGradmComment() =
+internal fun KtFileScope.addGradmComment(): Unit =
     addFileComment(
         """
         |
@@ -87,20 +79,10 @@ internal fun KtFileScope.addGradmComment() =
         """.trimMargin(),
     )
 
-internal inline fun FunSpec.Builder.controlFlow(
-    controlFlow: String,
-    vararg args: Any,
-    block: FunSpec.Builder.() -> Unit,
-) {
-    beginControlFlow(controlFlow, *args)
-    apply(block)
-    endControlFlow()
-}
-
-internal fun String.capitalize() =
+internal fun String.capitalize(): String =
     replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
-internal fun String.camelCase() =
+internal fun String.camelCase(): String =
     split("-", "_")
         .mapIndexed { index, s -> if (index == 0) s else s.capitalize() }
         .joinToString("")

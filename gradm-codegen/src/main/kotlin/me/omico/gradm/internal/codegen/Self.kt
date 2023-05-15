@@ -25,7 +25,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
 import kotlin.io.path.invariantSeparatorsPathString
 
-internal fun CodeGenerator.generateSelfSourceFile() =
+internal fun CodeGenerator.generateSelfSourceFile() {
     ktFile(fileName = "Self") {
         addSuppressWarningTypes()
         addGradmComment()
@@ -35,3 +35,4 @@ internal fun CodeGenerator.generateSelfSourceFile() =
         }
         writeTo(generatedSourcesDirectory)
     }
+}

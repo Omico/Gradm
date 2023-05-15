@@ -48,10 +48,10 @@ internal data class CodegenDependency(
     val noSpecificVersion: Boolean by lazy { version.isNullOrBlank() }
 }
 
-internal val CodegenDependency.hasDependency
+internal val CodegenDependency.hasDependency: Boolean
     get() = group.isNotEmpty() && artifact.isNotEmpty()
 
-internal val CodegenDependency.hasSubDependencies
+internal val CodegenDependency.hasSubDependencies: Boolean
     get() = subDependencies.isNotEmpty()
 
 internal typealias CodegenDependencies = TreeMap<String, CodegenDependency>
@@ -128,7 +128,7 @@ private fun TypeScope.addDependencySuperClass(dependency: CodegenDependency) {
     }
 }
 
-private fun TypeScope.addDependencies(name: String, dependency: CodegenDependency) {
+private fun TypeScope.addDependencies(name: String, dependency: CodegenDependency): Unit =
     dependency.subDependencies.forEach { (subName, subDependency) ->
         when {
             subDependency.hasSubDependencies ->
@@ -136,9 +136,8 @@ private fun TypeScope.addDependencies(name: String, dependency: CodegenDependenc
             else -> addDependency(subName, subDependency)
         }
     }
-}
 
-private fun TypeScope.addDependencyProperty(propertyName: String, className: String) =
+private fun TypeScope.addDependencyProperty(propertyName: String, className: String): Unit =
     addProperty(propertyName, ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, className)) {
         initializer(className)
     }
