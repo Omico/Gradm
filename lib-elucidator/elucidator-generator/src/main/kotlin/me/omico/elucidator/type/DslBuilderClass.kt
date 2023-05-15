@@ -24,6 +24,7 @@ import me.omico.elucidator.GeneratedType
 
 internal fun FileSpec.Builder.addDslBuilderClass(type: GeneratedType): FileSpec.Builder =
     TypeSpec.classBuilder(type.generatedBuilderName)
+        .addModifiers(KModifier.INTERNAL)
         .apply {
             FunSpec.constructorBuilder()
                 .addParameter("builder", type.builderClassName)
