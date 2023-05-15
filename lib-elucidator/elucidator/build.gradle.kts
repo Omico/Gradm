@@ -15,24 +15,19 @@ dependencies {
 }
 
 dependencies {
-    testImplementation(platform(libs.junit.bom))
-    testImplementation(libs.junit.jupiter)
+    testImplementation(kotlin("test"))
+    testImplementation(libs.kotlinpoet)
 }
 
 tasks {
-    compileKotlin {
-        dependsOn(":elucidator-generator:run")
+    listOf(compileKotlin, sourcesJar).forEach { task ->
+        task {
+            dependsOn(":elucidator-generator:run")
+        }
     }
-    sourcesJar {
-        dependsOn(":elucidator-generator:run")
-    }
-    test {
-        useJUnitPlatform()
-    }
-    publish {
-        dependsOn(":spotlessApply")
-    }
-    publishToMavenLocal {
-        dependsOn(":spotlessApply")
+    listOf(publish, publishToMavenLocal).forEach { task ->
+        task {
+            dependsOn(":spotlessApply", ":elucidator:test")
+        }
     }
 }

@@ -15,15 +15,17 @@
  */
 package me.omico.elucidator
 
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
+import kotlin.io.path.createTempDirectory
 import kotlin.io.path.readText
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class KtFileTest {
+    private val tempDirectory: Path = createTempDirectory()
 
     @Test
-    fun test(@TempDir tempDir: Path) {
+    fun test() {
         ktFile("hello", "World") {
             addFunction("test") {
                 addAnnotation<Suppress> {
@@ -33,7 +35,7 @@ class KtFileTest {
                 addParameter<Any>("parameter2")
                 returnType<Unit>()
             }
-            writeTo(tempDir)
+            writeTo(tempDirectory)
         }
         val expected =
             """
@@ -49,6 +51,6 @@ class KtFileTest {
             |}
             |
             """.trimMargin()
-        assert(expected == tempDir.resolve("hello/World.kt").readText().also(::println))
+        assertEquals(expected, tempDirectory.resolve("hello/World.kt").readText())
     }
 }
