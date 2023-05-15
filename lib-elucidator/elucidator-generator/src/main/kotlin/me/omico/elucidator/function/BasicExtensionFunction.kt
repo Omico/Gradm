@@ -109,8 +109,10 @@ private val BasicExtensionFunctions_AnnotationScope: List<BasicExtensionFunction
 
 private val BasicExtensionFunctions_FunctionScope: List<BasicExtensionFunction> by lazy {
     buildList {
+        addAll(BasicExtensionFunctions_addModifiers)
+        addAll(BasicExtensionFunctions_controlFlow)
         add(BasicExtensionFunction_addAnnotation)
-        addAll(Functions_addModifiers)
+        add(BasicExtensionFunction_addComment)
         add(BasicExtensionFunction_addStatement)
     }
 }
@@ -118,17 +120,17 @@ private val BasicExtensionFunctions_FunctionScope: List<BasicExtensionFunction> 
 private val BasicExtensionFunctions_KtFileScope: List<BasicExtensionFunction> by lazy {
     buildList {
         add(BasicExtensionFunction_addAnnotation)
+        add(BasicExtensionFunction_addFileComment)
         add(BasicExtensionFunction_addFunction)
         add(BasicExtensionFunction_addProperty)
         add(BasicExtensionFunction_addType)
-        add(BasicExtensionFunction_addFileComment)
     }
 }
 
 private val BasicExtensionFunctions_PropertyScope: List<BasicExtensionFunction> by lazy {
     buildList {
         add(BasicExtensionFunction_addAnnotation)
-        addAll(Functions_addModifiers)
+        addAll(BasicExtensionFunctions_addModifiers)
         listOf(
             BasicExtensionFunction(
                 name = "initializer",
@@ -146,15 +148,15 @@ private val BasicExtensionFunctions_TypeScope: List<BasicExtensionFunction> by l
         add(BasicExtensionFunction_addAnnotation)
         add(BasicExtensionFunction_addFunction)
         add(BasicExtensionFunction_addProperty)
-        add(BasicExtensionFunction_addType)
         add(BasicExtensionFunction_addSuperclassConstructorParameter)
+        add(BasicExtensionFunction_addType)
     }
 }
 
 private val BasicExtensionFunction_addAnnotation: BasicExtensionFunction =
     BasicExtensionFunction("addAnnotation", "annotationSpec" to AnnotationSpec::class)
 
-private val Functions_addModifiers: List<BasicExtensionFunction> = listOf(
+private val BasicExtensionFunctions_addModifiers: List<BasicExtensionFunction> = listOf(
     BasicExtensionFunction("addModifiers", "modifiers" to Iterable::class.parameterizedBy(KModifier::class)),
     BasicExtensionFunction("addModifiers", "vararg modifiers" to KModifier::class),
 )
@@ -181,5 +183,14 @@ private val BasicExtensionFunction_addSuperclassConstructorParameter: BasicExten
 private val BasicExtensionFunction_addFileComment: BasicExtensionFunction =
     BasicExtensionFunction("addFileComment", "format" to String::class, "vararg args" to Any::class)
 
+private val BasicExtensionFunction_addComment: BasicExtensionFunction =
+    BasicExtensionFunction("addComment", "format" to String::class, "vararg args" to Any::class)
+
 private val BasicExtensionFunction_addMember: BasicExtensionFunction =
     BasicExtensionFunction("addMember", "format" to String::class, "vararg args" to Any::class)
+
+private val BasicExtensionFunctions_controlFlow: List<BasicExtensionFunction> = listOf(
+    BasicExtensionFunction("beginControlFlow", "controlFlow" to String::class, "vararg args" to Any::class),
+    BasicExtensionFunction("nextControlFlow", "controlFlow" to String::class, "vararg args" to Any::class),
+    BasicExtensionFunction("endControlFlow"),
+)
