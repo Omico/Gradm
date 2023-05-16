@@ -65,8 +65,8 @@ public fun FunctionScope.returnStatement(format: String, vararg args: Any): Unit
 
 public inline fun <reified T> FunctionScope.returnStatement(
     format: String,
-    kdoc: CodeBlock = EmptyCodeBlock,
     vararg args: Any,
+    kdoc: CodeBlock = EmptyCodeBlock,
 ) {
     returnStatement(format = format, args = args)
     returnType<T>(kdoc = kdoc)
