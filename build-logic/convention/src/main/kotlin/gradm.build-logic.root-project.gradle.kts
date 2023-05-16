@@ -18,6 +18,13 @@ afterEvaluate {
     }
 }
 
+// Do not cache changing modules
+allprojects {
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor(0, TimeUnit.SECONDS)
+    }
+}
+
 val wrapper: Wrapper by tasks.named<Wrapper>("wrapper") {
     gradleVersion = versions.gradle
     distributionType = Wrapper.DistributionType.BIN
