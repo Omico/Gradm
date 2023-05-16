@@ -15,33 +15,24 @@
  */
 package me.omico.gradm.internal.codegen
 
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.asClassName
+import me.omico.elucidator.addProperty
+import me.omico.elucidator.getter
+import me.omico.elucidator.ktFile
+import me.omico.elucidator.receiver
+import me.omico.elucidator.writeTo
 import me.omico.gradm.path.generatedJar
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
 import kotlin.io.path.invariantSeparatorsPathString
 
-internal fun CodeGenerator.generateSelfSourceFile() =
-    FileSpec.builder("", "Self")
-        .addSuppressWarningTypes()
-        .addGradmComment()
-        .apply {
-            PropertySpec
-                .builder("gradmGeneratedJar", ConfigurableFileCollection::class)
-                .receiver(Project::class)
-                .getter(
-                    FunSpec.getterBuilder()
-                        .addStatement(
-                            "return files(\"${gradmProjectPaths.generatedJar.invariantSeparatorsPathString}\")",
-                            ConfigurableFileCollection::class.asClassName(),
-                        )
-                        .build(),
-                )
-                .build()
-                .also(::addProperty)
+internal fun CodeGenerator.generateSelfSourceFile() {
+    ktFile(fileName = "Self") {
+        addSuppressWarningTypes()
+        addGradmComment()
+        addProperty<ConfigurableFileCollection>("gradmGeneratedJar") {
+            receiver<Project>()
+            getter("files(\"${gradmProjectPaths.generatedJar.invariantSeparatorsPathString}\")")
         }
-        .build()
-        .writeTo(generatedSourcesDirectory)
+        writeTo(generatedSourcesDirectory)
+    }
+}

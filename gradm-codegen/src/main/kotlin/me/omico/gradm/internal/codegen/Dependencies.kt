@@ -16,11 +16,19 @@
 package me.omico.gradm.internal.codegen
 
 import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeSpec
+import me.omico.elucidator.KtFileScope
+import me.omico.elucidator.TypeScope
+import me.omico.elucidator.addFunction
+import me.omico.elucidator.addObjectType
+import me.omico.elucidator.addParameter
+import me.omico.elucidator.addProperty
+import me.omico.elucidator.initializer
+import me.omico.elucidator.ktFile
+import me.omico.elucidator.modifier
+import me.omico.elucidator.returnStatement
+import me.omico.elucidator.superclass
+import me.omico.elucidator.writeTo
 import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
@@ -40,17 +48,22 @@ internal data class CodegenDependency(
     val noSpecificVersion: Boolean by lazy { version.isNullOrBlank() }
 }
 
-internal val CodegenDependency.hasDependency
+internal val CodegenDependency.hasDependency: Boolean
     get() = group.isNotEmpty() && artifact.isNotEmpty()
 
-internal val CodegenDependency.hasSubDependencies
+internal val CodegenDependency.hasSubDependencies: Boolean
     get() = subDependencies.isNotEmpty()
 
 internal typealias CodegenDependencies = TreeMap<String, CodegenDependency>
 
 internal fun CodeGenerator.generateDependenciesSourceFiles() {
     dependencies.forEach { (name, dependency) ->
-        dependency.toFileSpec(name).writeTo(generatedSourcesDirectory)
+        ktFile(GRADM_DEPENDENCY_PACKAGE_NAME, name.capitalize()) {
+            addSuppressWarningTypes()
+            addGradmComment()
+            addDependencyObjects(name, dependency)
+            writeTo(generatedSourcesDirectory)
+        }
     }
 }
 
@@ -60,13 +73,6 @@ internal fun YamlDocument.createCodegenDependencies(versionsMeta: VersionsMeta):
             addDependency(versionsMeta, dependency)
         }
     }
-
-private fun CodegenDependency.toFileSpec(name: String): FileSpec =
-    FileSpec.builder(GRADM_DEPENDENCY_PACKAGE_NAME, name.capitalize())
-        .addSuppressWarningTypes()
-        .addGradmComment()
-        .addDependencyObjects(name, this@toFileSpec)
-        .build()
 
 private fun CodegenDependencies.addDependency(
     versionsMeta: VersionsMeta,
@@ -97,71 +103,58 @@ private fun CodegenDependencies.addDependency(
     }
 }
 
-private fun FileSpec.Builder.addDependencyObjects(name: String, dependency: CodegenDependency): FileSpec.Builder =
-    apply {
-        if (dependency.hasParent && !dependency.hasSubDependencies) return@apply
-        TypeSpec.objectBuilder(name.capitalize())
-            .addDependencySuperClass(dependency)
-            .addDependencies(name, dependency)
-            .build()
-            .also(::addType)
-        dependency.subDependencies.forEach { (subName, subDependency) ->
-            addDependencyObjects("${name.capitalize()}${subName.capitalize()}", subDependency)
+private fun KtFileScope.addDependencyObjects(name: String, dependency: CodegenDependency) {
+    if (dependency.hasParent && !dependency.hasSubDependencies) return
+    addObjectType(name.capitalize()) {
+        addDependencySuperClass(dependency)
+        addDependencies(name, dependency)
+    }
+    dependency.subDependencies.forEach { (subName, subDependency) ->
+        addDependencyObjects("${name.capitalize()}${subName.capitalize()}", subDependency)
+    }
+}
+
+private fun TypeScope.addDependencySuperClass(dependency: CodegenDependency) {
+    if (!dependency.hasDependency) return
+    superclass<DefaultExternalModuleDependency> {
+        addParameter("%S", dependency.group)
+        addParameter("%S", dependency.artifact)
+        addParameter("%S", dependency.version ?: "+")
+    }
+    addFunction("invoke") {
+        modifier(KModifier.OPERATOR)
+        addParameter<String>("version")
+        returnStatement<String>("\"${dependency.module}:\$version\"")
+    }
+}
+
+private fun TypeScope.addDependencies(name: String, dependency: CodegenDependency): Unit =
+    dependency.subDependencies.forEach { (subName, subDependency) ->
+        when {
+            subDependency.hasSubDependencies ->
+                addDependencyProperty(subName, "${name.capitalize()}${subName.capitalize()}")
+            else -> addDependency(subName, subDependency)
         }
     }
 
-private fun TypeSpec.Builder.addDependencySuperClass(dependency: CodegenDependency): TypeSpec.Builder =
-    apply {
-        if (!dependency.hasDependency) return@apply
-        superclass(DefaultExternalModuleDependency::class)
-        addSuperclassConstructorParameter("%S", dependency.group)
-        addSuperclassConstructorParameter("%S", dependency.artifact)
-        addSuperclassConstructorParameter("%S", dependency.version ?: "+")
-        FunSpec.builder("invoke")
-            .addModifiers(KModifier.OPERATOR)
-            .addParameter("version", String::class)
-            .returns(String::class)
-            .addStatement("return \"${dependency.module}:\$version\"", String::class)
-            .build()
-            .also(::addFunction)
+private fun TypeScope.addDependencyProperty(propertyName: String, className: String): Unit =
+    addProperty(propertyName, ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, className)) {
+        initializer(className)
     }
 
-private fun TypeSpec.Builder.addDependencies(name: String, dependency: CodegenDependency): TypeSpec.Builder =
-    apply {
-        dependency.subDependencies.forEach { (subName, subDependency) ->
-            when {
-                subDependency.hasSubDependencies ->
-                    addDependencyProperty(subName, "${name.capitalize()}${subName.capitalize()}")
-                else -> addDependency(subName, subDependency)
+private fun TypeScope.addDependency(name: String, dependency: CodegenDependency) {
+    if (!dependency.hasDependency) return
+    addProperty<String>(name.camelCase()) {
+        when {
+            dependency.noSpecificVersion -> {
+                modifier(KModifier.CONST)
+                initializer("\"${dependency.module}\"")
             }
+            else -> initializer("${name.camelCase()}(\"${dependency.version}\")")
         }
     }
-
-private fun TypeSpec.Builder.addDependencyProperty(propertyName: String, className: String): TypeSpec.Builder =
-    PropertySpec.builder(propertyName, ClassName(GRADM_DEPENDENCY_PACKAGE_NAME, className))
-        .initializer(className)
-        .build()
-        .let(::addProperty)
-
-private fun TypeSpec.Builder.addDependency(name: String, dependency: CodegenDependency): TypeSpec.Builder =
-    apply {
-        if (!dependency.hasDependency) return@apply
-        PropertySpec.builder(name.camelCase(), String::class)
-            .apply {
-                when {
-                    dependency.noSpecificVersion -> {
-                        addModifiers(KModifier.CONST)
-                        initializer("\"${dependency.module}\"")
-                    }
-                    else -> initializer("${name.camelCase()}(\"${dependency.version}\")")
-                }
-            }
-            .build()
-            .also(::addProperty)
-        FunSpec.builder(name.camelCase())
-            .addParameter("version", String::class)
-            .returns(String::class)
-            .addStatement("return \"${dependency.module}:\$version\"", String::class)
-            .build()
-            .also(::addFunction)
+    addFunction(name.camelCase()) {
+        addParameter<String>("version")
+        returnStatement<String>("\"${dependency.module}:\$version\"")
     }
+}
