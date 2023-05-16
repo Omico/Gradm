@@ -1,3 +1,9 @@
+buildscript {
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor(0, TimeUnit.SECONDS)
+    }
+}
+
 plugins {
     kotlin("jvm")
     id("gradm.build-logic.maven-publish")

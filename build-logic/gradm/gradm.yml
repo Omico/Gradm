@@ -1,4 +1,5 @@
 versions:
+  elucidator: "0.1.0-SNAPSHOT"
   junit: "5.9.3"
   kotlin: "1.8.10"
   kotlinpoet: "1.13.2"
@@ -58,7 +59,7 @@ dependencies:
     me.omico.elucidator:
       elucidator:
         alias: libs.elucidator
-        version: "0.1.0-SNAPSHOT"
+        version: ${versions.elucidator}
   sonatypeSnapshots:
     me.omico.age:
       age-dsl:

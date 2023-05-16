@@ -28,12 +28,6 @@ gradleEnterprise {
 
 includeBuild("build-logic")
 
-includeBuild("lib-elucidator") {
-    dependencySubstitution {
-        substitute(module("me.omico.elucidator:elucidator:0.1.0-SNAPSHOT")).using(project(":elucidator"))
-    }
-}
-
 include(":gradm-codegen")
 include(":gradm-gradle-plugin")
 include(":gradm-integration")
