@@ -19,7 +19,7 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import kotlin.reflect.KClass
 
 public fun <T : Annotation> annotation(type: KClass<T>, block: AnnotationScope.() -> Unit): AnnotationSpec =
-    AnnotationSpec.builder(type).let(::AnnotationBuilder).apply(block).build()
+    AnnotationSpec.builder(type = type).applyDslBuilder(block).build()
 
 public inline fun <reified T : Annotation> annotation(noinline block: AnnotationScope.() -> Unit): AnnotationSpec =
-    annotation(T::class, block)
+    annotation(type = T::class, block = block)

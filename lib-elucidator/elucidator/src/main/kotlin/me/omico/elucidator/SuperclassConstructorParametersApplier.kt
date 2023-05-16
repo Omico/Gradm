@@ -27,7 +27,7 @@ public interface SuperclassConstructorParametersScope {
 }
 
 public fun SuperclassConstructorParametersScope.addParameter(format: String, vararg args: Any) {
-    builder.addSuperclassConstructorParameter(format, *args)
+    builder.addSuperclassConstructorParameter(format = format, args = args)
 }
 
 public class SuperclassConstructorParametersApplier(

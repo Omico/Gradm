@@ -20,7 +20,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 
 public fun function(name: String, block: FunctionScope.() -> Unit): FunSpec =
-    FunSpec.builder(name).let(::FunctionBuilder).apply(block).build()
+    FunSpec.builder(name = name).applyDslBuilder(block).build()
 
 public fun constructorFunction(block: FunctionScope.() -> Unit): FunSpec =
     FunSpec.constructorBuilder().applyDslBuilder(block).build()
@@ -37,36 +37,37 @@ public fun FunctionScope.modifier(modifier: KModifier): Unit = modifiers(modifie
 
 public fun FunctionScope.modifiers(vararg modifiers: KModifier) {
     clearModifiers()
-    addModifiers(*modifiers)
+    addModifiers(modifiers = modifiers)
 }
 
 public fun FunctionScope.modifiers(modifiers: Iterable<KModifier>) {
     clearModifiers()
-    addModifiers(modifiers)
+    addModifiers(modifiers = modifiers)
 }
 
 public inline fun <reified T : Annotation> FunctionScope.addAnnotation(noinline block: AnnotationScope.() -> Unit): Unit =
-    annotation<T>(block).let(::addAnnotation)
+    annotation<T>(block = block).let(::addAnnotation)
 
 public inline fun <reified T> FunctionScope.addParameter(name: String, vararg modifiers: KModifier) {
-    builder.addParameter(name, T::class, *modifiers)
+    builder.addParameter(name = name, type = T::class, modifiers = modifiers)
 }
 
 public inline fun <reified T> FunctionScope.addParameter(name: String, modifiers: Iterable<KModifier>) {
-    builder.addParameter(name, T::class, modifiers)
+    builder.addParameter(name = name, type = T::class, modifiers = modifiers)
 }
 
 public inline fun <reified T> FunctionScope.returnType(kdoc: CodeBlock = EmptyCodeBlock) {
-    builder.returns(T::class, kdoc)
+    builder.returns(returnType = T::class, kdoc = kdoc)
 }
 
-public fun FunctionScope.returnStatement(format: String, vararg args: Any): Unit = addStatement("return $format", *args)
+public fun FunctionScope.returnStatement(format: String, vararg args: Any): Unit =
+    addStatement(format = "return $format", args = args)
 
 public inline fun <reified T> FunctionScope.returnStatement(
     format: String,
     kdoc: CodeBlock = EmptyCodeBlock,
     vararg args: Any,
 ) {
-    returnStatement(format, *args)
-    returnType<T>(kdoc)
+    returnStatement(format = format, args = args)
+    returnType<T>(kdoc = kdoc)
 }

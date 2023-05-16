@@ -18,13 +18,7 @@ package me.omico.elucidator
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
-
-public inline fun <reified T> property(
-    name: String,
-    vararg modifiers: KModifier,
-    noinline block: PropertyScope.() -> Unit,
-): PropertySpec =
-    PropertySpec.builder(name, T::class, *modifiers).applyDslBuilder(block).build()
+import com.squareup.kotlinpoet.asTypeName
 
 public fun property(
     name: String,
@@ -32,7 +26,14 @@ public fun property(
     vararg modifiers: KModifier,
     block: PropertyScope.() -> Unit,
 ): PropertySpec =
-    PropertySpec.builder(name, type, *modifiers).applyDslBuilder(block).build()
+    PropertySpec.builder(name = name, type = type, modifiers = modifiers).applyDslBuilder(block).build()
+
+public inline fun <reified T> property(
+    name: String,
+    vararg modifiers: KModifier,
+    noinline block: PropertyScope.() -> Unit,
+): PropertySpec =
+    property(name = name, type = T::class.asTypeName(), modifiers = modifiers, block = block)
 
 public fun PropertyScope.clearModifiers(): Unit = builder.modifiers.clear()
 
@@ -40,11 +41,11 @@ public fun PropertyScope.modifier(modifier: KModifier): Unit = modifiers(modifie
 
 public fun PropertyScope.modifiers(vararg modifiers: KModifier) {
     clearModifiers()
-    addModifiers(*modifiers)
+    addModifiers(modifiers = modifiers)
 }
 
 public inline fun <reified T> PropertyScope.receiver() {
-    builder.receiver(T::class)
+    builder.receiver(receiverType = T::class)
 }
 
 public fun PropertyScope.getter(block: (FunctionScope.() -> Unit)? = null) {

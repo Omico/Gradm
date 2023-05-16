@@ -16,7 +16,7 @@
 package me.omico.elucidator
 
 public fun FunctionScope.addLambdaStatement(format: String, vararg args: Any, block: FunctionScope.() -> Unit) {
-    builder.beginControlFlow(format, *args)
+    builder.beginControlFlow(controlFlow = format, args = args)
     block()
     builder.endControlFlow()
 }
