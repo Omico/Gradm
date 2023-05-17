@@ -29,7 +29,7 @@ interface GradmIntegrationsExtension : ExtensionAware {
 
     @Deprecated(
         message = "Use `register` instead. This method will be removed in Gradm 5.0.0.",
-        replaceWith = ReplaceWith("register(id, configure)"),
+        replaceWith = ReplaceWith("register(id,configure)"),
         level = DeprecationLevel.WARNING,
     )
     fun apply(id: String, configure: Action<GradmIntegrationExtension>)
