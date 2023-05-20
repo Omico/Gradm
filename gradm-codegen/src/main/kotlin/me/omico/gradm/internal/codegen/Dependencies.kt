@@ -20,7 +20,7 @@ import com.squareup.kotlinpoet.KModifier
 import me.omico.elucidator.KtFileScope
 import me.omico.elucidator.TypeScope
 import me.omico.elucidator.addFunction
-import me.omico.elucidator.addObjectType
+import me.omico.elucidator.addObject
 import me.omico.elucidator.addParameter
 import me.omico.elucidator.addProperty
 import me.omico.elucidator.initializer
@@ -105,7 +105,7 @@ private fun CodegenDependencies.addDependency(
 
 private fun KtFileScope.addDependencyObjects(name: String, dependency: CodegenDependency) {
     if (dependency.hasParent && !dependency.hasSubDependencies) return
-    addObjectType(name.capitalize()) {
+    addObject(name.capitalize()) {
         addDependencySuperClass(dependency)
         addDependencies(name, dependency)
     }

@@ -20,7 +20,7 @@ import com.squareup.kotlinpoet.KModifier
 import me.omico.elucidator.KtFileScope
 import me.omico.elucidator.TypeScope
 import me.omico.elucidator.addFunction
-import me.omico.elucidator.addObjectType
+import me.omico.elucidator.addObject
 import me.omico.elucidator.addProperty
 import me.omico.elucidator.initializer
 import me.omico.elucidator.ktFile
@@ -48,7 +48,7 @@ private fun CodeGenerator.createTreeVersions(): TreeVersions =
         .toTreeVersions()
 
 private fun KtFileScope.addVersionsObjects(versions: TreeVersions): Unit =
-    addObjectType("Versions") {
+    addObject("Versions") {
         addSubVersionsProperties(versions)
     }
 
@@ -77,7 +77,7 @@ private fun TypeScope.addSubVersionsProperty(propertyName: String, subVersions: 
 
 private fun TypeScope.addSubVersionsObjects(name: String, subVersions: TreeVersions) {
     if (subVersions.subTreeVersions.isEmpty()) return
-    addObjectType("${name.capitalize()}Versions") {
+    addObject("${name.capitalize()}Versions") {
         addSubVersionsProperties(subVersions)
         addSubVersionsOverrideFunction(subVersions)
     }

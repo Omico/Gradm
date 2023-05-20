@@ -19,16 +19,16 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import me.omico.elucidator.FunctionScope
-import me.omico.elucidator.addClassType
+import me.omico.elucidator.addClass
 import me.omico.elucidator.addComment
 import me.omico.elucidator.addFunction
 import me.omico.elucidator.addIfStatement
 import me.omico.elucidator.addLambdaStatement
 import me.omico.elucidator.addParameter
 import me.omico.elucidator.addStatement
+import me.omico.elucidator.addSuperinterface
 import me.omico.elucidator.ktFile
 import me.omico.elucidator.modifier
-import me.omico.elucidator.superinterface
 import me.omico.elucidator.writeTo
 import me.omico.gradm.GRADM_DEPENDENCY_PACKAGE_NAME
 import me.omico.gradm.GRADM_PACKAGE_NAME
@@ -76,8 +76,8 @@ private inline fun <reified T> generatePluginSourceFile(
     ktFile(type.packageName, type.className) {
         addSuppressWarningTypes(types = defaultSuppressWarningTypes + "UnstableApiUsage")
         addGradmComment()
-        addClassType(type.className) {
-            superinterface(Plugin::class.parameterizedBy(T::class))
+        addClass(type.className) {
+            addSuperinterface(Plugin::class.parameterizedBy(T::class))
             addFunction("apply") {
                 modifier(KModifier.OVERRIDE)
                 addParameter<T>("target")

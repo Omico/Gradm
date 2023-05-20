@@ -1,5 +1,5 @@
 versions:
-  elucidator: "0.1.0"
+  elucidator: "0.6.0"
   junit: "5.9.3"
   kotlin: "1.8.10"
   kotlinpoet: "1.13.2"
@@ -36,6 +36,10 @@ dependencies:
       kotlinpoet:
         alias: libs.kotlinpoet
         version: ${versions.kotlinpoet}
+    me.omico.elucidator:
+      elucidator:
+        alias: libs.elucidator
+        version: ${versions.elucidator}
     org.jetbrains.kotlinx:
       kotlinx-coroutines-core:
         alias: libs.kotlinx.coroutines
@@ -55,11 +59,6 @@ dependencies:
       snakeyaml-engine:
         alias: libs.snakeyaml
         version: ${versions.snakeyaml}
-  noUpdates:
-    me.omico.elucidator:
-      elucidator:
-        alias: libs.elucidator
-        version: ${versions.elucidator}
   sonatypeSnapshots:
     me.omico.age:
       age-dsl:
