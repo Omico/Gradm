@@ -1,15 +1,14 @@
-import java.nio.file.Files
-import java.nio.file.Path
+import me.omico.consensus.dsl.requireRootProject
 
 plugins {
     id("gradm")
-    id("gradm.build-logic.root-project.base")
 }
 
+requireRootProject()
+
 val syncGradleEnterpriseVersion by tasks.registering {
-    Files.walk(rootDir.toPath())
+    rootDir.walk()
         .filter { it.endsWith("settings.gradle.kts") }
-        .map(Path::toFile)
         .forEach { file ->
             buildString {
                 file.readLines().forEach {

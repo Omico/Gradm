@@ -1,4 +1,5 @@
 versions:
+  consensus: "0.1.0"
   elucidator: "0.11.0"
   junit: "5.9.3"
   kotlin: "1.8.10"
@@ -7,15 +8,12 @@ versions:
     coroutines: "1.7.1"
     serialization: "1.5.1"
   plugins:
-    age: "1.0.0-SNAPSHOT"
     gradle.enterprise: "3.13.3"
     spotless: "6.19.0"
   snakeyaml: "2.6"
 
 repositories:
   mavenCentral:
-  sonatypeSnapshots:
-    url: "https://s01.oss.sonatype.org/content/repositories/snapshots"
   gradlePluginPortal:
   noUpdates:
 
@@ -23,12 +21,14 @@ plugins:
   gradlePluginPortal:
     com.diffplug.spotless: ${versions.plugins.spotless}
     com.gradle.enterprise: ${versions.plugins.gradle.enterprise}
+  mavenCentral:
+    me.omico.consensus.api: ${versions.consensus}
+    me.omico.consensus.git: ${versions.consensus}
+    me.omico.consensus.publishing: ${versions.consensus}
+    me.omico.consensus.spotless: ${versions.consensus}
   noUpdates:
     org.jetbrains.kotlin.jvm: ${versions.kotlin}
     org.jetbrains.kotlin.plugin.serialization: ${versions.kotlin}
-  sonatypeSnapshots:
-    me.omico.age.project: ${versions.plugins.age}
-    me.omico.age.spotless: ${versions.plugins.age}
 
 dependencies:
   mavenCentral:
@@ -36,6 +36,10 @@ dependencies:
       kotlinpoet:
         alias: libs.kotlinpoet
         version: ${versions.kotlinpoet}
+    me.omico.consensus:
+      consensus-dsl:
+        alias: me.omico.consensus.dsl
+        version: ${versions.consensus}
     me.omico.elucidator:
       elucidator:
         alias: libs.elucidator
@@ -59,8 +63,3 @@ dependencies:
       snakeyaml-engine:
         alias: libs.snakeyaml
         version: ${versions.snakeyaml}
-  sonatypeSnapshots:
-    me.omico.age:
-      age-dsl:
-        alias: me.omico.age.dsl
-        version: ${versions.plugins.age}

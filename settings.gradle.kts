@@ -6,11 +6,6 @@ rootProject.name = "Gradm"
 
 pluginManagement {
     includeBuild("build-logic/gradm")
-    repositories {
-        mavenCentral()
-        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
-        gradlePluginPortal()
-    }
 }
 
 plugins {
@@ -28,10 +23,16 @@ gradleEnterprise {
 
 includeBuild("build-logic")
 
-include(":gradm-codegen")
-include(":gradm-gradle-plugin")
-include(":gradm-integration")
-include(":gradm-integration:api")
-include(":gradm-integration:github")
-include(":gradm-runtime")
+includeGradm(":gradm-codegen")
+includeGradm(":gradm-gradle-plugin")
+includeGradm(":gradm-integration")
+includeGradm(":gradm-integration:api")
+includeGradm(":gradm-integration:github")
+includeGradm(":gradm-runtime")
+
 include(":integration-testing")
+
+fun includeGradm(path: String) {
+    include(path)
+    project(path).name = path.removePrefix(":").replace(":", "-")
+}

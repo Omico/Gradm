@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm")
-    id("gradm.build-logic.maven-publish")
+    id("gradm.publishing")
 }
 
 kotlin {

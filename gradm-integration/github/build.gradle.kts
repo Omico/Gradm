@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization")
-    id("gradm.build-logic.maven-publish")
+    id("gradm.publishing")
 }
 
 kotlin {
@@ -9,6 +9,6 @@ kotlin {
 }
 
 dependencies {
-    compileOnly(projects.gradmIntegration.api)
+    compileOnly(projects.gradmIntegration.gradmIntegrationApi)
     implementation(libs.kotlinx.serialization.json)
 }

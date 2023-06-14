@@ -1,6 +1,6 @@
 plugins {
     `kotlin-dsl`
-    id("gradm.build-logic.maven-publish")
+    id("gradm.publishing")
 }
 
 kotlin {
@@ -8,7 +8,6 @@ kotlin {
 }
 
 gradlePlugin {
-    isAutomatedPublishing = false
     plugins {
         register("gradm") {
             id = "me.omico.gradm"

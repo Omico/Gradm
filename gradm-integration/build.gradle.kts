@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm")
-    id("gradm.build-logic.maven-publish")
+    id("gradm.publishing")
 }
 
 kotlin {
@@ -8,6 +8,6 @@ kotlin {
 }
 
 dependencies {
-    api(projects.gradmIntegration.api)
-    api(projects.gradmIntegration.github)
+    api(projects.gradmIntegration.gradmIntegrationApi)
+    api(projects.gradmIntegration.gradmIntegrationGithub)
 }

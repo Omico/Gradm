@@ -1,13 +1,10 @@
-import java.nio.file.Files
+import me.omico.consensus.dsl.requireRootProject
 
-plugins {
-    id("gradm.build-logic.root-project.base")
-}
+requireRootProject()
 
 val syncExamples by tasks.registering {
-    Files.walk(file("examples").toPath())
+    file("examples").walk()
         .filter { it.endsWith("settings.gradle.kts") || it.endsWith("build.gradle.kts") }
-        .map { it.toFile() }
         .forEach { file ->
             buildString {
                 file.readLines().forEach {
@@ -18,7 +15,7 @@ val syncExamples by tasks.registering {
                     }
                     appendLine(line)
                 }
-            }.let { file.writeText(it) }
+            }.let(file::writeText)
         }
     listOf(
         "examples/gradm-getting-started/gradm/gradm3.yml",
