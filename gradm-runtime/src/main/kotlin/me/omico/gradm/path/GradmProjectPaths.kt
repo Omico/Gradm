@@ -21,10 +21,12 @@ import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import java.nio.file.Path
+import kotlin.io.path.Path
 import kotlin.io.path.div
 
 data class GradmProjectPaths(
     val path: Path,
+    val configurationFile: Path,
     val projectName: String,
 )
 
@@ -39,11 +41,11 @@ inline val GradmProjectPaths.buildDirectory: Path
 inline val GradmProjectPaths.gradmBuildDirectory: Path
     get() = buildDirectory / "gradm"
 
+inline val GradmProjectPaths.gradmLocalConfigurationFile: Path
+    get() = gradmBuildDirectory / ".gradm"
+
 inline val GradmProjectPaths.integrationDirectory: Path
     get() = gradmBuildDirectory / "integration"
-
-inline val GradmProjectPaths.metadataDirectory: Path
-    get() = gradmBuildDirectory / "metadata"
 
 inline val GradmProjectPaths.updatesDirectory: Path
     get() = gradmBuildDirectory / "updates"
@@ -53,3 +55,7 @@ inline val GradmProjectPaths.updatesAvailableFile: Path
 
 inline val GradmProjectPaths.generatedJar: Path
     get() = (buildDirectory / "libs" / "$projectName.jar").normalize()
+
+val userHomeDirectory: Path = Path(System.getProperty("user.home"))
+val gradmUserHomeDirectory: Path = userHomeDirectory / ".gradm"
+val gradmMetadataFile: Path = gradmUserHomeDirectory / ".metadata"

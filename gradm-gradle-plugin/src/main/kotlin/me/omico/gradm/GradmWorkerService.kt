@@ -15,12 +15,15 @@
  */
 package me.omico.gradm
 
+import me.omico.gradm.datastore.GradmDataStore
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.codegen.generateGradmGeneratedSources
 import me.omico.gradm.internal.config.Repository
 import me.omico.gradm.internal.config.repositories
 import me.omico.gradm.internal.maven.resolveVersionsMeta
 import me.omico.gradm.path.GradmProjectPaths
+import me.omico.gradm.path.gradmLocalConfigurationFile
+import me.omico.gradm.path.gradmMetadataFile
 import me.omico.gradm.path.updatesAvailableFile
 import me.omico.gradm.service.GradmBuildService
 import org.gradle.api.artifacts.dsl.DependencyHandler
@@ -29,6 +32,7 @@ import org.gradle.api.services.BuildServiceParameters
 import java.net.URI
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.absolutePathString
 
 abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.None> {
 
@@ -37,8 +41,10 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
 
     fun initialize(
         repositories: RepositoryHandler,
+        gradmProjectPaths: GradmProjectPaths,
         gradmConfigDocument: YamlDocument,
     ) {
+        initializeGradmDataStore(gradmProjectPaths)
         repositories.setupRepositories(gradmConfigDocument)
     }
 
@@ -82,6 +88,21 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
         updatesAvailableFile?.let { file ->
             info { "Available updates found, see ${file.toAbsolutePath()}" }
         }
+    }
+
+    private var isGradmDataStoreInitialized = false
+    private fun initializeGradmDataStore(
+        gradmProjectPaths: GradmProjectPaths,
+    ) {
+        if (isGradmDataStoreInitialized) return
+        GradmDataStore.load(
+            localConfigurationFile = gradmProjectPaths.gradmLocalConfigurationFile,
+            metadataFile = gradmMetadataFile,
+        )
+        GradmDataStore.updateLocalConfiguration {
+            insertConfigurationPath(gradmProjectPaths.configurationFile.absolutePathString())
+        }
+        isGradmDataStoreInitialized = true
     }
 
     private fun RepositoryHandler.setupRepositories(document: YamlDocument) {

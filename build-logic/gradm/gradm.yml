@@ -45,6 +45,9 @@ dependencies:
       kotlinx-serialization-json:
         alias: libs.kotlinx.serialization.json
         version: ${versions.kotlinx.serialization}
+      kotlinx-serialization-protobuf:
+        alias: libs.kotlinx.serialization.protobuf
+        version: ${versions.kotlinx.serialization}
     org.junit:
       junit-bom:
         alias: libs.junit.bom

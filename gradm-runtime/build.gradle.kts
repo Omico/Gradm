@@ -5,7 +5,11 @@ plugins {
 
 kotlin {
     jvmToolchain(11)
-    sourceSets["main"].kotlin.srcDir("$buildDir/generated/sources/kotlinTemplates")
+    sourceSets {
+        main {
+            kotlin.srcDir("$buildDir/generated/sources/kotlinTemplates")
+        }
+    }
 }
 
 dependencies {
@@ -15,8 +19,11 @@ dependencies {
 }
 
 dependencies {
-    testImplementation(platform(libs.junit.bom))
-    testImplementation(libs.junit.jupiter)
+    api("me.omico.gradm:gradm-api-datastore:$version")
+}
+
+dependencies {
+    testImplementation("me.omico.gradm:gradm-api-test:$version")
 }
 
 tasks.test {
@@ -26,7 +33,7 @@ tasks.test {
 val copyKotlinTemplates by tasks.registering(Copy::class) {
     from("src/main/kotlinTemplates")
     into("$buildDir/generated/sources/kotlinTemplates")
-    expand("version" to properties["PROJECT_VERSION"])
+    expand("version" to version)
     filteringCharset = Charsets.UTF_8.toString()
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
