@@ -1,9 +1,12 @@
+import me.omico.consensus.dsl.isGitDirectoryExists
+
 plugins {
     id("me.omico.consensus.git")
 }
 
 consensus {
     git {
+        if (!isGitDirectoryExists) return@git
         hooks {
             preCommit {
                 appendLine("#!/bin/sh")
