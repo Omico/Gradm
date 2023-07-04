@@ -1,8 +1,9 @@
 versions:
   consensus: "0.2.0"
   elucidator: "0.11.0"
+  gradle: "8.2"
   junit: "5.9.3"
-  kotlin: "1.8.10"
+  kotlin: "1.8.20"
   kotlinpoet: "1.14.2"
   kotlinx:
     coroutines: "1.7.1"
