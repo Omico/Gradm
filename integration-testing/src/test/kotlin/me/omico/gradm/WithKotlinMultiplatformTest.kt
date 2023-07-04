@@ -15,24 +15,24 @@
  */
 package me.omico.gradm
 
-import me.omico.gradm.utility.gradleCommand
+import me.omico.gradm.utility.assertGradleBuildSuccess
+import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
+import java.io.File
 
 class WithKotlinMultiplatformTest {
     @Test
     fun `test gradm-with-kotlin-multiplatform`() {
-        assertDoesNotThrow {
-            gradleCommand(
-                directory = "../examples/gradm-with-kotlin-multiplatform",
-                arguments = arrayOf(
-                    "clean",
-                    ":gradm:gradmDependencyUpdates",
-                    "build",
-                    "--stacktrace",
-                    "--no-daemon",
-                ),
+        GradleRunner.create()
+            .withProjectDir(File("../examples/gradm-with-kotlin-multiplatform"))
+            .withArguments(
+                "clean",
+                ":gradm:gradmDependencyUpdates",
+                "build",
+                "--stacktrace",
             )
-        }
+            .forwardOutput()
+            .build()
+            .let(::assertGradleBuildSuccess)
     }
 }

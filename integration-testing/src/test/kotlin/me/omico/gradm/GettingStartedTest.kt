@@ -15,24 +15,24 @@
  */
 package me.omico.gradm
 
-import me.omico.gradm.utility.gradleCommand
+import me.omico.gradm.utility.assertGradleBuildSuccess
+import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
+import java.io.File
 
 class GettingStartedTest {
     @Test
     fun `test gradm-getting-started`() {
-        assertDoesNotThrow {
-            gradleCommand(
-                directory = "../examples/gradm-getting-started",
-                arguments = arrayOf(
-                    "clean",
-                    ":gradm:gradmDependencyUpdates",
-                    "build",
-                    "--stacktrace",
-                    "--no-daemon",
-                ),
+        GradleRunner.create()
+            .withProjectDir(File("../examples/gradm-getting-started"))
+            .withArguments(
+                "clean",
+                ":gradm:gradmDependencyUpdates",
+                "build",
+                "--stacktrace",
             )
-        }
+            .forwardOutput()
+            .build()
+            .let(::assertGradleBuildSuccess)
     }
 }

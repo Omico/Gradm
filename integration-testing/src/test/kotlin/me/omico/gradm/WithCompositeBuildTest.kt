@@ -15,25 +15,25 @@
  */
 package me.omico.gradm
 
-import me.omico.gradm.utility.gradleCommand
+import me.omico.gradm.utility.assertGradleBuildSuccess
+import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
+import java.io.File
 
 class WithCompositeBuildTest {
     @Test
     fun `test gradm-with-composite-build`() {
-        assertDoesNotThrow {
-            gradleCommand(
-                directory = "../examples/gradm-with-composite-build",
-                arguments = arrayOf(
-                    "spotlessApply",
-                    "clean",
-                    ":build-logic:gradm:gradmDependencyUpdates",
-                    "build",
-                    "--stacktrace",
-                    "--no-daemon",
-                ),
+        GradleRunner.create()
+            .withProjectDir(File("../examples/gradm-with-composite-build"))
+            .withArguments(
+                "spotlessApply",
+                "clean",
+                ":gradm:gradmDependencyUpdates",
+                "build",
+                "--stacktrace",
             )
-        }
+            .forwardOutput()
+            .build()
+            .let(::assertGradleBuildSuccess)
     }
 }

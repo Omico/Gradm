@@ -15,23 +15,6 @@
  */
 package me.omico.gradm.utility
 
-fun gradleCommand(
-    shell: Shell = shell(),
-    directory: String,
-    vararg arguments: String,
-) = command(
-    shell = shell,
-    directory = directory,
-    commands = arrayOf(
-        when (shell) {
-            Cmd -> ".\\gradlew.bat"
-            else -> "./gradlew"
-        },
-        *arguments,
-    ),
-)
+import org.gradle.testkit.runner.BuildResult
 
-private fun shell(): Shell = when {
-    System.getProperty("os.name").startsWith("Windows") -> Cmd
-    else -> Bash
-}
+fun assertGradleBuildSuccess(result: BuildResult): Unit = assert(result.output.contains("BUILD SUCCESSFUL"))
