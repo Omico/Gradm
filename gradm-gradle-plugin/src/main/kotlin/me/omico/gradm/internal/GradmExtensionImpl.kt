@@ -36,6 +36,9 @@ internal abstract class GradmExtensionImpl @Inject constructor(
 
     private val configFileProperty: RegularFileProperty = project.objects.fileProperty()
 
+    override val projectName: String
+        get() = project.name
+
     override var pluginId: String by pluginDeclaration::id
 
     override var configFilePath: String

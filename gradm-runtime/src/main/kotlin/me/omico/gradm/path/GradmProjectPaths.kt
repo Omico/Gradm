@@ -22,18 +22,16 @@ import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import java.nio.file.Path
 import kotlin.io.path.div
-import kotlin.io.path.name
 
-@JvmInline
-value class GradmProjectPaths(val path: Path)
+data class GradmProjectPaths(
+    val path: Path,
+    val projectName: String,
+)
 
 fun ProjectLayout.gradmConfigFile(path: String): RegularFile = projectDirectory.file(path)
 
 inline val Project.gradmGeneratedSourcesDirectory: Provider<Directory>
     get() = layout.buildDirectory.dir("generated/sources/gradm/kotlin/main")
-
-inline val GradmProjectPaths.projectName: String
-    get() = path.name
 
 inline val GradmProjectPaths.buildDirectory: Path
     get() = path / "build"

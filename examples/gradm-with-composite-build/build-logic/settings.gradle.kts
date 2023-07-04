@@ -1,8 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-rootProject.name = "build-logic"
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+rootProject.name = "gradm-with-composite-build-build-logic"
 
 pluginManagement {
     includeBuild("gradm")
