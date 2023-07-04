@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-rootProject.name = "gradm"
+rootProject.name = "gradm-getting-started-gradm"
 
 pluginManagement {
     repositories {

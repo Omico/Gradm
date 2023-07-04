@@ -2,10 +2,7 @@
 
 rootProject.name = "gradm-with-composite-build"
 
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
 pluginManagement {
-    includeBuild("build-logic")
     includeBuild("build-logic/gradm")
     repositories {
         google()
@@ -34,5 +31,7 @@ gradleEnterprise {
         publishAlwaysIf(!gradle.startParameter.isOffline)
     }
 }
+
+includeBuild("build-logic")
 
 include(":example")

@@ -18,6 +18,10 @@ package me.omico.gradm
 import org.gradle.api.plugins.ExtensionAware
 
 interface GradmExtension : ExtensionAware {
+    /**
+     * The name of the project to which this plugin is applied.
+     */
+    val projectName: String
 
     /**
      * The plugin id of the Gradm plugin.

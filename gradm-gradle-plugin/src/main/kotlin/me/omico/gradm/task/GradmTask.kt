@@ -37,6 +37,9 @@ import org.gradle.api.tasks.TaskAction
 import javax.inject.Inject
 
 abstract class GradmTask : DefaultTask() {
+    abstract val projectNameProperty: Property<String>
+        @Internal get
+
     abstract val workerServiceProperty: Property<GradmWorkerService>
         @Internal get
 
@@ -60,7 +63,10 @@ abstract class GradmTask : DefaultTask() {
         @Internal get() = workerServiceProperty.get()
 
     protected val gradmProjectPaths: GradmProjectPaths
-        @Internal get() = GradmProjectPaths(projectLayout.projectDirectory.asFile.toPath())
+        @Internal get() = GradmProjectPaths(
+            path = projectLayout.projectDirectory.asFile.toPath(),
+            projectName = projectNameProperty.get(),
+        )
 
     protected val gradmConfigDocument: YamlDocument
         @Internal get() = run {
@@ -93,6 +99,7 @@ internal fun GradmTask.setup(
     gradmWorkerServiceProvider: Provider<GradmWorkerService>,
 ) {
     usesService(gradmWorkerServiceProvider)
+    projectNameProperty.set(gradmExtension.projectName)
     workerServiceProperty.set(gradmWorkerServiceProvider)
     configFileProperty.set(projectLayout.gradmConfigFile(gradmExtension.configFilePath))
 }
