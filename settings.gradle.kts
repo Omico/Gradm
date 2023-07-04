@@ -2,7 +2,7 @@
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "Gradm"
+rootProject.name = "gradm-root"
 
 pluginManagement {
     includeBuild("build-logic/gradm")
