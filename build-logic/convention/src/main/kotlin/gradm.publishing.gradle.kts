@@ -16,9 +16,13 @@ consensus {
             sign(publications)
         }
         afterEvaluate {
-            if (isAutomatedPublishingGradlePlugin) return@afterEvaluate
-            createMavenPublication {
-                from(components["java"])
+            if (!isAutomatedPublishingGradlePlugin) {
+                createMavenPublication {
+                    from(components["java"])
+                }
+            }
+            publications.all {
+                if (this !is MavenPublication) return@all
                 pom {
                     name by gradleProperty("POM_NAME")
                     description by gradleProperty("POM_DESCRIPTION")
