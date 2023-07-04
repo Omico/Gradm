@@ -6,10 +6,10 @@ versions:
   kotlin: "1.8.20"
   kotlinpoet: "1.14.2"
   kotlinx:
-    coroutines: "1.7.1"
-    serialization: "1.5.0"
+    coroutines: "1.7.2"
+    serialization: "1.5.1"
   plugins:
-    gradle.enterprise: "3.13.3"
+    gradle.enterprise: "3.13.4"
     spotless: "6.19.0"
   snakeyaml: "2.6"
 
