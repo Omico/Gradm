@@ -14,7 +14,7 @@ pluginManagement {
 }
 
 plugins {
-    id("com.gradle.enterprise") version "3.13.4"
+    id("com.gradle.enterprise") version "3.14"
     id("gradm") // configured by GradmExtension
 }
 

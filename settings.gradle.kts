@@ -5,12 +5,17 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "gradm-root"
 
 pluginManagement {
+    repositories {
+        maven(url = "https://maven.omico.me")
+        mavenCentral()
+        gradlePluginPortal()
+    }
     includeBuild("build-logic/gradm")
 }
 
 plugins {
     id("gradm.gradm")
-    id("com.gradle.enterprise") version "3.13.4"
+    id("com.gradle.enterprise") version "3.14"
 }
 
 gradleEnterprise {

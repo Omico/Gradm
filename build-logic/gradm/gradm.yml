@@ -1,7 +1,7 @@
 versions:
-  consensus: "0.2.0"
+  consensus: "0.3.0"
   elucidator: "0.11.0"
-  gradle: "8.2"
+  gradle: "8.2.1"
   junit: "5.9.3"
   kotlin: "1.8.20"
   kotlinpoet: "1.14.2"
@@ -9,11 +9,13 @@ versions:
     coroutines: "1.7.2"
     serialization: "1.5.1"
   plugins:
-    gradle.enterprise: "3.13.4"
-    spotless: "6.19.0"
+    gradle.enterprise: "3.14"
   snakeyaml: "2.6"
+  spotless: "6.20.0"
 
 repositories:
+  omico:
+    url: "https://maven.omico.me"
   mavenCentral:
   gradlePluginPortal:
   noUpdates:
@@ -22,14 +24,14 @@ plugins:
   gradlePluginPortal:
     com.diffplug.spotless: ${versions.plugins.spotless}
     com.gradle.enterprise: ${versions.plugins.gradle.enterprise}
-  mavenCentral:
+  noUpdates:
+    org.jetbrains.kotlin.jvm: ${versions.kotlin}
+    org.jetbrains.kotlin.plugin.serialization: ${versions.kotlin}
+  omico:
     me.omico.consensus.api: ${versions.consensus}
     me.omico.consensus.git: ${versions.consensus}
     me.omico.consensus.publishing: ${versions.consensus}
     me.omico.consensus.spotless: ${versions.consensus}
-  noUpdates:
-    org.jetbrains.kotlin.jvm: ${versions.kotlin}
-    org.jetbrains.kotlin.plugin.serialization: ${versions.kotlin}
 
 dependencies:
   mavenCentral:
@@ -37,10 +39,6 @@ dependencies:
       kotlinpoet:
         alias: libs.kotlinpoet
         version: ${versions.kotlinpoet}
-    me.omico.consensus:
-      consensus-dsl:
-        alias: me.omico.consensus.dsl
-        version: ${versions.consensus}
     me.omico.elucidator:
       elucidator:
         alias: libs.elucidator
@@ -64,3 +62,8 @@ dependencies:
       snakeyaml-engine:
         alias: libs.snakeyaml
         version: ${versions.snakeyaml}
+  omico:
+    me.omico.consensus:
+      consensus-dsl:
+        alias: me.omico.consensus.dsl
+        version: ${versions.consensus}
