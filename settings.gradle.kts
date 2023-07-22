@@ -9,7 +9,7 @@ pluginManagement {
 }
 
 plugins {
-    id("gradm")
+    id("gradm.gradm")
     id("com.gradle.enterprise") version "3.13.4"
 }
 
@@ -21,7 +21,7 @@ gradleEnterprise {
     }
 }
 
-includeBuild("build-logic")
+includeBuild("build-logic/project")
 
 includeGradm(":gradm-codegen")
 includeGradm(":gradm-gradle-plugin")

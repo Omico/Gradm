@@ -1,1 +1,1 @@
-rootProject.name = "gradm"
+rootProject.name = "gradm-gradm"

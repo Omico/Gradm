@@ -1,7 +1,7 @@
 import me.omico.consensus.dsl.requireRootProject
 
 plugins {
-    id("gradm")
+    id("gradm.gradm")
 }
 
 requireRootProject()

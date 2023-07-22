@@ -1,7 +1,7 @@
 import me.omico.consensus.dsl.requireRootProject
 
 plugins {
-    id("gradm")
+    id("gradm.gradm")
     id("gradm.root.example-updater")
     id("gradm.root.git")
     id("gradm.root.gradle-enterprise-updater")

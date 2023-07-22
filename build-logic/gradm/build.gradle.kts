@@ -8,7 +8,7 @@ repositories {
 }
 
 gradm {
-    pluginId = "gradm"
+    pluginId = "gradm.gradm"
     debug = true
     integrations {
         register("github")
