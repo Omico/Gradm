@@ -26,11 +26,11 @@ versions:
     spotless: "6.18.0"
 
 repositories:
+  mavenLocal:
   google:
   mavenCentral:
   jetbrainsCompose:
     url: "https://maven.pkg.jetbrains.space/public/p/compose/dev"
-  mavenLocal:
   sonatypeSnapshots:
     url: "https://s01.oss.sonatype.org/content/repositories/snapshots"
   gradlePluginPortal:

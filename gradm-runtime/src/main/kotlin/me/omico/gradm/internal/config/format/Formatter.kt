@@ -19,6 +19,7 @@ import me.omico.gradm.GradmFormatConfiguration
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.YamlObject
 import me.omico.gradm.internal.asYamlDocument
+import me.omico.gradm.internal.config.Repository
 import me.omico.gradm.internal.config.buildInRepositories
 import me.omico.gradm.internal.config.format.node.MappingNodeScope
 import me.omico.gradm.internal.config.format.node.mapping
@@ -65,19 +66,27 @@ fun YamlScope.repositoriesSequence(document: YamlDocument) {
     if (repositories.isEmpty()) return
     newlineIfNeeded()
     mapping("repositories") {
+        // Always place mavenLocal at the top
+        if (repositories.any { it.id == "mavenLocal" }) {
+            mapping("mavenLocal")
+        }
+        // Place build-in repositories
         repositories
-            .filter { !it.noUpdates || it.id == "mavenLocal" }
+            .filterNot(Repository::noUpdates)
             .forEach { repository ->
                 mapping(repository.id) repository@{
-                    if (buildInRepositories.any { it.id == repository.id }) return@repository
+                    if (repository in buildInRepositories) return@repository
                     scalar("url", repository.url, ScalarStyle.DoubleQuoted)
                 }
             }
+        // Place no-updates repositories
         repositories.find { it.id == "noUpdates" }?.id?.let(::mapping)
+        // Place custom no-updates repositories
         repositories
             .filterNot { it.id == "noUpdates" }
-            .filter { it.noUpdates && it.id != "mavenLocal" }
-            .sortedBy { it.id }
+            .filter(Repository::noUpdates)
+            .filterNot { it.id == "mavenLocal" }
+            .sortedBy(Repository::id)
             .forEach { repository ->
                 mapping(repository.id) {
                     if (repository.url.isNotBlank()) {
