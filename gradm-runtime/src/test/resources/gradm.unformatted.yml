@@ -17,7 +17,6 @@ versions:
   okhttp: "4.9.3"
 
 repositories:
-  mavenLocal:
   customNoUpdates:
     noUpdates: true
   google:
@@ -29,6 +28,7 @@ repositories:
   gradlePluginPortal:
     url: "https://plugins.gradle.org/m2/"
   noUpdates:
+  mavenLocal:
 
 dependencies:
   google:
