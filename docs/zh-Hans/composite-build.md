@@ -4,17 +4,12 @@
 
 **假设你已经阅读[入门](./getting-started).**
 
-在您的根目录中创建一个名为 `build-logic` 的文件夹。
+在你的根目录下创建 `build-logic/project` 文件夹。
 
-创建 `build-logic/settings.gradle.kts`。 内容与[入门](./getting-started)中的 `settings.gradle.kts` 完全一致。
-
-将[入门](./getting-started)中的 `gradm` 文件夹复制到 `build-logic`。
-
-在 `settings.gradle.kts` 中，添加以下内容：
+新建一个 `settings.gradle.kts` 到 `build-logic/project/settings.gradle.kts`，并添加以下内容：
 
 ```kotlin
 pluginManagement {
-    includeBuild("build-logic")
     includeBuild("build-logic/gradm")
 }
 
@@ -22,6 +17,8 @@ plugins {
     id("<gradm generated plugin id>") // 默认是 "me.omico.gradm.generated"
 }
 ```
+
+从[入门](./getting-started)复制 `gradm` 文件夹到 `build-logic/gradm`。
 
 ## 自定义
 

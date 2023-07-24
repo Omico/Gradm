@@ -9,13 +9,6 @@
 ```kotlin
 pluginManagement {
     includeBuild("gradm") // 在此处加入 Gradm
-    repositories {
-        mavenCentral()
-        // 下面两行是可选的，用于 Gradm 的快照。
-        mavenLocal()
-        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
-        gradlePluginPortal()
-    }
 }
 
 plugins {
@@ -25,15 +18,22 @@ plugins {
 }
 ```
 
-在项目的根目录中创建一个名为 `gradm` 的文件夹，并创建 `gradm/settings.gradle.kts`  添加以下内容：
+在项目的根目录中新建一个名为 `gradm` 的文件夹。
+
+新建 `gradm/settings.gradle.kts`  添加以下内容：
 
 ```kotlin
 rootProject.name = "gradm"
 
 pluginManagement {
     repositories {
-        mavenCentral()
+        // 如果您使用快照版本,在顶部声明以下两行。
         mavenLocal()
+        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
+
+        // 自从 3.3.3 版本，Gradm 发布只到我的个人 Maven 仓库。
+        maven(url = "https://maven.omico.me")
+        mavenCentral()
         gradlePluginPortal()
     }
 }
@@ -51,8 +51,9 @@ versions:
 #   google: https://maven.google.com
 #   mavenCentral: https://repo1.maven.org/maven2
 #   gradlePluginPortal: https://plugins.gradle.org/m2
-#   mavenLocal:
-#   noUpdates:
+#   mavenLocal: 在您的主目录中的 .m2 文件夹
+#   noUpdates: 未跟踪的存储库
+#   omico: https://maven.omico.me
 repositories:
   google: # "google" 已经被内置了
   mavenCentral:

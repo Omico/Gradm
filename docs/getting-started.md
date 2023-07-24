@@ -9,13 +9,6 @@ In `settings.gradle.kts`, add the following:
 ```kotlin
 pluginManagement {
     includeBuild("gradm") // include Gradm here
-    repositories {
-        mavenCentral()
-        // Below two lines are optional, for Gradm's snapshots.
-        mavenLocal()
-        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
-        gradlePluginPortal()
-    }
 }
 
 plugins {
@@ -25,16 +18,22 @@ plugins {
 }
 ```
 
-Create a folder named `gradm` in the root directory of your project, and create `gradm/settings.gradle.kts`. Add the following:
+Create a folder named `gradm` in the root directory of your project.
+
+Create `gradm/settings.gradle.kts`, and add the following:
 
 ```kotlin
 rootProject.name = "gradm"
 
 pluginManagement {
     repositories {
-        mavenCentral()
+        // Declare the below two lines at the top, if you use the snapshot version.
         mavenLocal()
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
+
+        // Since 3.3.3 version, Gradm is only publish to my personal Maven repository.
+        maven(url = "https://maven.omico.me")
+        mavenCentral()
         gradlePluginPortal()
     }
 }
@@ -52,8 +51,9 @@ versions:
 #   google: https://maven.google.com
 #   mavenCentral: https://repo1.maven.org/maven2
 #   gradlePluginPortal: https://plugins.gradle.org/m2
-#   mavenLocal:
-#   noUpdates:
+#   mavenLocal: .m2 folder in your home directory
+#   noUpdates: untracked repository
+#   omico: https://maven.omico.me
 repositories:
   google: # a repo named "google" is already build-in.
   mavenCentral:

@@ -4,17 +4,12 @@
 
 **Assuming you have read [getting-started](./getting-started).**
 
-Create a folder named `build-logic` in your root directory.
+Create a `build-logic/project` folder in your root path.
 
-Create `build-logic/settings.gradle.kts`. The content is exactly the same as `settings.gradle.kts` in [getting-started](./getting-started).
-
-Copy `gradm` folder from [getting-started](./getting-started) to `build-logic`.
-
-In `settings.gradle.kts`, add the following:
+Create a new `settings.gradle.kts` to `build-logic/project/settings.gradle.kts`, add the following:
 
 ```kotlin
 pluginManagement {
-    includeBuild("build-logic")
     includeBuild("build-logic/gradm")
 }
 
@@ -23,13 +18,15 @@ plugins {
 }
 ```
 
+Copy `gradm` folder from [getting-started](./getting-started) to `build-logic/gradm`.
+
 ## Customizing
 
 If you want to customize some *.gradle.kts scripts, you may want to use versions or dependencies directly.
 
-Assuming you have defined some scripts into `converntion` module.
+Assuming you have defined some scripts into `build-logic/project/main/src/kotlin` module.
 
-You can do this by adding the following to `converntion\build.gradle.kts`:
+You can do this by adding the following to `build-logic/project/build.gradle.kts`:
 
 ```kotlin
 dependencies {
