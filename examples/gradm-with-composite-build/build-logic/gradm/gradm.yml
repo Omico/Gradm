@@ -13,6 +13,7 @@ versions:
     datastore: "1.0.0"
     lifecycle: "2.6.1"
     navigation: "2.5.3"
+  elucidator: "0.12.0"
   jetbrains.compose: "1.4.0"
   kotlin: "1.8.21"
   material: "1.7.0-alpha03"
@@ -27,6 +28,7 @@ versions:
 
 repositories:
   mavenLocal:
+  omico:
   google:
   mavenCentral:
   jetbrainsCompose:
@@ -186,3 +188,8 @@ dependencies:
       cloudflare-dns:
         alias: omico.cloudflare.dns
         version: ${versions.omico.cloudflare}
+  omico:
+    me.omico.elucidator:
+      elucidator:
+        alias: libs.elucidator
+        version: ${versions.elucidator}

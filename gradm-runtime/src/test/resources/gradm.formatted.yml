@@ -15,6 +15,7 @@ versions:
 
 repositories:
   mavenLocal:
+  omico:
   google:
   mavenCentral:
   jetbrainsCompose:

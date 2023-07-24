@@ -17,6 +17,8 @@ versions:
   okhttp: "4.9.3"
 
 repositories:
+  omico:
+    url: "https://maven.omico.me"
   customNoUpdates:
     noUpdates: true
   google:
