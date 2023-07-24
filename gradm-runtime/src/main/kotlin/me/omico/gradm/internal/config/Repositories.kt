@@ -20,52 +20,28 @@ import me.omico.gradm.internal.YamlObject
 import me.omico.gradm.internal.find
 
 val YamlDocument.repositories: List<Repository>
-    @Suppress("UNCHECKED_CAST")
     get() = find<YamlObject>("repositories", emptyMap())
-        .map { (id, attributes) ->
-            val buildInRepository = buildInRepositories.find { it.id == id }
-            if (buildInRepository != null) return@map buildInRepository
-            Repository(
-                id = id,
-                attributes = attributes as YamlObject,
-            )
-        }
+        .map { (id, attributes) -> buildInRepositories.find { it.id == id } ?: repository(id, attributes) }
 
 data class Repository(
     val id: String,
-    val noUpdates: Boolean,
     val url: String,
+    val noUpdates: Boolean,
+    val buildIn: Boolean,
 )
 
-val buildInRepositories: List<Repository> by lazy {
+val gradleBuildInRepositories: List<Repository> =
     listOf(
-        Repository(
-            id = "google",
-            noUpdates = false,
-            url = "https://maven.google.com",
-        ),
-        Repository(
-            id = "mavenCentral",
-            noUpdates = false,
-            url = "https://repo1.maven.org/maven2",
-        ),
-        Repository(
-            id = "gradlePluginPortal",
-            noUpdates = false,
-            url = "https://plugins.gradle.org/m2",
-        ),
-        Repository(
-            id = "mavenLocal",
-            noUpdates = true,
-            url = "",
-        ),
-        Repository(
-            id = "noUpdates",
-            noUpdates = true,
-            url = "",
-        ),
+        buildInRepository(id = "gradlePluginPortal", url = "https://plugins.gradle.org/m2"),
+        buildInRepository(id = "mavenCentral", url = "https://repo1.maven.org/maven2"),
+        buildInRepository(id = "mavenLocal", noUpdates = true),
+        buildInRepository(id = "google", url = "https://maven.google.com"),
     )
-}
+
+val buildInRepositories: List<Repository> =
+    gradleBuildInRepositories + listOf(
+        buildInRepository(id = "noUpdates", noUpdates = true),
+    )
 
 internal fun String.fixedUrl(): String =
     when {
@@ -76,9 +52,22 @@ internal fun String.fixedUrl(): String =
 internal fun List<Repository>.requireRepository(id: String): Repository =
     requireNotNull(find { it.id == id }) { "Repository $id not found." }
 
-private fun Repository(id: String, attributes: YamlObject): Repository =
+@Suppress("UNCHECKED_CAST")
+private fun repository(id: String, attributes: Any?): Repository =
+    run {
+        attributes as? YamlObject ?: error("Repository $id attributes is missing.")
+        Repository(
+            id = id,
+            url = attributes.find<String>("url")?.fixedUrl() ?: "",
+            noUpdates = attributes.find("noUpdates", false),
+            buildIn = false,
+        )
+    }
+
+private fun buildInRepository(id: String, url: String = "", noUpdates: Boolean = false): Repository =
     Repository(
         id = id,
-        noUpdates = attributes.find("noUpdates", false),
-        url = attributes.find<String>("url")?.fixedUrl() ?: "",
+        url = url,
+        noUpdates = noUpdates,
+        buildIn = true,
     )

@@ -17,6 +17,7 @@ package me.omico.gradm.internal.codegen
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import me.omico.elucidator.FunctionScope
 import me.omico.elucidator.addClass
@@ -36,14 +37,13 @@ import me.omico.gradm.GradmExperimentalConfiguration
 import me.omico.gradm.GradmGeneratedPluginType
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
-import me.omico.gradm.internal.config.buildInRepositories
+import me.omico.gradm.internal.config.gradleBuildInRepositories
 import me.omico.gradm.internal.config.plugins
 import me.omico.gradm.internal.config.repositories
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
 import org.gradle.api.plugins.ExtensionAware
-import java.net.URI
 import java.nio.file.Path
 
 internal fun CodeGenerator.generatePluginSourceFile(): Unit =
@@ -100,16 +100,7 @@ private fun FunctionScope.declarePluginsInSettings(document: YamlDocument, versi
 
 private fun FunctionScope.declareRepositoriesInSettings(document: YamlDocument): Unit =
     addLambdaStatement("target.dependencyResolutionManagement.repositories") {
-        document.repositories.forEach { repository ->
-            if (repository.id == "mavenLocal") {
-                addStatement("mavenLocal()")
-                return@forEach
-            }
-            if (repository.noUpdates) return@forEach
-            buildInRepositories.find { it.id == repository.id }
-                ?.let { addStatement("${it.id}()") }
-                ?: addStatement("maven { url = %T.create(\"${repository.url}\") }", URI::class)
-        }
+        addDeclaredRepositoryStatements(document)
     }
 
 private fun FunctionScope.declareDependenciesInSettings(dependencies: CodegenDependencies): Unit =
@@ -171,4 +162,13 @@ private fun FunctionScope.addExtensionsIfNeeds(
 ): Unit =
     addStatement(format = "$extensionsPath.findByName(\"${name}\") ?: $extensionsPath.add(\"${name}\", %T)", className)
 
+private fun FunctionScope.addDeclaredRepositoryStatements(gradmConfigDocument: YamlDocument): Unit =
+    gradmConfigDocument.repositories.forEach { repository ->
+        when {
+            repository in gradleBuildInRepositories -> addStatement("${repository.id}()")
+            !repository.noUpdates -> addStatement("%M(url = %S)", mavenMemberName, repository.url)
+        }
+    }
+
 private val extensionsPathRegex = """^(\w+\.)*\w+$""".toRegex()
+private val mavenMemberName: MemberName = MemberName("org.gradle.kotlin.dsl", "maven")
