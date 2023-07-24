@@ -1,6 +1,6 @@
 versions:
   consensus: "0.3.0"
-  elucidator: "0.11.0"
+  elucidator: "0.12.0"
   gradle: "8.2.1"
   junit: "5.9.3"
   kotlin: "1.8.20"
@@ -39,10 +39,6 @@ dependencies:
       kotlinpoet:
         alias: libs.kotlinpoet
         version: ${versions.kotlinpoet}
-    me.omico.elucidator:
-      elucidator:
-        alias: libs.elucidator
-        version: ${versions.elucidator}
     org.jetbrains.kotlinx:
       kotlinx-coroutines-core:
         alias: libs.kotlinx.coroutines
@@ -67,3 +63,7 @@ dependencies:
       consensus-dsl:
         alias: me.omico.consensus.dsl
         version: ${versions.consensus}
+    me.omico.elucidator:
+      elucidator:
+        alias: libs.elucidator
+        version: ${versions.elucidator}
