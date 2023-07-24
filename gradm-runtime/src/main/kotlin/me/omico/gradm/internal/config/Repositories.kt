@@ -41,6 +41,7 @@ val gradleBuildInRepositories: List<Repository> =
 val buildInRepositories: List<Repository> =
     gradleBuildInRepositories + listOf(
         buildInRepository(id = "noUpdates", noUpdates = true),
+        buildInRepository(id = "omico", url = "https://maven.omico.me"),
     )
 
 internal fun String.fixedUrl(): String =
