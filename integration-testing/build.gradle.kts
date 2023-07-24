@@ -21,5 +21,6 @@ tasks.test {
             this@test.dependsOn(task)
         }
     }
+    inputs.dir("../examples")
     useJUnitPlatform()
 }
