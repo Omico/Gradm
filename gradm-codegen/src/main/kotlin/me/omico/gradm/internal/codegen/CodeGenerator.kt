@@ -46,6 +46,7 @@ fun generateGradmGeneratedSources(
         generateVersionsSourceFile()
         generatePluginSourceFile()
         generateDependenciesSourceFiles()
+        generateRepositoriesSourceFile()
         generateSelfSourceFile()
     }
 }

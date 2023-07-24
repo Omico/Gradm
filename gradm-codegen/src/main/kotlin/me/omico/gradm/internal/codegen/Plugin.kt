@@ -17,7 +17,6 @@ package me.omico.gradm.internal.codegen
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import me.omico.elucidator.FunctionScope
 import me.omico.elucidator.addClass
@@ -37,9 +36,7 @@ import me.omico.gradm.GradmExperimentalConfiguration
 import me.omico.gradm.GradmGeneratedPluginType
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
-import me.omico.gradm.internal.config.gradleBuildInRepositories
 import me.omico.gradm.internal.config.plugins
-import me.omico.gradm.internal.config.repositories
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
@@ -162,13 +159,4 @@ private fun FunctionScope.addExtensionsIfNeeds(
 ): Unit =
     addStatement(format = "$extensionsPath.findByName(\"${name}\") ?: $extensionsPath.add(\"${name}\", %T)", className)
 
-private fun FunctionScope.addDeclaredRepositoryStatements(gradmConfigDocument: YamlDocument): Unit =
-    gradmConfigDocument.repositories.forEach { repository ->
-        when {
-            repository in gradleBuildInRepositories -> addStatement("${repository.id}()")
-            !repository.noUpdates -> addStatement("%M(url = %S)", mavenMemberName, repository.url)
-        }
-    }
-
 private val extensionsPathRegex = """^(\w+\.)*\w+$""".toRegex()
-private val mavenMemberName: MemberName = MemberName("org.gradle.kotlin.dsl", "maven")
