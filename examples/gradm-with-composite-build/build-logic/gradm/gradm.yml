@@ -1,19 +1,12 @@
 versions:
-  accompanist: "0.30.1"
+  android: "7.4.1"
   androidx:
     activity: "1.7.0"
-    annotation: "1.6.0"
-    appcompat: "1.6.1"
-    browser: "1.4.0"
-    camera: "1.2.2"
     compose:
       bom: "2023.04.00"
       compiler: "1.4.0-alpha02"
-    core: "1.10.0"
-    datastore: "1.0.0"
-    lifecycle: "2.6.1"
-    navigation: "2.5.3"
-  elucidator: "0.12.0"
+  consensus: "0.3.0"
+  gradle: "8.2.1"
   jetbrains.compose: "1.4.0"
   kotlin: "1.8.21"
   material: "1.7.0-alpha03"
@@ -21,10 +14,7 @@ versions:
   omico:
     cloudflare: "1.0.0-SNAPSHOT"
     cryonics: "1.0.0-SNAPSHOT"
-  plugins:
-    age: "1.0.0-SNAPSHOT"
-    android: "7.4.1"
-    spotless: "6.18.0"
+  spotless: "6.18.0"
 
 repositories:
   mavenLocal:
@@ -41,17 +31,20 @@ repositories:
     noUpdates: true
 
 plugins:
-  customNoUpdates:
-    me.omico.age.project: ${versions.plugins.age}
-    me.omico.age.spotless: ${versions.plugins.age}
   gradlePluginPortal:
-    com.diffplug.spotless: ${versions.plugins.spotless}
+    com.diffplug.spotless: ${versions.spotless}
   jetbrainsCompose:
     org.jetbrains.compose: ${versions.jetbrains.compose}
   noUpdates:
-    com.android.library: ${versions.plugins.android}
+    com.android.library: ${versions.android}
     org.jetbrains.kotlin.android: ${versions.kotlin}
+    org.jetbrains.kotlin.jvm: ${versions.kotlin}
     org.jetbrains.kotlin.multiplatform: ${versions.kotlin}
+  omico:
+    me.omico.consensus.api: ${versions.consensus}
+    me.omico.consensus.git: ${versions.consensus}
+    me.omico.consensus.publishing: ${versions.consensus}
+    me.omico.consensus.spotless: ${versions.consensus}
 
 dependencies:
   customNoUpdates:
@@ -64,46 +57,14 @@ dependencies:
       activity-compose:
         alias: androidx.activity.compose
         version: ${versions.androidx.activity}
-      activity-ktx:
-        alias: androidx.activity.ktx
-        version: ${versions.androidx.activity}
-    androidx.annotation:
-      annotation:
-        alias: androidx.annotation
-        version: ${versions.androidx.annotation}
-    androidx.appcompat:
-      appcompat:
-        alias: androidx.appcompat
-        version: ${versions.androidx.appcompat}
-    androidx.camera:
-      camera-camera2:
-        alias: androidx.camera.camera2
-        version: ${versions.androidx.camera}
-      camera-lifecycle:
-        alias: androidx.camera.lifecycle
-        version: ${versions.androidx.camera}
-      camera-view:
-        alias: androidx.camera.view
-        version: ${versions.androidx.camera}
     androidx.compose:
       compose-bom:
         alias: androidx.compose.bom
         version: ${versions.androidx.compose.bom}
         bom: true
-    androidx.compose.animation:
-      animation:
-        alias: androidx.compose.animation
-        noSpecificVersion: true
-    androidx.compose.foundation:
-      foundation:
-        alias: androidx.compose.foundation
-        noSpecificVersion: true
     androidx.compose.material:
       material:
         alias: androidx.compose.material
-        noSpecificVersion: true
-      material-icons-core:
-        alias: androidx.compose.material.icons.core
         noSpecificVersion: true
       material-icons-extended:
         alias: androidx.compose.material.icons.extended
@@ -111,10 +72,6 @@ dependencies:
     androidx.compose.material3:
       material3:
         alias: androidx.compose.material3
-        noSpecificVersion: true
-    androidx.compose.runtime:
-      runtime:
-        alias: androidx.compose.runtime
         noSpecificVersion: true
     androidx.compose.ui:
       ui:
@@ -126,49 +83,11 @@ dependencies:
       ui-tooling-preview:
         alias: androidx.compose.ui.tooling.preview
         noSpecificVersion: true
-      ui-util:
-        alias: androidx.compose.ui.util
-        noSpecificVersion: true
-    androidx.core:
-      core-ktx:
-        alias: androidx.core.ktx
-        version: ${versions.androidx.core}
-    androidx.datastore:
-      datastore:
-        alias: androidx.datastore
-        version: ${versions.androidx.datastore}
-    androidx.lifecycle:
-      lifecycle-runtime-ktx:
-        alias: androidx.lifecycle.runtime.ktx
-        version: ${versions.androidx.lifecycle}
-    androidx.navigation:
-      navigation-compose:
-        alias: androidx.navigation.compose
-        version: ${versions.androidx.navigation}
-      navigation-runtime-ktx:
-        alias: androidx.navigation.runtime.ktx
-        version: ${versions.androidx.navigation}
     com.google.android.material:
       material:
         alias: material
         version: ${versions.material}
   mavenCentral:
-    com.google.accompanist:
-      accompanist-insets:
-        alias: accompanist.insets
-        version: ${versions.accompanist}
-      accompanist-insets-ui:
-        alias: accompanist.insetsUi
-        version: ${versions.accompanist}
-      accompanist-permissions:
-        alias: accompanist.permissions
-        version: ${versions.accompanist}
-      accompanist-swiperefresh:
-        alias: accompanist.swipeRefresh
-        version: ${versions.accompanist}
-      accompanist-systemuicontroller:
-        alias: accompanist.systemUiController
-        version: ${versions.accompanist}
     com.squareup.okhttp3:
       logging-interceptor:
         alias: okhttp.interceptor.logging
@@ -189,7 +108,7 @@ dependencies:
         alias: omico.cloudflare.dns
         version: ${versions.omico.cloudflare}
   omico:
-    me.omico.elucidator:
-      elucidator:
-        alias: libs.elucidator
-        version: ${versions.elucidator}
+    me.omico.consensus:
+      consensus-dsl:
+        alias: me.omico.consensus.dsl
+        version: ${versions.consensus}

@@ -1,16 +1,7 @@
-@file:Suppress("UnstableApiUsage")
-
 rootProject.name = "gradm-getting-started"
 
 pluginManagement {
     includeBuild("gradm") // include Gradm here
-    repositories {
-        google()
-        mavenCentral()
-        mavenLocal()
-        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
-        gradlePluginPortal()
-    }
 }
 
 plugins {

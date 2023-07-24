@@ -3,7 +3,7 @@
 plugins {
     kotlin("android")
     id("com.android.library")
-    id("me.omico.gradm.generated")
+    id("gradm-with-composite-build.gradm")
 }
 
 android {
@@ -20,10 +20,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-}
-
-dependencies {
-    compileOnly(androidx.annotation)
 }
 
 kotlin {

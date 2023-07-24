@@ -14,5 +14,6 @@ repositories {
 }
 
 gradm {
+    pluginId = "gradm-with-composite-build.gradm"
     debug = true
 }

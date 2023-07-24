@@ -1,3 +1,3 @@
 plugins {
-    id("build-logic.spotless")
+    id("gradm-with-composite-build.root")
 }

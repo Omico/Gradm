@@ -1,16 +1,13 @@
-@file:Suppress("UnstableApiUsage")
-
-rootProject.name = "gradm-with-composite-build"
+rootProject.name = "gradm-with-composite-build-root"
 
 pluginManagement {
-    includeBuild("build-logic/gradm")
     repositories {
+        maven(url = "https://maven.omico.me")
         google()
         mavenCentral()
-        mavenLocal()
-        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
         gradlePluginPortal()
     }
+    includeBuild("build-logic/gradm")
 }
 
 buildscript {
@@ -21,7 +18,7 @@ buildscript {
 
 plugins {
     id("com.gradle.enterprise") version "3.14"
-    id("me.omico.gradm.generated")
+    id("gradm-with-composite-build.gradm")
 }
 
 gradleEnterprise {
@@ -32,6 +29,6 @@ gradleEnterprise {
     }
 }
 
-includeBuild("build-logic")
+includeBuild("build-logic/project")
 
 include(":example")

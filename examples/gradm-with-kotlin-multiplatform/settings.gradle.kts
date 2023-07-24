@@ -3,19 +3,12 @@
 rootProject.name = "gradm-with-kotlin-multiplatform"
 
 pluginManagement {
-    includeBuild("gradm") // include Gradm here
-    repositories {
-        google()
-        mavenCentral()
-        mavenLocal()
-        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots")
-        gradlePluginPortal()
-    }
+    includeBuild("gradm")
 }
 
 plugins {
     id("com.gradle.enterprise") version "3.14"
-    id("gradm") // configured by GradmExtension
+    id("gradm")
 }
 
 gradleEnterprise {

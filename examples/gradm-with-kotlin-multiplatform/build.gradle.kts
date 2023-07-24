@@ -1,32 +1,18 @@
-import me.omico.gradm.dependency.Androidx
+import me.omico.gradm.dependency.Okhttp
 
 plugins {
     kotlin("multiplatform")
-    id("com.android.library")
 }
 
 kotlin {
-    android()
+    jvm()
     sourceSets {
-        named("androidMain") {
+        commonMain {
             dependencies {
-                implementation(accompanist.insets)
-                // Assume androidx conflict with other plugins,
-                // you can directly use me.omico.gradm.dependency.Androidx instead.
-                implementation(Androidx.activity.ktx)
+                // Assume okhttp conflict with other plugins,
+                // you can directly use me.omico.gradm.dependency.Okhttp instead.
+                implementation(Okhttp)
             }
         }
-    }
-}
-
-android {
-    compileSdk = 33
-    namespace = "me.omico.gradm.example"
-    defaultConfig {
-        minSdk = 21
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
     }
 }
