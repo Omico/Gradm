@@ -9,7 +9,10 @@ consensus {
     group = gradleProperty("PROJECT_GROUP_ID")
     version = gradleProperty("PROJECT_VERSION")
     publishing {
-        publishToLocalRepository("MAVEN_OMICO_LOCAL_URI")
+        when {
+            environmentVariables.getOrDefault("IS_GITHUB_ACTIONS", false) -> publishToNexusRepository()
+            else -> publishToLocalRepository("MAVEN_OMICO_LOCAL_URI")
+        }
         signing {
             if (isSnapshot) return@signing
             useGpgCmd()
