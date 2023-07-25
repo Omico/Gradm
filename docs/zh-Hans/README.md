@@ -1,6 +1,7 @@
 # 简介
 
-![Maven Central](https://img.shields.io/maven-central/v/me.omico.gradm/gradm-runtime)
+![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fmaven.omico.me%2Fme%2Fomico%2Fgradm%2Fgradm-gradle-plugin%2Fmaven-metadata.xml)
+![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/me.omico.gradm/gradm-gradle-plugin?server=https%3A%2F%2Fs01.oss.sonatype.org)
 
 Gradm (**Gra**dle **d**ependencies **m**anager) 是一种新的简洁并高效的方式来管理依赖。
 

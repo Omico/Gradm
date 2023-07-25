@@ -1,6 +1,7 @@
 # Getting Started
 
-![Maven Central](https://img.shields.io/maven-central/v/me.omico.gradm/gradm-runtime)
+![Maven metadata URL](https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fmaven.omico.me%2Fme%2Fomico%2Fgradm%2Fgradm-gradle-plugin%2Fmaven-metadata.xml)
+![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/me.omico.gradm/gradm-gradle-plugin?server=https%3A%2F%2Fs01.oss.sonatype.org)
 
 Before the guidance, you must notice that the order of Gradle's repositories is matter!!! See also [Gradle's documentation](https://docs.gradle.org/current/userguide/declaring_repositories.html#sec:declaring_multiple_repositories).
 
