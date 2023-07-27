@@ -1,14 +1,9 @@
+import me.omico.gradm.addDeclaredRepositories
 import me.omico.gradm.initialization.includeGradm
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-pluginManagement {
-    repositories {
-        maven(url = "https://maven.omico.me")
-        mavenCentral()
-        gradlePluginPortal()
-    }
-}
+addDeclaredRepositories()
 
 plugins {
     id("gradm.gradm")
