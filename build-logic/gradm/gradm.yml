@@ -1,6 +1,6 @@
 versions:
   consensus: "0.3.0"
-  elucidator: "0.12.0"
+  elucidator: "0.13.0"
   gradle: "8.2.1"
   junit: "5.9.3"
   kotlin: "1.8.20"

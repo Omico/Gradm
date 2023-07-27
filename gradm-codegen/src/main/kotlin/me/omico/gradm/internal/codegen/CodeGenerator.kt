@@ -16,9 +16,9 @@
 package me.omico.gradm.internal.codegen
 
 import me.omico.elucidator.KtFileScope
-import me.omico.elucidator.addAnnotation
 import me.omico.elucidator.addFileComment
 import me.omico.elucidator.addMember
+import me.omico.elucidator.annotate
 import me.omico.gradm.VersionsMeta
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.FlatVersions
@@ -27,6 +27,7 @@ import me.omico.gradm.internal.config.toFlatVersions
 import me.omico.gradm.internal.config.versions
 import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.utility.clearDirectory
+import org.gradle.internal.impldep.org.bouncycastle.jcajce.util.PrivateKeyAnnotator.annotate
 import java.nio.file.Path
 import java.util.Locale
 
@@ -69,7 +70,7 @@ internal val defaultSuppressWarningTypes: Array<String> =
     )
 
 internal fun KtFileScope.addSuppressWarningTypes(vararg types: String = defaultSuppressWarningTypes): Unit =
-    addAnnotation<Suppress> { addMember("%S,".repeat(types.count()).trimEnd(','), *types) }
+    annotate<Suppress> { addMember("%S,".repeat(types.count()).trimEnd(','), *types) }
 
 internal fun KtFileScope.addGradmComment(): Unit =
     addFileComment(
