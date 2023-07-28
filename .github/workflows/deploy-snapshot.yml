@@ -35,7 +35,6 @@ jobs:
       - name: Setup and execute Gradle
         uses: gradle/gradle-build-action@v2
         env:
-          IS_GITHUB_ACTIONS: true
           NEXUS_PUBLISH_SNAPSHOT_URL: ${{ secrets.NEXUS_PUBLISH_SNAPSHOT_URL }}
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}

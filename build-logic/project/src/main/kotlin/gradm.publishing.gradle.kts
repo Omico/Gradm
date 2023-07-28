@@ -10,7 +10,7 @@ consensus {
     version = gradleProperty("PROJECT_VERSION")
     publishing {
         when {
-            environmentVariables.getOrDefault("IS_GITHUB_ACTIONS", false) -> publishToNexusRepository()
+            environmentVariables.getOrDefault("CI", false) -> publishToNexusRepository()
             else -> publishToLocalRepository("MAVEN_OMICO_LOCAL_URI")
         }
         signing {
