@@ -15,22 +15,24 @@
  */
 package me.omico.gradm.task
 
-import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.tasks.CacheableTask
-import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.artifacts.dsl.RepositoryHandler
+import org.gradle.api.tasks.UntrackedTask
+import javax.inject.Inject
 
-@CacheableTask
-abstract class GradmGenerator : GradmTask() {
-    abstract val gradmGeneratedSourcesDirectoryProperty: DirectoryProperty
-        @OutputDirectory get
+@UntrackedTask(because = "Initialize Gradm.")
+abstract class GradmInitialization : GradmTask() {
+    @get:Inject
+    abstract val repositories: RepositoryHandler
 
     override fun execute() {
         super.execute()
-        workerService.generate(
-            dependencies = dependencies,
+        workerService.initialize(
+            repositories = repositories,
             gradmProjectPaths = gradmProjectPaths,
-            gradmConfigurationDocument = gradmConfigurationDocument,
-            outputDirectory = gradmGeneratedSourcesDirectoryProperty.asFile.get().toPath(),
         )
+    }
+
+    companion object {
+        const val TASK_NAME = "initializeGradm"
     }
 }

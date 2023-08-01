@@ -22,10 +22,12 @@ import me.omico.gradm.integration.internal.GradmIntegrationsExtensionImpl
 import me.omico.gradm.internal.GradmExperimentalExtensionImpl
 import me.omico.gradm.internal.GradmExtensionImpl
 import me.omico.gradm.internal.GradmFormatExtensionImpl
+import me.omico.gradm.path.gradmAvailableUpdatesFile
 import me.omico.gradm.path.gradmGeneratedSourcesDirectory
+import me.omico.gradm.service.GradmWorkerService
 import me.omico.gradm.task.GradmDependencyUpdates
-import me.omico.gradm.task.GradmGenerator
-import me.omico.gradm.task.setup
+import me.omico.gradm.task.GradmInitialization
+import me.omico.gradm.task.GradmSourcesGenerator
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.provider.Provider
@@ -70,29 +72,26 @@ class GradmPlugin : Plugin<Project> {
             implementationType = GradmWorkerService::class,
             configureAction = {},
         )
-        configureGradmGenerator(gradmExtension, gradmWorkerServiceProvider)
-        configureGradmDependencyUpdates(gradmExtension, gradmWorkerServiceProvider)
-        GradmConfiguration.offline = gradle.startParameter.isOffline
+        configureGradmTasks(gradmExtension, gradmWorkerServiceProvider)
     }
 }
 
-private fun Project.configureGradmGenerator(
+private fun Project.configureGradmTasks(
     gradmExtension: GradmExtension,
     gradmWorkerServiceProvider: Provider<GradmWorkerService>,
 ) {
-    val generateGradmSources = tasks.register<GradmGenerator>("generateGradmSources") {
-        setup(gradmExtension, gradmWorkerServiceProvider)
+    tasks.register<GradmInitialization>(GradmInitialization.TASK_NAME) {
+        setupGradmTask(gradmExtension, gradmWorkerServiceProvider)
+    }
+    tasks.register<GradmDependencyUpdates>(GradmDependencyUpdates.TASK_NAME) {
+        setupGradmDependenciesTask(gradmExtension, gradmWorkerServiceProvider)
+        availableUpdatesFileProperty.convention(gradmAvailableUpdatesFile)
+    }
+    val generateGradmSources = tasks.register<GradmSourcesGenerator>(GradmSourcesGenerator.TASK_NAME) {
+        setupGradmDependenciesTask(gradmExtension, gradmWorkerServiceProvider)
+        inputFiles.from(gradmAvailableUpdatesFile)
         gradmGeneratedSourcesDirectoryProperty.convention(gradmGeneratedSourcesDirectory)
     }
     val sourceSets = extensions.getByType<SourceSetContainer>()
-    sourceSets["main"].java.srcDir(generateGradmSources.flatMap(GradmGenerator::gradmGeneratedSourcesDirectoryProperty))
-}
-
-private fun Project.configureGradmDependencyUpdates(
-    gradmExtension: GradmExtension,
-    gradmWorkerServiceProvider: Provider<GradmWorkerService>,
-) {
-    tasks.register<GradmDependencyUpdates>("gradmDependencyUpdates") {
-        setup(gradmExtension, gradmWorkerServiceProvider)
-    }
+    sourceSets["main"].java.srcDir(generateGradmSources.flatMap(GradmSourcesGenerator::gradmGeneratedSourcesDirectoryProperty))
 }
