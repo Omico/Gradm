@@ -18,7 +18,7 @@ package me.omico.gradm.internal.config.format
 import me.omico.gradm.internal.config.format.node.mapping
 import me.omico.gradm.internal.config.format.node.scalar
 import me.omico.gradm.internal.config.format.node.sequence
-import me.omico.gradm.testPath
+import me.omico.gradm.test.resources
 import org.junit.jupiter.api.Test
 import kotlin.io.path.readText
 
@@ -61,13 +61,13 @@ class FormatterTest {
             }
             comment("End comment")
         }
-        assert(content == testPath("format-test.yml").readText())
+        assert(content == resources("format-test.yml").readText())
     }
 
     @Test
     fun `test format Gradm configuration`() {
-        val unformattedConfig = testPath("gradm.unformatted.yml")
-        val formattedConfig = testPath("gradm.formatted.yml")
+        val unformattedConfig = resources("gradm.unformatted.yml")
+        val formattedConfig = resources("gradm.formatted.yml")
         assert(unformattedConfig.createFormattedGradmConfigContent() == formattedConfig.readText())
     }
 }

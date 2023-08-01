@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm
+package me.omico.gradm.test
 
 import java.nio.file.Path
 import kotlin.io.path.toPath
 
-inline fun <reified T : Any> T.testPath(path: String): Path =
+inline fun <reified T : Any> T.resources(path: String): Path =
     T::class.java.classLoader.getResource(path)!!.toURI().toPath()

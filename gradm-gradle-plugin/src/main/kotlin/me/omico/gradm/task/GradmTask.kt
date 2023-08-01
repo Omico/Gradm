@@ -65,12 +65,13 @@ abstract class GradmTask : DefaultTask() {
     protected val gradmProjectPaths: GradmProjectPaths
         @Internal get() = GradmProjectPaths(
             path = projectLayout.projectDirectory.asFile.toPath(),
+            configurationFile = configFileProperty.get().asFile.toPath(),
             projectName = projectNameProperty.get(),
         )
 
     protected val gradmConfigDocument: YamlDocument
         @Internal get() = run {
-            val gradmConfigFile = configFileProperty.get().asFile.toPath()
+            val gradmConfigFile = gradmProjectPaths.configurationFile
             formatGradmConfig(gradmConfigFile)
             gradmConfigFile.asYamlDocument()
         }
@@ -79,6 +80,7 @@ abstract class GradmTask : DefaultTask() {
     protected open fun execute() {
         workerService.initialize(
             repositories = repositories,
+            gradmProjectPaths = gradmProjectPaths,
             gradmConfigDocument = gradmConfigDocument,
         )
     }

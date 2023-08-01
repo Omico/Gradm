@@ -20,8 +20,6 @@ import me.omico.gradm.internal.YamlObject
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.require
 import java.net.URL
-import java.nio.file.Path
-import kotlin.io.path.div
 
 val YamlDocument.dependencies: List<Dependency>
     @Suppress("UNCHECKED_CAST")
@@ -68,8 +66,10 @@ data class Dependency(
     val alias: String,
     val version: String?,
 ) {
-    val module: String by lazy { "$group:$artifact" }
-    val metadataUrl: URL by lazy { URL("$repository/${group.replace(".", "/")}/$artifact/maven-metadata.xml") }
+    val module: String by lazy(LazyThreadSafetyMode.NONE) { "$group:$artifact" }
+    val metadataUrl: URL by lazy(LazyThreadSafetyMode.NONE) {
+        URL("$repository/${group.replace(".", "/")}/$artifact/maven-metadata.xml")
+    }
 }
 
 fun YamlDocument.collectAllDependencies(): List<Dependency> =
@@ -77,5 +77,7 @@ fun YamlDocument.collectAllDependencies(): List<Dependency> =
         .apply { addAll(plugins.map(Plugin::toDependency)) }
         .apply { addAll(dependencies) }
 
-internal fun Dependency.localMetadataFile(metadataFolder: Path): Path =
-    metadataFolder / group / artifact / "maven-metadata.xml"
+fun YamlDocument.collectAllUpdatableDependencies(): List<Dependency> =
+    collectAllDependencies()
+        .filterNot(Dependency::noUpdates)
+        .filterNot(Dependency::noSpecificVersion)
