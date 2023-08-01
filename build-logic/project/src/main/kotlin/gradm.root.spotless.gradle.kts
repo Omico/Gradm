@@ -1,5 +1,6 @@
 import me.omico.consensus.dsl.requireRootProject
 import me.omico.consensus.dsl.rootGradle
+import me.omico.consensus.spotless.ConsensusSpotlessTokens
 
 plugins {
     id("me.omico.consensus.spotless")
@@ -18,6 +19,9 @@ consensus {
         }
         allprojects {
             kotlin(
+                targets = ConsensusSpotlessTokens.Kotlin.targets + setOf(
+                    "build-logic/initialization/src/**/*.kt",
+                ),
                 licenseHeaderFile = rootGradle.rootProject.file("spotless/copyright.kt"),
             )
             kotlinGradle()
