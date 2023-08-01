@@ -14,6 +14,7 @@ kotlin {
 
 dependencies {
     api(gradleApi())
+    api(gradleKotlinDsl())
     implementation(libs.snakeyaml)
     implementation(libs.kotlinx.coroutines)
 }
