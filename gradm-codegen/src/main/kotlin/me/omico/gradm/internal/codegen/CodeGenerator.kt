@@ -27,20 +27,19 @@ import me.omico.gradm.internal.config.toFlatVersions
 import me.omico.gradm.internal.config.versions
 import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.utility.clearDirectory
-import org.gradle.internal.impldep.org.bouncycastle.jcajce.util.PrivateKeyAnnotator.annotate
 import java.nio.file.Path
 import java.util.Locale
 
 fun generateGradmGeneratedSources(
     gradmProjectPaths: GradmProjectPaths,
-    gradmConfigDocument: YamlDocument,
+    gradmConfigurationDocument: YamlDocument,
     versionsMeta: VersionsMeta,
     generatedSourcesDirectory: Path,
 ) {
     generatedSourcesDirectory.clearDirectory()
     CodeGenerator(
         gradmProjectPaths = gradmProjectPaths,
-        gradmConfigDocument = gradmConfigDocument,
+        gradmConfigDocument = gradmConfigurationDocument,
         versionsMeta = versionsMeta,
         generatedSourcesDirectory = generatedSourcesDirectory,
     ).run {

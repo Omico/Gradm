@@ -42,27 +42,27 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
     fun initialize(
         repositories: RepositoryHandler,
         gradmProjectPaths: GradmProjectPaths,
-        gradmConfigDocument: YamlDocument,
+        gradmConfigurationDocument: YamlDocument,
     ) {
         initializeGradmDataStore(gradmProjectPaths)
-        repositories.setupRepositories(gradmConfigDocument)
+        repositories.setupRepositories(gradmConfigurationDocument)
     }
 
     fun generate(
         dependencies: DependencyHandler,
         gradmProjectPaths: GradmProjectPaths,
-        gradmConfigDocument: YamlDocument,
+        gradmConfigurationDocument: YamlDocument,
         outputDirectory: Path,
     ) {
         GradmConfiguration.requireRefresh = false
         val versionsMeta = resolveVersionsMeta(
             dependencies = dependencies,
             gradmProjectPaths = gradmProjectPaths,
-            document = gradmConfigDocument,
+            document = gradmConfigurationDocument,
         )
         generateGradmGeneratedSources(
             gradmProjectPaths = gradmProjectPaths,
-            gradmConfigDocument = gradmConfigDocument,
+            gradmConfigurationDocument = gradmConfigurationDocument,
             versionsMeta = versionsMeta,
             generatedSourcesDirectory = outputDirectory,
         )
@@ -72,14 +72,14 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
     fun refresh(
         dependencies: DependencyHandler,
         gradmProjectPaths: GradmProjectPaths,
-        gradmConfigDocument: YamlDocument,
+        gradmConfigurationDocument: YamlDocument,
     ) {
         if (updated) return
         GradmConfiguration.requireRefresh = true
         resolveVersionsMeta(
             dependencies = dependencies,
             gradmProjectPaths = gradmProjectPaths,
-            document = gradmConfigDocument,
+            document = gradmConfigurationDocument,
         )
         checkUpdatesAvailable(gradmProjectPaths)
     }

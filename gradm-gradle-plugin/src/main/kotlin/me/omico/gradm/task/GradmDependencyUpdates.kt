@@ -21,7 +21,7 @@ abstract class GradmDependencyUpdates : GradmTask() {
         workerService.refresh(
             dependencies = dependencies,
             gradmProjectPaths = gradmProjectPaths,
-            gradmConfigDocument = gradmConfigDocument,
+            gradmConfigurationDocument = gradmConfigurationDocument,
         )
     }
 }

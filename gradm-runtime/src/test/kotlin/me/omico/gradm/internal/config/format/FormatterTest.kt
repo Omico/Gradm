@@ -66,8 +66,8 @@ class FormatterTest {
 
     @Test
     fun `test format Gradm configuration`() {
-        val unformattedConfig = resources("gradm.unformatted.yml")
-        val formattedConfig = resources("gradm.formatted.yml")
-        assert(unformattedConfig.createFormattedGradmConfigContent() == formattedConfig.readText())
+        val unformattedConfigurationFile = resources("gradm.unformatted.yml")
+        val formattedConfigurationFile = resources("gradm.formatted.yml")
+        assert(unformattedConfigurationFile.createFormattedGradmConfigurationContent() == formattedConfigurationFile.readText())
     }
 }

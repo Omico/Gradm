@@ -30,7 +30,7 @@ data class GradmProjectPaths(
     val projectName: String,
 )
 
-fun ProjectLayout.gradmConfigFile(path: String): RegularFile = projectDirectory.file(path)
+fun ProjectLayout.gradmConfigurationFile(path: String): RegularFile = projectDirectory.file(path)
 
 inline val Project.gradmGeneratedSourcesDirectory: Provider<Directory>
     get() = layout.buildDirectory.dir("generated/sources/gradm/kotlin/main")

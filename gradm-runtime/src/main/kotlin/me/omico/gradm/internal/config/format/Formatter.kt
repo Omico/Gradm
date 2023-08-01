@@ -31,11 +31,11 @@ import me.omico.gradm.internal.require
 import java.nio.file.Path
 import kotlin.io.path.writeText
 
-fun formatGradmConfig(configFile: Path) {
-    configFile.writeText(configFile.createFormattedGradmConfigContent())
+fun formatGradmConfiguration(configurationFile: Path) {
+    configurationFile.writeText(configurationFile.createFormattedGradmConfigurationContent())
 }
 
-fun Path.createFormattedGradmConfigContent(): String =
+fun Path.createFormattedGradmConfigurationContent(): String =
     yaml(formatterScope = FormatterScope(indent = GradmFormatConfiguration.indent)) {
         val document = asYamlDocument()
         versionsMapping(document)

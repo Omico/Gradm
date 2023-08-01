@@ -19,9 +19,9 @@ import me.omico.gradm.GradmExtension
 import me.omico.gradm.GradmWorkerService
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.asYamlDocument
-import me.omico.gradm.internal.config.format.formatGradmConfig
+import me.omico.gradm.internal.config.format.formatGradmConfiguration
 import me.omico.gradm.path.GradmProjectPaths
-import me.omico.gradm.path.gradmConfigFile
+import me.omico.gradm.path.gradmConfigurationFile
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.artifacts.dsl.RepositoryHandler
@@ -69,11 +69,11 @@ abstract class GradmTask : DefaultTask() {
             projectName = projectNameProperty.get(),
         )
 
-    protected val gradmConfigDocument: YamlDocument
+    protected val gradmConfigurationDocument: YamlDocument
         @Internal get() = run {
-            val gradmConfigFile = gradmProjectPaths.configurationFile
-            formatGradmConfig(gradmConfigFile)
-            gradmConfigFile.asYamlDocument()
+            val gradmConfigurationFile = gradmProjectPaths.configurationFile
+            formatGradmConfiguration(gradmConfigurationFile)
+            gradmConfigurationFile.asYamlDocument()
         }
 
     @TaskAction
@@ -81,7 +81,7 @@ abstract class GradmTask : DefaultTask() {
         workerService.initialize(
             repositories = repositories,
             gradmProjectPaths = gradmProjectPaths,
-            gradmConfigDocument = gradmConfigDocument,
+            gradmConfigurationDocument = gradmConfigurationDocument,
         )
     }
 
@@ -103,5 +103,5 @@ internal fun GradmTask.setup(
     usesService(gradmWorkerServiceProvider)
     projectNameProperty.set(gradmExtension.projectName)
     workerServiceProperty.set(gradmWorkerServiceProvider)
-    configFileProperty.set(projectLayout.gradmConfigFile(gradmExtension.configFilePath))
+    configFileProperty.set(projectLayout.gradmConfigurationFile(gradmExtension.configFilePath))
 }

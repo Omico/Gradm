@@ -29,7 +29,7 @@ abstract class GradmGenerator : GradmTask() {
         workerService.generate(
             dependencies = dependencies,
             gradmProjectPaths = gradmProjectPaths,
-            gradmConfigDocument = gradmConfigDocument,
+            gradmConfigurationDocument = gradmConfigurationDocument,
             outputDirectory = gradmGeneratedSourcesDirectoryProperty.asFile.get().toPath(),
         )
     }
