@@ -24,7 +24,6 @@ import me.omico.gradm.internal.GradmExtensionImpl
 import me.omico.gradm.internal.GradmFormatExtensionImpl
 import me.omico.gradm.path.gradmAvailableUpdatesFile
 import me.omico.gradm.path.gradmGeneratedSourcesDirectory
-import me.omico.gradm.service.GradmBuildService
 import me.omico.gradm.service.GradmWorkerService
 import me.omico.gradm.service.registerGradmWorkerServiceIfAbsent
 import me.omico.gradm.task.GradmDependencyUpdates
@@ -38,7 +37,6 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
-import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 
 class GradmPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
@@ -46,12 +44,10 @@ class GradmPlugin : Plugin<Project> {
             "Please add `kotlin-dsl` to your plugins block.\n" +
                 "Gradm plugin requires the Kotlin DSL plugin to be applied."
         }
-        val gradlePlugins = extensions.getByType<GradlePluginDevelopmentExtension>()
         val gradmExtension = extensions.create(
             publicType = GradmExtension::class,
             name = "gradm",
             instanceType = GradmExtensionImpl::class,
-            constructionArguments = arrayOf(target, gradlePlugins),
         )
         gradmExtension.extensions.create(
             publicType = GradmFormatExtension::class,

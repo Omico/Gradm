@@ -20,34 +20,30 @@ import me.omico.gradm.GradmExtension
 import me.omico.gradm.GradmGeneratedPluginType
 import me.omico.gradm.createGradmGeneratedPluginDeclaration
 import org.gradle.api.Project
-import org.gradle.api.file.RegularFileProperty
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.gradle.plugin.devel.PluginDeclaration
 import javax.inject.Inject
 
 internal abstract class GradmExtensionImpl @Inject constructor(
     private val project: Project,
-    pluginDevelopmentExtension: GradlePluginDevelopmentExtension,
 ) : GradmExtension {
+    private val pluginDevelopmentExtension: GradlePluginDevelopmentExtension = project.extensions.getByType()
 
-    private val pluginDeclaration: PluginDeclaration by lazy {
+    private val pluginDeclaration: PluginDeclaration =
         pluginDevelopmentExtension.createGradmGeneratedPluginDeclaration(GradmGeneratedPluginType.General)
-    }
-
-    private val configFileProperty: RegularFileProperty = project.objects.fileProperty()
 
     override val projectName: String
         get() = project.name
 
     override var pluginId: String by pluginDeclaration::id
 
-    override var configurationFilePath: String
-        get() = configFileProperty.asFile.getOrElse(project.file("gradm.yml")).absolutePath
+    override var configurationFilePath: String = "gradm.yml"
         set(value) {
             val file = project.file(value)
             require(file.exists()) { "Gradm configuration file does not exist in ${file.absolutePath}." }
             require(file.isFile) { "Gradm configuration file must be a file." }
-            configFileProperty.set(file)
+            field = value
         }
 
     override var debug: Boolean by GradmConfiguration::debug
