@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm
+package me.omico.gradm.service
 
+import me.omico.gradm.GradmConfiguration
 import me.omico.gradm.datastore.GradmDataStore
+import me.omico.gradm.info
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.codegen.generateGradmGeneratedSources
 import me.omico.gradm.internal.config.Repository
@@ -25,35 +27,55 @@ import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.gradmLocalConfigurationFile
 import me.omico.gradm.path.gradmMetadataFile
 import me.omico.gradm.path.updatesAvailableFile
-import me.omico.gradm.service.GradmBuildService
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.services.BuildServiceParameters
-import java.net.URI
-import java.nio.file.Files
+import org.gradle.kotlin.dsl.maven
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
+import kotlin.io.path.exists
 
 abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.None> {
 
-    private var updated: Boolean = false
+    private lateinit var gradmConfigurationDocument: YamlDocument
+    private lateinit var gradmProjectPaths: GradmProjectPaths
+    private lateinit var dependencies: DependencyHandler
+
     private var updatesAvailableFile: Path? = null
+
+    fun update(
+        offline: Boolean,
+        gradmConfigurationDocument: YamlDocument,
+    ) {
+        GradmConfiguration.offline = offline
+        this.gradmConfigurationDocument = gradmConfigurationDocument
+    }
+
+    fun update(dependencies: DependencyHandler) {
+        this.dependencies = dependencies
+    }
 
     fun initialize(
         repositories: RepositoryHandler,
         gradmProjectPaths: GradmProjectPaths,
-        gradmConfigurationDocument: YamlDocument,
     ) {
-        initializeGradmDataStore(gradmProjectPaths)
-        repositories.setupRepositories(gradmConfigurationDocument)
+        this.gradmProjectPaths = gradmProjectPaths
+        GradmDataStore.initializeGradmDataStore()
+        repositories.setupRepositories()
+        checkUpdatesAvailable()
     }
 
-    fun generate(
-        dependencies: DependencyHandler,
-        gradmProjectPaths: GradmProjectPaths,
-        gradmConfigurationDocument: YamlDocument,
-        outputDirectory: Path,
-    ) {
+    fun refresh() {
+        GradmConfiguration.requireRefresh = true
+        resolveVersionsMeta(
+            dependencies = dependencies,
+            gradmProjectPaths = gradmProjectPaths,
+            document = gradmConfigurationDocument,
+        )
+        checkUpdatesAvailable()
+    }
+
+    fun generate(outputDirectory: Path) {
         GradmConfiguration.requireRefresh = false
         val versionsMeta = resolveVersionsMeta(
             dependencies = dependencies,
@@ -66,47 +88,25 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
             versionsMeta = versionsMeta,
             generatedSourcesDirectory = outputDirectory,
         )
-        checkUpdatesAvailable(gradmProjectPaths)
-    }
-
-    fun refresh(
-        dependencies: DependencyHandler,
-        gradmProjectPaths: GradmProjectPaths,
-        gradmConfigurationDocument: YamlDocument,
-    ) {
-        if (updated) return
-        GradmConfiguration.requireRefresh = true
-        resolveVersionsMeta(
-            dependencies = dependencies,
-            gradmProjectPaths = gradmProjectPaths,
-            document = gradmConfigurationDocument,
-        )
-        checkUpdatesAvailable(gradmProjectPaths)
+        checkUpdatesAvailable()
     }
 
     override fun close() {
-        updatesAvailableFile?.let { file ->
-            info { "Available updates found, see ${file.toAbsolutePath()}" }
-        }
+        showAvailableUpdatesIfExists()
     }
 
-    private var isGradmDataStoreInitialized = false
-    private fun initializeGradmDataStore(
-        gradmProjectPaths: GradmProjectPaths,
-    ) {
-        if (isGradmDataStoreInitialized) return
-        GradmDataStore.load(
+    private fun GradmDataStore.initializeGradmDataStore() {
+        load(
             localConfigurationFile = gradmProjectPaths.gradmLocalConfigurationFile,
             metadataFile = gradmMetadataFile,
         )
-        GradmDataStore.updateLocalConfiguration {
+        updateLocalConfiguration {
             insertConfigurationPath(gradmProjectPaths.configurationFile.absolutePathString())
         }
-        isGradmDataStoreInitialized = true
     }
 
-    private fun RepositoryHandler.setupRepositories(document: YamlDocument) {
-        document.repositories
+    private fun RepositoryHandler.setupRepositories() {
+        gradmConfigurationDocument.repositories
             .filterNot(Repository::noUpdates)
             .forEach { repository ->
                 when (repository.id) {
@@ -114,16 +114,20 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
                     "mavenCentral" -> mavenCentral()
                     "gradlePluginPortal" -> gradlePluginPortal()
                     "mavenLocal" -> mavenLocal()
-                    else -> maven { url = URI.create(repository.url) }
+                    else -> maven(url = repository.url)
                 }
             }
     }
 
-    private fun checkUpdatesAvailable(gradmProjectPaths: GradmProjectPaths) {
-        updated = true
-        updatesAvailableFile = when {
-            Files.exists(gradmProjectPaths.updatesAvailableFile) -> gradmProjectPaths.updatesAvailableFile
-            else -> null
+    private fun checkUpdatesAvailable() {
+        gradmProjectPaths.updatesAvailableFile.takeIf(Path::exists)?.let { file ->
+            updatesAvailableFile = file
+        }
+    }
+
+    private fun showAvailableUpdatesIfExists() {
+        updatesAvailableFile?.let { file ->
+            info { "Available updates found, see ${file.absolutePathString()}" }
         }
     }
 }

@@ -16,15 +16,14 @@
 package me.omico.gradm.task
 
 import me.omico.gradm.GradmExtension
-import me.omico.gradm.GradmWorkerService
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.asYamlDocument
 import me.omico.gradm.internal.config.format.formatGradmConfiguration
 import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.gradmConfigurationFile
+import me.omico.gradm.service.GradmWorkerService
 import org.gradle.api.DefaultTask
-import org.gradle.api.artifacts.dsl.DependencyHandler
-import org.gradle.api.artifacts.dsl.RepositoryHandler
+import org.gradle.api.Project
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
@@ -37,40 +36,43 @@ import org.gradle.api.tasks.TaskAction
 import javax.inject.Inject
 
 abstract class GradmTask : DefaultTask() {
-    abstract val projectNameProperty: Property<String>
-        @Internal get
-
-    abstract val workerServiceProperty: Property<GradmWorkerService>
-        @Internal get
-
-    abstract val configFileProperty: RegularFileProperty
-        @PathSensitive(PathSensitivity.ABSOLUTE)
-        @InputFile
-        get
-
+    @get:Inject
     abstract val projectLayout: ProjectLayout
-        @Inject get
 
-    abstract val repositories: RepositoryHandler
-        @Inject get
+    @get:Internal
+    abstract val offlineProperty: Property<Boolean>
 
-    abstract val dependencies: DependencyHandler
-        @Inject get
+    @get:Internal
+    abstract val workerServiceProperty: Property<GradmWorkerService>
 
-    final override fun getGroup(): String = "gradm"
+    @get:Internal
+    abstract val projectNameProperty: Property<String>
 
+    @get:[
+    InputFile
+    PathSensitive(PathSensitivity.ABSOLUTE)
+    ]
+    abstract val configurationFileProperty: RegularFileProperty
+
+    @get:Internal
+    protected val offline: Boolean
+        get() = offlineProperty.get()
+
+    @get:Internal
     protected val workerService: GradmWorkerService
-        @Internal get() = workerServiceProperty.get()
+        get() = workerServiceProperty.get()
 
+    @get:Internal
     protected val gradmProjectPaths: GradmProjectPaths
-        @Internal get() = GradmProjectPaths(
+        get() = GradmProjectPaths(
             path = projectLayout.projectDirectory.asFile.toPath(),
-            configurationFile = configFileProperty.get().asFile.toPath(),
+            configurationFile = configurationFileProperty.get().asFile.toPath(),
             projectName = projectNameProperty.get(),
         )
 
+    @get:Internal
     protected val gradmConfigurationDocument: YamlDocument
-        @Internal get() = run {
+        get() = run {
             val gradmConfigurationFile = gradmProjectPaths.configurationFile
             formatGradmConfiguration(gradmConfigurationFile)
             gradmConfigurationFile.asYamlDocument()
@@ -78,30 +80,25 @@ abstract class GradmTask : DefaultTask() {
 
     @TaskAction
     protected open fun execute() {
-        workerService.initialize(
-            repositories = repositories,
-            gradmProjectPaths = gradmProjectPaths,
+        workerService.update(
+            offline = offline,
             gradmConfigurationDocument = gradmConfigurationDocument,
         )
     }
 
-    init {
-        notCompatibleWithConfigurationCache()
+    internal fun Project.setupGradmTask(
+        gradmExtension: GradmExtension,
+        gradmWorkerServiceProvider: Provider<GradmWorkerService>,
+    ) {
+        group = GROUP
+        usesService(gradmWorkerServiceProvider)
+        offlineProperty.set(gradle.startParameter.isOffline)
+        workerServiceProperty.set(gradmWorkerServiceProvider)
+        projectNameProperty.set(gradmExtension.projectName)
+        configurationFileProperty.set(projectLayout.gradmConfigurationFile(gradmExtension.configFilePath))
     }
 
-    private fun notCompatibleWithConfigurationCache() =
-        notCompatibleWithConfigurationCache(
-            "Gradm is not compatible with the Gradle configuration cache.\n" +
-                "Waiting for https://github.com/gradle/gradle/issues/13506 to be fixed.",
-        )
-}
-
-internal fun GradmTask.setup(
-    gradmExtension: GradmExtension,
-    gradmWorkerServiceProvider: Provider<GradmWorkerService>,
-) {
-    usesService(gradmWorkerServiceProvider)
-    projectNameProperty.set(gradmExtension.projectName)
-    workerServiceProperty.set(gradmWorkerServiceProvider)
-    configFileProperty.set(projectLayout.gradmConfigurationFile(gradmExtension.configFilePath))
+    companion object {
+        private const val GROUP = "gradm"
+    }
 }

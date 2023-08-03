@@ -15,13 +15,19 @@
  */
 package me.omico.gradm.task
 
-abstract class GradmDependencyUpdates : GradmTask() {
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.tasks.OutputFile
+
+abstract class GradmDependencyUpdates : GradmDependenciesTask() {
+    @get:OutputFile
+    abstract val availableUpdatesFileProperty: RegularFileProperty
+
     override fun execute() {
         super.execute()
-        workerService.refresh(
-            dependencies = dependencies,
-            gradmProjectPaths = gradmProjectPaths,
-            gradmConfigurationDocument = gradmConfigurationDocument,
-        )
+        workerService.refresh()
+    }
+
+    companion object {
+        const val TASK_NAME = "gradmDependencyUpdates"
     }
 }
