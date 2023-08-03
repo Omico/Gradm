@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2023 Omico
+ * Copyright 2023 Omico
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.omico.gradm.integration
+package me.omico.gradm.integration.github
 
-interface GradmIntegration {
-    /**
-     * The id of this integration.
-     */
-    val id: String
+import me.omico.gradm.integration.GradmIntegrationExtension
 
-    /**
-     * This function will be called execute `generateGradmSources` task.
-     */
-    fun GradmIntegrationHolder.onGenerate(): Unit = Unit
-
-    /**
-     * This function will be called execute `gradmDependencyUpdates` task.
-     */
-    fun GradmIntegrationHolder.onRefresh(): Unit = Unit
-}
+interface GradmGitHubIntegrationExtension : GradmIntegrationExtension

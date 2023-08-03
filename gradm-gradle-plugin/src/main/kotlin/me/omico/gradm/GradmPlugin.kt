@@ -17,13 +17,14 @@
 
 package me.omico.gradm
 
+import me.omico.gradm.integration.GradmIntegrationManager
 import me.omico.gradm.integration.GradmIntegrationsExtension
-import me.omico.gradm.integration.internal.GradmIntegrationsExtensionImpl
 import me.omico.gradm.internal.GradmExperimentalExtensionImpl
 import me.omico.gradm.internal.GradmExtensionImpl
 import me.omico.gradm.internal.GradmFormatExtensionImpl
 import me.omico.gradm.path.gradmAvailableUpdatesFile
 import me.omico.gradm.path.gradmGeneratedSourcesDirectory
+import me.omico.gradm.service.GradmBuildService
 import me.omico.gradm.service.GradmWorkerService
 import me.omico.gradm.service.registerGradmWorkerServiceIfAbsent
 import me.omico.gradm.task.GradmDependencyUpdates
@@ -57,11 +58,7 @@ class GradmPlugin : Plugin<Project> {
             name = "format",
             instanceType = GradmFormatExtensionImpl::class,
         )
-        gradmExtension.extensions.create(
-            publicType = GradmIntegrationsExtension::class,
-            name = "integrations",
-            instanceType = GradmIntegrationsExtensionImpl::class,
-        )
+        gradmExtension.extensions.create<GradmIntegrationsExtension>("integrations")
         gradmExtension.extensions.create(
             publicType = GradmExperimentalExtension::class,
             name = "experimental",
@@ -82,10 +79,14 @@ private fun Project.configureGradmTasks(
     tasks.register<GradmDependencyUpdates>(GradmDependencyUpdates.TASK_NAME) {
         setupGradmDependenciesTask(gradmExtension, gradmWorkerServiceProvider)
         availableUpdatesFileProperty.convention(gradmAvailableUpdatesFile)
+        inputs.files(GradmIntegrationManager.inputPaths)
+        outputs.files(GradmIntegrationManager.outputPaths)
     }
     val generateGradmSources = tasks.register<GradmSourcesGenerator>(GradmSourcesGenerator.TASK_NAME) {
         setupGradmDependenciesTask(gradmExtension, gradmWorkerServiceProvider)
         inputFiles.from(gradmAvailableUpdatesFile)
+        inputFiles.from(GradmIntegrationManager.integrationConfigurationFilePaths)
+        inputs.files(GradmIntegrationManager.inputPaths)
         gradmGeneratedSourcesDirectoryProperty.convention(gradmGeneratedSourcesDirectory)
     }
     val sourceSets = extensions.getByType<SourceSetContainer>()

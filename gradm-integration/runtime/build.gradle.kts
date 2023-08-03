@@ -9,5 +9,4 @@ kotlin {
 
 dependencies {
     api(projects.gradmIntegration.gradmIntegrationApi)
-    api(projects.gradmIntegration.gradmIntegrationGithub)
 }

@@ -15,8 +15,11 @@
  */
 package me.omico.gradm.integration
 
-data class GradmIntegrationConfiguration(
-    val id: String,
-    val enabled: Boolean = true,
-    val configFilePath: String = "gradm.integration.$id.yml",
-)
+import org.gradle.api.plugins.ExtensionAware
+
+/**
+ * The extension that holds all integrations.
+ *
+ * Do not implement this interface directly.
+ */
+interface GradmIntegrationsExtension : ExtensionAware

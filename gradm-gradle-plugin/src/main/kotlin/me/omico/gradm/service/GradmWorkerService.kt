@@ -18,10 +18,13 @@ package me.omico.gradm.service
 import me.omico.gradm.GradmConfiguration
 import me.omico.gradm.datastore.GradmDataStore
 import me.omico.gradm.info
+import me.omico.gradm.integration.GradmIntegrationManager
+import me.omico.gradm.integration.GradmIntegrationOwner
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.codegen.generateGradmGeneratedSources
 import me.omico.gradm.internal.config.Repository
 import me.omico.gradm.internal.config.repositories
+import me.omico.gradm.internal.config.toMutableFlatVersions
 import me.omico.gradm.internal.maven.resolveVersionsMeta
 import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.gradmLocalConfigurationFile
@@ -38,7 +41,9 @@ import java.nio.file.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 
-abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.None> {
+abstract class GradmWorkerService :
+    GradmBuildService<BuildServiceParameters.None>,
+    GradmIntegrationOwner by GradmIntegrationManager {
 
     private lateinit var gradmConfigurationDocument: YamlDocument
     private lateinit var gradmProjectPaths: GradmProjectPaths
@@ -70,11 +75,12 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
 
     fun refresh() {
         GradmConfiguration.requireRefresh = true
-        resolveVersionsMeta(
+        val versions = resolveVersionsMeta(
             dependencies = dependencies,
             gradmProjectPaths = gradmProjectPaths,
             document = gradmConfigurationDocument,
         )
+        GradmIntegrationManager.refresh(gradmProjectPaths, versions.toMutableFlatVersions())
         checkUpdatesAvailable()
     }
 
