@@ -26,9 +26,9 @@ includeBuild("gradm-api") {
 
 includeGradm(":gradm-codegen")
 includeGradm(":gradm-gradle-plugin")
-includeGradm(":gradm-integration")
 includeGradm(":gradm-integration:api")
 includeGradm(":gradm-integration:github")
+includeGradm(":gradm-integration:runtime")
 includeGradm(":gradm-runtime")
 
 include(":integration-testing")

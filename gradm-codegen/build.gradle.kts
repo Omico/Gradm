@@ -10,7 +10,7 @@ kotlin {
 dependencies {
     compileOnly(gradleApi())
     compileOnly(projects.gradmRuntime)
-    compileOnly(projects.gradmIntegration)
+    compileOnly(projects.gradmIntegration.gradmIntegrationRuntime)
     implementation(libs.elucidator)
     implementation(libs.kotlinpoet)
 }

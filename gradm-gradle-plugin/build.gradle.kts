@@ -18,6 +18,6 @@ gradlePlugin {
 
 dependencies {
     implementation(projects.gradmCodegen)
-    implementation(projects.gradmIntegration)
+    implementation(projects.gradmIntegration.gradmIntegrationRuntime)
     implementation(projects.gradmRuntime)
 }
