@@ -17,7 +17,9 @@ package me.omico.gradm.task
 
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.UntrackedTask
 
+@UntrackedTask(because = "Gradm dependency updates.")
 abstract class GradmDependencyUpdates : GradmDependenciesTask() {
     @get:OutputFile
     abstract val availableUpdatesFileProperty: RegularFileProperty
