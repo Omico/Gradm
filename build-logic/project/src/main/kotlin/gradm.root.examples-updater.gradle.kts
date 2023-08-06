@@ -1,4 +1,10 @@
 import me.omico.consensus.dsl.requireRootProject
+import me.omico.gradm.project.internal.applyPluginVersion
+import me.omico.gradm.project.internal.matchesPlugin
+
+plugins {
+    id("gradm.gradm")
+}
 
 requireRootProject()
 
@@ -7,13 +13,14 @@ val syncExamples by tasks.registering {
         .filter { it.endsWith("settings.gradle.kts") || it.endsWith("build.gradle.kts") }
         .forEach { file ->
             buildString {
-                file.readLines().forEach {
-                    val line = when {
-                        it.startsWith("    id(\"me.omico.gradm\") version") ->
-                            "    id(\"me.omico.gradm\") version \"${properties["PROJECT_VERSION"]}\""
-                        else -> it
+                file.readLines().forEach { line ->
+                    when {
+                        line.matchesPlugin("me.omico.gradm") ->
+                            applyPluginVersion("me.omico.gradm", properties["PROJECT_VERSION"].toString())
+                        line.matchesPlugin("com.gradle.enterprise") ->
+                            applyPluginVersion("com.gradle.enterprise", versions.plugins.gradle.enterprise)
+                        else -> appendLine(line)
                     }
-                    appendLine(line)
                 }
             }.let(file::writeText)
         }
