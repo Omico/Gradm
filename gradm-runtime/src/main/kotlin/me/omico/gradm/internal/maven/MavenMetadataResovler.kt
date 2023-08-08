@@ -24,6 +24,7 @@ import me.omico.gradm.datastore.GradmDataStore
 import me.omico.gradm.datastore.maven.MavenMetadata
 import me.omico.gradm.datastore.maven.module
 import me.omico.gradm.debug
+import me.omico.gradm.info
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.Dependency
 import me.omico.gradm.internal.config.collectAllUpdatableDependencies
@@ -43,15 +44,8 @@ fun resolveVersionsMeta(
 
 private fun resolveMavenMetadata(dependencies: List<Dependency>): List<MavenMetadata> {
     GradmDataStore.updateMetadata {
-        val missingDependencies = when {
-            GradmConfiguration.requireRefresh -> dependencies
-            else -> collectMissingMavenMetadata(dependencies)
-        }
-        require(!GradmConfiguration.offline || missingDependencies.isEmpty()) {
-            "Cannot resolve maven-metadata.xml in offline mode."
-        }
         runBlocking {
-            missingDependencies
+            collectMissingMavenMetadata(dependencies)
                 .map { dependency -> dependency.downloadMavenMetadata() }
                 .let(this@updateMetadata::insert)
         }
@@ -63,8 +57,9 @@ private fun resolveMavenMetadata(dependencies: List<Dependency>): List<MavenMeta
 private fun collectMissingMavenMetadata(dependencies: List<Dependency>): List<Dependency> {
     val localModules = GradmDataStore.metadata.maven.map(MavenMetadata::module)
     val missingDependencies = dependencies.filterNot { it.module in localModules }
-    require(!GradmConfiguration.offline || missingDependencies.isEmpty()) {
-        "Cannot resolve maven-metadata.xml in offline mode."
+    if (GradmConfiguration.offline) {
+        require(missingDependencies.isEmpty()) { "Gradm cannot resolve missing maven-metadata.xml in offline mode." }
+        info { "Gradm is running in offline mode, will use local cache." }
     }
     return missingDependencies
 }
