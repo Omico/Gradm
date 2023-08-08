@@ -27,10 +27,13 @@ import me.omico.gradm.path.GradmProjectPaths
 import me.omico.gradm.path.gradmLocalConfigurationFile
 import me.omico.gradm.path.gradmMetadataFile
 import me.omico.gradm.path.updatesAvailableFile
+import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.artifacts.dsl.RepositoryHandler
+import org.gradle.api.provider.Provider
 import org.gradle.api.services.BuildServiceParameters
 import org.gradle.kotlin.dsl.maven
+import org.gradle.kotlin.dsl.registerIfAbsent
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
@@ -131,3 +134,10 @@ abstract class GradmWorkerService : GradmBuildService<BuildServiceParameters.Non
         }
     }
 }
+
+internal fun Project.registerGradmWorkerServiceIfAbsent(): Provider<GradmWorkerService> =
+    gradle.sharedServices.registerIfAbsent(
+        name = GradmBuildService.NAME,
+        implementationType = GradmWorkerService::class,
+        configureAction = {},
+    )

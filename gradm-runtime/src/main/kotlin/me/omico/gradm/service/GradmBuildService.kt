@@ -18,4 +18,8 @@ package me.omico.gradm.service
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 
-interface GradmBuildService<Parameters : BuildServiceParameters> : BuildService<Parameters>, AutoCloseable
+interface GradmBuildService<Parameters : BuildServiceParameters> : BuildService<Parameters>, AutoCloseable {
+    companion object {
+        const val NAME = "GradmBuildService"
+    }
+}

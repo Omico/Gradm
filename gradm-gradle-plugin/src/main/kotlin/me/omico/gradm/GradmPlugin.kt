@@ -25,6 +25,7 @@ import me.omico.gradm.internal.GradmFormatExtensionImpl
 import me.omico.gradm.path.gradmAvailableUpdatesFile
 import me.omico.gradm.path.gradmGeneratedSourcesDirectory
 import me.omico.gradm.service.GradmWorkerService
+import me.omico.gradm.service.registerGradmWorkerServiceIfAbsent
 import me.omico.gradm.task.GradmDependencyUpdates
 import me.omico.gradm.task.GradmInitialization
 import me.omico.gradm.task.GradmSourcesGenerator
@@ -36,7 +37,6 @@ import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
-import org.gradle.kotlin.dsl.registerIfAbsent
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 
 class GradmPlugin : Plugin<Project> {
@@ -67,11 +67,7 @@ class GradmPlugin : Plugin<Project> {
             name = "experimental",
             instanceType = GradmExperimentalExtensionImpl::class,
         )
-        val gradmWorkerServiceProvider = gradle.sharedServices.registerIfAbsent(
-            name = "gradmWorkerService",
-            implementationType = GradmWorkerService::class,
-            configureAction = {},
-        )
+        val gradmWorkerServiceProvider = registerGradmWorkerServiceIfAbsent()
         configureGradmTasks(gradmExtension, gradmWorkerServiceProvider)
     }
 }
