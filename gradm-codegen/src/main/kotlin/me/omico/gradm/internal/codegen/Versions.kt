@@ -28,7 +28,7 @@ import me.omico.elucidator.modifier
 import me.omico.elucidator.returnStatement
 import me.omico.elucidator.writeTo
 import me.omico.gradm.GRADM_PACKAGE_NAME
-import me.omico.gradm.integration.applyGradmIntegrations
+import me.omico.gradm.integration.GradmIntegrationManager
 import me.omico.gradm.internal.config.TreeVersions
 import me.omico.gradm.internal.config.toTreeVersions
 
@@ -44,7 +44,7 @@ internal fun CodeGenerator.generateVersionsSourceFile() {
 private fun CodeGenerator.createTreeVersions(): TreeVersions =
     mutableMapOf<String, String>()
         .apply { putAll(flatVersions) }
-        .apply(gradmProjectPaths::applyGradmIntegrations)
+        .apply { GradmIntegrationManager.generate(gradmProjectPaths, this) }
         .toTreeVersions()
 
 private fun KtFileScope.addVersionsObjects(versions: TreeVersions): Unit =

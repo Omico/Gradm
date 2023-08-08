@@ -15,7 +15,30 @@
  */
 package me.omico.gradm.integration
 
+/**
+ * The extension that holds all integrations.
+ *
+ * Recommend not implementing this interface directly.
+ * @see [GradmIntegrationExtensionImpl]
+ */
 interface GradmIntegrationExtension {
+    /**
+     * The id of this integration.
+     */
+    val id: String
+
+    /**
+     * The attributes of this integration.
+     */
+    val attributes: Map<String, Any>
+
+    /**
+     * Whether this integration is enabled.
+     */
     var enabled: Boolean
-    var configFilePath: String
+
+    /**
+     * The path of the configuration file for this integration.
+     */
+    var configurationFilePath: String
 }

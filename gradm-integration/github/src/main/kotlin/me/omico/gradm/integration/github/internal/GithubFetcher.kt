@@ -15,26 +15,12 @@
  */
 package me.omico.gradm.integration.github.internal
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
+import java.net.HttpURLConnection
 import java.net.URL
 
-fun latestReleaseTag(repository: String): String =
-    run {
-        val url = "https://api.github.com/repos/$repository/releases/latest"
-        val content = URL(url).readText()
-        json.decodeFromString<Release>(content).tagName
-    }
-
-@Serializable
-data class Release(
-    @SerialName("tag_name") val tagName: String,
-)
-
-private val json: Json by lazy {
-    Json {
-        ignoreUnknownKeys = true
-    }
+fun fetchLatestReleaseTag(repository: String): String {
+    val connection = URL("https://github.com/$repository/releases/latest").openConnection() as HttpURLConnection
+    connection.instanceFollowRedirects = false
+    connection.connect()
+    return connection.getHeaderField("Location").split("/").last()
 }

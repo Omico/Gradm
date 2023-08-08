@@ -7,6 +7,7 @@ buildscript {
 plugins {
     `kotlin-dsl`
     id("me.omico.gradm") version "3.4.0-SNAPSHOT"
+    id("me.omico.gradm.integration.github") version "3.4.0-SNAPSHOT"
 }
 
 repositories {
@@ -22,9 +23,9 @@ gradm {
         indent = 2 // default: 2
     }
     integrations {
-        register("github") {
+        github {
             enabled = true // default: true
-            configFilePath = "gradm.integration.github.yml" // default: "gradm.integration.github.yml"
+            configurationFilePath = "gradm.integration.github.yml" // default: "gradm.integration.github.yml"
         }
     }
     experimental {
