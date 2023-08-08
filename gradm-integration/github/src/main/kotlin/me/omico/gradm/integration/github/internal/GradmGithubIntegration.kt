@@ -26,14 +26,14 @@ import me.omico.gradm.internal.config.MutableFlatVersions
 import me.omico.gradm.internal.find
 import me.omico.gradm.internal.require
 import me.omico.gradm.path.GradmProjectPaths
-import me.omico.gradm.path.integrationDirectory
+import me.omico.gradm.path.integrationRootDirectory
 import me.omico.gradm.store
 import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.div
 
 internal inline val GradmProjectPaths.githubIntegrationDirectory: Path
-    get() = integrationDirectory / "github"
+    get() = integrationRootDirectory / "github"
 
 internal inline val GradmProjectPaths.githubIntegrationVersionsMetaFile: Path
     get() = githubIntegrationDirectory / "versions-meta.txt"

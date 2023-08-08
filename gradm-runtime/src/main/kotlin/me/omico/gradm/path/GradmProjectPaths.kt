@@ -47,7 +47,7 @@ inline val GradmProjectPaths.gradmBuildDirectory: Path
 inline val GradmProjectPaths.gradmLocalConfigurationFile: Path
     get() = gradmBuildDirectory / ".gradm"
 
-inline val GradmProjectPaths.integrationDirectory: Path
+inline val GradmProjectPaths.integrationRootDirectory: Path
     get() = gradmBuildDirectory / "integration"
 
 inline val GradmProjectPaths.updatesDirectory: Path
