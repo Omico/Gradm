@@ -41,12 +41,12 @@ internal abstract class GradmExtensionImpl @Inject constructor(
 
     override var pluginId: String by pluginDeclaration::id
 
-    override var configFilePath: String
+    override var configurationFilePath: String
         get() = configFileProperty.asFile.getOrElse(project.file("gradm.yml")).absolutePath
         set(value) {
             val file = project.file(value)
-            require(file.exists()) { "The path you assign for the Gradm config file does not exist." }
-            require(file.isFile) { "Gradm config file must be a file." }
+            require(file.exists()) { "Gradm configuration file does not exist in ${file.absolutePath}." }
+            require(file.isFile) { "Gradm configuration file must be a file." }
             configFileProperty.set(file)
         }
 

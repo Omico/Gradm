@@ -133,7 +133,7 @@ You can modify the Gradm configuration file name in `gradm/build.gradle.kts`:
 
 ```kotlin
 gradm {
-    configFilePath = "gradm3.yml" // default: "gradm.yml"
+    configurationFilePath = "gradm3.yml" // default: "gradm.yml"
 }
 ```
 
