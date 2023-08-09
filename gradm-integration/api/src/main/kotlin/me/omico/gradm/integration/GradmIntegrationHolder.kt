@@ -22,6 +22,11 @@ import java.nio.file.Path
 
 interface GradmIntegrationHolder {
     /**
+     * The id of this integration.
+     */
+    val id: String
+
+    /**
      * The attributes of this integration.
      */
     val attributes: Map<String, Any>

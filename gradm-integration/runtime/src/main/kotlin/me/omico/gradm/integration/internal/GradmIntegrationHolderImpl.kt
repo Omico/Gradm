@@ -16,7 +16,6 @@
 package me.omico.gradm.integration.internal
 
 import me.omico.gradm.integration.GradmIntegration
-import me.omico.gradm.integration.GradmIntegrationExtension
 import me.omico.gradm.integration.GradmIntegrationHolder
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.asYamlDocument
@@ -30,7 +29,9 @@ import kotlin.io.path.exists
 import kotlin.io.path.notExists
 
 internal class GradmIntegrationHolderImpl(
-    extension: GradmIntegrationExtension,
+    override val id: String,
+    override val attributes: Map<String, Any>,
+    configurationFilePath: String,
     private val integration: GradmIntegration,
     private val inputPaths: Set<Path>,
     private val outputPaths: Set<Path>,
@@ -38,13 +39,11 @@ internal class GradmIntegrationHolderImpl(
     override val versions: MutableFlatVersions,
 ) : GradmIntegrationHolder {
     private val integrationDirectory: Path =
-        gradmProjectPaths.integrationRootDirectory.resolve(extension.id).createDirectories()
-
-    override val attributes: Map<String, Any> = extension.attributes
+        gradmProjectPaths.integrationRootDirectory.resolve(id).createDirectories()
 
     override val integrationConfiguration: YamlDocument =
-        gradmProjectPaths.path.resolve(extension.configurationFilePath).takeIf(Path::exists)?.asYamlDocument()
-            ?: error("Integration configuration file [${extension.configurationFilePath}] for [${extension.id}] does not exist.")
+        gradmProjectPaths.path.resolve(configurationFilePath).takeIf(Path::exists)?.asYamlDocument()
+            ?: error("Integration configuration file [$configurationFilePath] for [$id] does not exist.")
 
     override fun input(path: String): Path {
         val input = integrationDirectory.resolve(path)

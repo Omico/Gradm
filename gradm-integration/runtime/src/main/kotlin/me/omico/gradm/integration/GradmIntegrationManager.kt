@@ -16,19 +16,19 @@
 package me.omico.gradm.integration
 
 import me.omico.gradm.debug
+import me.omico.gradm.integration.internal.GradmIntegrationConfiguration
 import me.omico.gradm.integration.internal.GradmIntegrationHolderImpl
 import me.omico.gradm.internal.config.MutableFlatVersions
 import me.omico.gradm.path.GradmProjectPaths
 import java.nio.file.Path
 
 object GradmIntegrationManager : GradmIntegrationOwner {
-    private val integrationIds: MutableSet<String> = mutableSetOf()
-    private val integrations: MutableMap<GradmIntegration, GradmIntegrationExtension> = mutableMapOf()
+    private val integrationConfigurations: MutableMap<String, GradmIntegrationConfiguration> = mutableMapOf()
     private val integrationInputPaths: MutableMap<String, MutableSet<Path>> = mutableMapOf()
     private val integrationOutputPaths: MutableMap<String, MutableSet<Path>> = mutableMapOf()
 
     val integrationConfigurationFilePaths: List<String>
-        get() = integrations.values.map(GradmIntegrationExtension::configurationFilePath)
+        get() = integrationConfigurations.values.map(GradmIntegrationConfiguration::configurationFilePath)
 
     val inputPaths: Set<Path>
         get() = integrationInputPaths.values.flatten().toSet()
@@ -37,13 +37,13 @@ object GradmIntegrationManager : GradmIntegrationOwner {
         get() = integrationOutputPaths.values.flatten().toSet()
 
     override fun register(integration: GradmIntegration, extension: GradmIntegrationExtension) {
-        val id = extension.id
+        val id = integration.id
         if (!extension.enabled) {
             debug { "Integration [$id] is manually disabled." }
             return
         }
-        require(id !in integrationIds) { "Integration [$id] has already been registered." }
-        integrations[integration] = extension
+        val configuration = GradmIntegrationConfiguration(integration, extension)
+        integrationConfigurations[id] = configuration
     }
 
     override fun registerInput(id: String, path: Path) {
@@ -64,12 +64,14 @@ object GradmIntegrationManager : GradmIntegrationOwner {
         gradmProjectPaths: GradmProjectPaths,
         versions: MutableFlatVersions,
     ): List<GradmIntegrationHolderImpl> =
-        integrations.map { (integration, extension) ->
+        integrationConfigurations.map { (id, configuration) ->
             GradmIntegrationHolderImpl(
-                extension = extension,
-                integration = integration,
-                inputPaths = integrationInputPaths.fromId(extension.id),
-                outputPaths = integrationOutputPaths.fromId(extension.id),
+                id = id,
+                attributes = configuration.attributes,
+                configurationFilePath = configuration.configurationFilePath,
+                integration = configuration.integration,
+                inputPaths = integrationInputPaths.fromId(id),
+                outputPaths = integrationOutputPaths.fromId(id),
                 gradmProjectPaths = gradmProjectPaths,
                 versions = versions,
             )
