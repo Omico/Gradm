@@ -1,7 +1,10 @@
 package me.omico.gradm.project.internal
 
-internal fun String.matchesPlugin(pluginId: String): Boolean = startsWith("    id(\"$pluginId\") version")
+internal fun String.replacePluginVersions(vararg pairs: Pair<String, String>): String =
+    pairs.fold(this) { acc, (pluginId, version) -> acc.replacePluginVersion(pluginId, version) }
 
-internal fun StringBuilder.applyPluginVersion(pluginId: String, version: String) {
-    appendLine("    id(\"$pluginId\") version \"$version\"")
-}
+private fun String.replacePluginVersion(pluginId: String, version: String): String =
+    replace(
+        regex = """\s+id\("$pluginId"\)\s+version\s+"(.*)"""".toRegex(),
+        replacement = "    id(\"$pluginId\") version \"$version\"",
+    )

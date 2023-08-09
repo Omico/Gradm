@@ -1,6 +1,5 @@
 import me.omico.consensus.dsl.requireRootProject
-import me.omico.gradm.project.internal.applyPluginVersion
-import me.omico.gradm.project.internal.matchesPlugin
+import me.omico.gradm.project.internal.replacePluginVersions
 
 plugins {
     id("gradm.gradm")
@@ -14,13 +13,13 @@ val syncExamples by tasks.registering {
         .forEach { file ->
             buildString {
                 file.readLines().forEach { line ->
-                    when {
-                        line.matchesPlugin("me.omico.gradm") ->
-                            applyPluginVersion("me.omico.gradm", properties["PROJECT_VERSION"].toString())
-                        line.matchesPlugin("com.gradle.enterprise") ->
-                            applyPluginVersion("com.gradle.enterprise", versions.plugins.gradle.enterprise)
-                        else -> appendLine(line)
-                    }
+                    line
+                        .replacePluginVersions(
+                            "me.omico.gradm" to properties["PROJECT_VERSION"].toString(),
+                            "me.omico.gradm.integration.github" to properties["PROJECT_VERSION"].toString(),
+                            "com.gradle.enterprise" to versions.plugins.gradle.enterprise,
+                        )
+                        .let(::appendLine)
                 }
             }.let(file::writeText)
         }
