@@ -54,6 +54,10 @@ abstract class GradmTask : DefaultTask() {
     ]
     abstract val configurationFileProperty: RegularFileProperty
 
+    init {
+        group = GROUP
+    }
+
     @get:Internal
     protected val offline: Boolean
         get() = offlineProperty.get()
@@ -90,7 +94,6 @@ abstract class GradmTask : DefaultTask() {
         gradmExtension: GradmExtension,
         gradmWorkerServiceProvider: Provider<GradmWorkerService>,
     ) {
-        group = GROUP
         usesService(gradmWorkerServiceProvider)
         offlineProperty.set(gradle.startParameter.isOffline)
         workerServiceProperty.set(gradmWorkerServiceProvider)
