@@ -41,11 +41,13 @@ class GradmGitHubIntegrationPlugin : GradmIntegrationPlugin<GradmGitHubIntegrati
         registerOutput(CACHED_VERSIONS_FILE_PATH)
     }
 
-    override fun GradmIntegrationHolder.onGenerate(): Unit =
-        when (val versionsMeta = localGithubIntegrationVersionsMeta) {
-            null -> applyRemoteVersions()
+    override fun GradmIntegrationHolder.onGenerate() {
+        val versionsMeta = localGithubIntegrationVersionsMeta
+        when {
+            versionsMeta == null || checkMissingVersions(versionsMeta) -> applyRemoteVersions()
             else -> applyVersions(versionsMeta)
         }
+    }
 
     override fun GradmIntegrationHolder.onRefresh(): Unit =
         when {
@@ -54,9 +56,7 @@ class GradmGitHubIntegrationPlugin : GradmIntegrationPlugin<GradmGitHubIntegrati
         }
 
     private fun GradmIntegrationHolder.applyRemoteVersions() {
-        val github = integrationConfiguration.github ?: return
-        val versionConfigurations = github.versions.map(::GithubVersionConfiguration)
-        val versionsMeta = versionConfigurations
+        val versionsMeta = githubVersionsConfiguration
             .mapNotNull { configuration -> configuration.versionPair(versions) }
             .toMap()
         storeCache(versionsMeta)
@@ -80,6 +80,25 @@ class GradmGitHubIntegrationPlugin : GradmIntegrationPlugin<GradmGitHubIntegrati
                 else -> versions[key] = value
             }
         }
+
+    private val GradmIntegrationHolder.githubVersionsConfiguration: List<GithubVersionConfiguration>
+        get() = integrationConfiguration.github?.versions?.map(::GithubVersionConfiguration) ?: emptyList()
+
+    private val GradmIntegrationHolder.githubRepositories: List<String>
+        get() = githubVersionsConfiguration.map(GithubVersionConfiguration::repository)
+
+    private fun GradmIntegrationHolder.checkMissingVersions(versionsMeta: VersionsMeta): Boolean {
+        val missingRepositories = githubRepositories.filterNot { it in versionsMeta.keys }
+        val isMissing = missingRepositories.isNotEmpty()
+        if (GradmConfiguration.offline) {
+            val localRepositories = localGithubIntegrationVersionsMeta?.keys ?: emptyList()
+            val missingLocalRepositories = missingRepositories.filterNot { it in localRepositories }
+            require(missingLocalRepositories.isEmpty()) {
+                "The GitHub integration is running in offline mode, but the $missingLocalRepositories are missing."
+            }
+        }
+        return isMissing
+    }
 
     private inline val GradmIntegrationHolder.localGithubIntegrationVersionsMeta: VersionsMeta?
         get() = outputFile(CACHED_VERSIONS_FILE_PATH).asVersionsMeta()
