@@ -39,7 +39,7 @@ fun generateGradmGeneratedSources(
     generatedSourcesDirectory.clearDirectory()
     CodeGenerator(
         gradmProjectPaths = gradmProjectPaths,
-        gradmConfigDocument = gradmConfigurationDocument,
+        gradmConfigurationDocument = gradmConfigurationDocument,
         versionsMeta = versionsMeta,
         generatedSourcesDirectory = generatedSourcesDirectory,
     ).run {
@@ -53,12 +53,12 @@ fun generateGradmGeneratedSources(
 
 internal class CodeGenerator(
     val gradmProjectPaths: GradmProjectPaths,
-    val gradmConfigDocument: YamlDocument,
+    val gradmConfigurationDocument: YamlDocument,
     val versionsMeta: VersionsMeta,
     val generatedSourcesDirectory: Path,
 ) {
-    val dependencies: CodegenDependencies = gradmConfigDocument.createCodegenDependencies(versionsMeta)
-    val flatVersions: FlatVersions = gradmConfigDocument.versions.toFlatVersions()
+    val dependencies: CodegenDependencies = gradmConfigurationDocument.createCodegenDependencies(versionsMeta)
+    val flatVersions: FlatVersions = gradmConfigurationDocument.versions.toFlatVersions()
 }
 
 internal val defaultSuppressWarningTypes: Array<String> =

@@ -50,8 +50,8 @@ internal fun CodeGenerator.generatePluginSourceFile(): Unit =
         overrideApplyFunctionBuilder = {
             addIfStatement {
                 start("target is %T", Settings::class) {
-                    declarePluginsInSettings(gradmConfigDocument, versionsMeta)
-                    declareRepositoriesInSettings(gradmConfigDocument)
+                    declarePluginsInSettings(gradmConfigurationDocument, versionsMeta)
+                    declareRepositoriesInSettings(gradmConfigurationDocument)
                     declareDependenciesInSettings(dependencies)
                     declareVersionsInSettings()
                 }

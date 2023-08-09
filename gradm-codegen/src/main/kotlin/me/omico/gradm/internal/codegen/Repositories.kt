@@ -35,31 +35,31 @@ internal fun CodeGenerator.generateRepositoriesSourceFile() {
     ktFile(GRADM_PACKAGE_NAME, "Repositories") {
         addSuppressWarningTypes()
         addGradmComment()
-        addAddDeclaredRepositoriesForSettingsScope(gradmConfigDocument)
-        addAddDeclaredRepositoriesForProjectScope(gradmConfigDocument)
+        addAddDeclaredRepositoriesForSettingsScope(gradmConfigurationDocument)
+        addAddDeclaredRepositoriesForProjectScope(gradmConfigurationDocument)
         writeTo(generatedSourcesDirectory)
     }
 }
 
-internal fun FunctionScope.addDeclaredRepositoryStatements(gradmConfigDocument: YamlDocument): Unit =
-    gradmConfigDocument.repositories.forEach { repository ->
+internal fun FunctionScope.addDeclaredRepositoryStatements(document: YamlDocument): Unit =
+    document.repositories.forEach { repository ->
         when {
             repository in gradleBuildInRepositories -> addStatement("${repository.id}()")
             !repository.noUpdates -> addStatement("%M(url = %S)", mavenMemberName, repository.url)
         }
     }
 
-private fun KtFileScope.addAddDeclaredRepositoriesForSettingsScope(gradmConfigDocument: YamlDocument): Unit =
+private fun KtFileScope.addAddDeclaredRepositoriesForSettingsScope(document: YamlDocument): Unit =
     addDeclaredRepositoryStatements<Settings> {
         addLambdaStatement("pluginManagement.repositories") {
-            addDeclaredRepositoryStatements(gradmConfigDocument)
+            addDeclaredRepositoryStatements(document)
         }
     }
 
-private fun KtFileScope.addAddDeclaredRepositoriesForProjectScope(gradmConfigDocument: YamlDocument): Unit =
+private fun KtFileScope.addAddDeclaredRepositoriesForProjectScope(document: YamlDocument): Unit =
     addDeclaredRepositoryStatements<Project> {
         addLambdaStatement("%M", repositoriesMemberName) {
-            addDeclaredRepositoryStatements(gradmConfigDocument)
+            addDeclaredRepositoryStatements(document)
         }
     }
 
