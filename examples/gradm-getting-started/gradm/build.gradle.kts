@@ -16,7 +16,7 @@ repositories {
 
 gradm {
     pluginId = "gradm" // default: "me.omico.gradm.generated"
-    configFilePath = "gradm3.yml" // default: "gradm.yml"
+    configurationFilePath = "gradm3.yml" // default: "gradm.yml"
     debug = true // default: false
     format {
         enabled = true // default: true

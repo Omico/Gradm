@@ -31,11 +31,11 @@ interface GradmExtension : ExtensionAware {
     var pluginId: String
 
     /**
-     * The Gradm config file path.
+     * The Gradm configuration file path.
      *
      * The default value is `./gradm.yml`.
      */
-    var configFilePath: String
+    var configurationFilePath: String
 
     /**
      * Enable debug mode for Gradm.

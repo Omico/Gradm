@@ -95,7 +95,7 @@ abstract class GradmTask : DefaultTask() {
         offlineProperty.set(gradle.startParameter.isOffline)
         workerServiceProperty.set(gradmWorkerServiceProvider)
         projectNameProperty.set(gradmExtension.projectName)
-        configurationFileProperty.set(projectLayout.gradmConfigurationFile(gradmExtension.configFilePath))
+        configurationFileProperty.set(projectLayout.gradmConfigurationFile(gradmExtension.configurationFilePath))
     }
 
     companion object {

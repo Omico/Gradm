@@ -133,7 +133,7 @@ gradm {
 
 ```kotlin
 gradm {
-    configFilePath = "gradm3.yml" // 默认为 "gradm.yml"
+    configurationFilePath = "gradm3.yml" // 默认为 "gradm.yml"
 }
 ```
 
