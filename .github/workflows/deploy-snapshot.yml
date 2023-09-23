@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - '.github/workflows/deploy-snapshot.yml'
+      - 'build-logic/**'
       - 'gradm-*'
       - 'build.gradle.kts'
       - 'gradle.properties'
