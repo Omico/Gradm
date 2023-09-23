@@ -6,11 +6,11 @@ versions:
   kotlinpoet: "1.14.2"
   kotlinx:
     coroutines: "1.7.3"
-    serialization: "1.5.1"
+    serialization: "1.6.0"
   plugins:
     gradle.enterprise: "3.14.1"
     spotless: "6.20.0"
-  snakeyaml: "2.6"
+  snakeyaml: "2.7"
 
 repositories:
   omico:
