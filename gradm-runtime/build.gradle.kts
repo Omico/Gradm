@@ -7,7 +7,7 @@ kotlin {
     jvmToolchain(11)
     sourceSets {
         main {
-            kotlin.srcDir("$buildDir/generated/sources/kotlinTemplates")
+            kotlin.srcDir(layout.buildDirectory.dir("generated/sources/kotlinTemplates"))
         }
     }
 }
@@ -33,7 +33,7 @@ tasks.test {
 
 val copyKotlinTemplates by tasks.registering(Copy::class) {
     from("src/main/kotlinTemplates")
-    into("$buildDir/generated/sources/kotlinTemplates")
+    into(layout.buildDirectory.dir("generated/sources/kotlinTemplates"))
     expand("version" to version)
     filteringCharset = Charsets.UTF_8.toString()
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
