@@ -1,5 +1,5 @@
 versions:
-  consensus: "0.3.0"
+  consensus: "0.4.0"
   elucidator: "0.13.0"
   junit: "5.10.0"
   kotlin: "1.9.0"
@@ -8,8 +8,8 @@ versions:
     coroutines: "1.7.3"
     serialization: "1.6.0"
   plugins:
-    gradle.enterprise: "3.14.1"
-    spotless: "6.20.0"
+    gradle.enterprise: "3.15"
+    spotless: "6.21.0"
   snakeyaml: "2.7"
 
 repositories:
