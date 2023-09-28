@@ -1,8 +1,11 @@
 import me.omico.consensus.dsl.isGitDirectoryExists
+import me.omico.consensus.dsl.requireRootProject
 
 plugins {
     id("me.omico.consensus.git")
 }
+
+requireRootProject()
 
 consensus {
     git {

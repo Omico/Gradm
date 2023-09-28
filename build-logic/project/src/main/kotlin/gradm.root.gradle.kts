@@ -9,6 +9,13 @@ plugins {
 
 requireRootProject()
 
+consensus {
+    allprojects {
+        group = gradleProperty("project.group")
+        version = gradleProperty("project.version")
+    }
+}
+
 afterEvaluate {
     require(embeddedKotlinVersion == versions.kotlin) {
         "Embedded Kotlin version must be the same as the Kotlin version used by Gradm"

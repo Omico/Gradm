@@ -15,8 +15,8 @@ val syncExamples by tasks.registering {
                 file.readLines().forEach { line ->
                     line
                         .replacePluginVersions(
-                            "me.omico.gradm" to properties["PROJECT_VERSION"].toString(),
-                            "me.omico.gradm.integration.github" to properties["PROJECT_VERSION"].toString(),
+                            "me.omico.gradm" to properties["project.version"].toString(),
+                            "me.omico.gradm.integration.github" to properties["project.version"].toString(),
                             "com.gradle.enterprise" to versions.plugins.gradle.enterprise,
                         )
                         .let(::appendLine)
