@@ -29,28 +29,28 @@ import kotlin.io.path.readBytes
 import kotlin.io.path.writeBytes
 
 object GradmDataStore {
-    private lateinit var _localConfigurationFile: Path
-    private lateinit var _metadataFile: Path
-    private lateinit var _localConfiguration: GradmLocalConfiguration
-    private lateinit var _metadata: GradmMetadata
+    private lateinit var internalLocalConfigurationFile: Path
+    private lateinit var internalMetadataFile: Path
+    private lateinit var internalLocalConfiguration: GradmLocalConfiguration
+    private lateinit var internalMetadata: GradmMetadata
 
     val localConfiguration: GradmLocalConfiguration
         get() = run {
             requireInitialized()
-            _localConfiguration
+            internalLocalConfiguration
         }
 
     val metadata: GradmMetadata
         get() = run {
             requireInitialized()
-            _metadata
+            internalMetadata
         }
 
     fun load(localConfigurationFile: Path, metadataFile: Path) {
-        _localConfigurationFile = localConfigurationFile
-        _metadataFile = metadataFile
-        _localConfiguration = localConfigurationFile.load()
-        _metadata = metadataFile.load()
+        internalLocalConfigurationFile = localConfigurationFile
+        internalMetadataFile = metadataFile
+        internalLocalConfiguration = localConfigurationFile.load()
+        internalMetadata = metadataFile.load()
     }
 
     fun updateLocalConfiguration(updater: GradmLocalConfigurationScope.() -> Unit): Unit =
@@ -61,18 +61,18 @@ object GradmDataStore {
 
     internal fun updateLocalConfiguration(localConfiguration: GradmLocalConfiguration) {
         requireInitialized()
-        _localConfiguration = localConfiguration
-        _localConfigurationFile.save(localConfiguration)
+        internalLocalConfiguration = localConfiguration
+        internalLocalConfigurationFile.save(localConfiguration)
     }
 
     internal fun updateMetadata(metadata: GradmMetadata) {
         requireInitialized()
-        _metadata = metadata
-        _metadataFile.save(metadata)
+        internalMetadata = metadata
+        internalMetadataFile.save(metadata)
     }
 
     private val isInitialized: Boolean
-        get() = ::_localConfigurationFile.isInitialized && ::_metadataFile.isInitialized
+        get() = ::internalLocalConfigurationFile.isInitialized && ::internalMetadataFile.isInitialized
 
     private fun requireInitialized(): Unit = require(isInitialized) { "GradmDataStore is not initialized." }
 

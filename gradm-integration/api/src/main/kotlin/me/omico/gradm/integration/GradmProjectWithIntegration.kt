@@ -60,8 +60,10 @@ interface GradmProjectWithIntegration<Extension : GradmIntegrationExtension> : P
     fun registerOutput(path: String)
 }
 
-inline fun <reified Extension : GradmIntegrationExtension, reified ExtensionImpl : Extension>
-    GradmProjectWithIntegration<Extension>.createExtension(): Extension =
+inline fun <
+    reified Extension : GradmIntegrationExtension,
+    reified ExtensionImpl : Extension,
+    > GradmProjectWithIntegration<Extension>.createExtension(): Extension =
     createExtension(
         extension = Extension::class,
         extensionImpl = ExtensionImpl::class,
