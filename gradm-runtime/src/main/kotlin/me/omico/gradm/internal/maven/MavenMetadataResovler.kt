@@ -60,8 +60,12 @@ private fun collectMissingMavenMetadata(dependencies: List<Dependency>): List<De
     if (GradmConfiguration.offline) {
         require(missingDependencies.isEmpty()) { "Gradm cannot resolve missing maven-metadata.xml in offline mode." }
         info { "Gradm is running in offline mode, will use local cache." }
+        return missingDependencies
     }
-    return missingDependencies
+    return when {
+        GradmConfiguration.requireRefresh -> dependencies
+        else -> missingDependencies
+    }
 }
 
 private suspend fun Dependency.downloadMavenMetadata(): MavenMetadata = run {
