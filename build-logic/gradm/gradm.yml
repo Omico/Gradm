@@ -2,7 +2,7 @@ versions:
   consensus: "0.4.0"
   elucidator: "0.13.0"
   junit: "5.10.0"
-  kotlin: "1.9.0"
+  kotlin: "1.9.10"
   kotlinpoet: "1.14.2"
   kotlinx:
     coroutines: "1.7.3"

@@ -18,7 +18,7 @@ consensus {
 
 afterEvaluate {
     require(embeddedKotlinVersion == versions.kotlin) {
-        "Embedded Kotlin version must be the same as the Kotlin version used by Gradm"
+        "The Kotlin version (${versions.kotlin}) used by Gradm must be the same as the embedded Kotlin version ($embeddedKotlinVersion)."
     }
 }
 
