@@ -44,12 +44,10 @@ internal data class CodegenDependency(
     val version: String? = null,
     val subDependencies: CodegenDependencies = CodegenDependencies(),
 ) {
-    val module: String by lazy { "$group:$artifact" }
-    val noSpecificVersion: Boolean by lazy { version.isNullOrBlank() }
+    val module: String = "$group:$artifact"
+    val noSpecificVersion: Boolean = version.isNullOrBlank()
+    val hasDependency: Boolean = group.isNotEmpty() && artifact.isNotEmpty()
 }
-
-internal val CodegenDependency.hasDependency: Boolean
-    get() = group.isNotEmpty() && artifact.isNotEmpty()
 
 internal val CodegenDependency.hasSubDependencies: Boolean
     get() = subDependencies.isNotEmpty()
