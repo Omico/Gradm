@@ -34,7 +34,7 @@ import me.omico.gradm.internal.config.toTreeVersions
 
 internal fun CodeGenerator.generateVersionsSourceFile() {
     ktFile(GRADM_PACKAGE_NAME, "Versions") {
-        addSuppressWarningTypes()
+        addSuppressWarningTypes(types = defaultSuppressWarningTypes + "ConstPropertyName")
         addGradmComment()
         addVersionsObjects(createTreeVersions())
         writeTo(generatedSourcesDirectory)

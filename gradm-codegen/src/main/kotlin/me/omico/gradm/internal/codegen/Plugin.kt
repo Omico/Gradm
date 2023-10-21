@@ -17,6 +17,7 @@ package me.omico.gradm.internal.codegen
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import me.omico.elucidator.FunctionScope
 import me.omico.elucidator.addClass
@@ -51,7 +52,7 @@ internal fun CodeGenerator.generatePluginSourceFile(): Unit =
             addIfStatement {
                 start("target is %T", Settings::class) {
                     declarePluginsInSettings(gradmConfigurationDocument, versionsMeta)
-                    declareRepositoriesInSettings(gradmConfigurationDocument)
+                    declareRepositoriesInSettings()
                     declareDependenciesInSettings(dependencies)
                     declareVersionsInSettings()
                 }
@@ -95,10 +96,8 @@ private fun FunctionScope.declarePluginsInSettings(document: YamlDocument, versi
             }
     }
 
-private fun FunctionScope.declareRepositoriesInSettings(document: YamlDocument): Unit =
-    addLambdaStatement("target.dependencyResolutionManagement.repositories") {
-        addDeclaredRepositoryStatements(document)
-    }
+private fun FunctionScope.declareRepositoriesInSettings(): Unit =
+    addStatement("target.dependencyResolutionManagement.repositories.%M()", addDeclaredRepositoriesMemberName)
 
 private fun FunctionScope.declareDependenciesInSettings(dependencies: CodegenDependencies): Unit =
     addLambdaStatement("target.gradle.rootProject") {
@@ -160,3 +159,5 @@ private fun FunctionScope.addExtensionsIfNeeds(
     addStatement(format = "$extensionsPath.findByName(\"${name}\") ?: $extensionsPath.add(\"${name}\", %T)", className)
 
 private val extensionsPathRegex = """^(\w+\.)*\w+$""".toRegex()
+
+private val addDeclaredRepositoriesMemberName: MemberName = MemberName("me.omico.gradm", "addDeclaredRepositories")

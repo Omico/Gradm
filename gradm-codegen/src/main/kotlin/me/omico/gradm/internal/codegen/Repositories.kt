@@ -43,15 +43,7 @@ internal fun CodeGenerator.generateRepositoriesSourceFile() {
     }
 }
 
-internal fun FunctionScope.addDeclaredRepositoryStatements(document: YamlDocument): Unit =
-    document.repositories.forEach { repository ->
-        when {
-            repository in gradleBuildInRepositories -> addStatement("${repository.id}()")
-            !repository.noUpdates -> addStatement("%M(url = %S)", mavenMemberName, repository.url)
-        }
-    }
-
-private fun KtFileScope.addAddDeclaredRepositoriesForRepositoryHandlerScope(document: YamlDocument): Unit =
+internal fun KtFileScope.addAddDeclaredRepositoriesForRepositoryHandlerScope(document: YamlDocument): Unit =
     addDeclaredRepositoryStatements<RepositoryHandler> {
         addDeclaredRepositoryStatements(document)
     }
@@ -64,6 +56,14 @@ private fun KtFileScope.addAddDeclaredRepositoriesForSettingsScope(): Unit =
 private fun KtFileScope.addAddDeclaredRepositoriesForProjectScope(): Unit =
     addDeclaredRepositoryStatements<Project> {
         returnStatement("repositories.addDeclaredRepositories()")
+    }
+
+private fun FunctionScope.addDeclaredRepositoryStatements(document: YamlDocument): Unit =
+    document.repositories.forEach { repository ->
+        when {
+            repository in gradleBuildInRepositories -> addStatement("${repository.id}()")
+            !repository.noUpdates -> addStatement("%M(url = %S)", mavenMemberName, repository.url)
+        }
     }
 
 private inline fun <reified T> KtFileScope.addDeclaredRepositoryStatements(crossinline block: FunctionScope.() -> Unit): Unit =
