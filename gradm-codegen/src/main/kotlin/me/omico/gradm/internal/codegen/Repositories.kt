@@ -19,24 +19,26 @@ import com.squareup.kotlinpoet.MemberName
 import me.omico.elucidator.FunctionScope
 import me.omico.elucidator.KtFileScope
 import me.omico.elucidator.addFunction
-import me.omico.elucidator.addLambdaStatement
 import me.omico.elucidator.addStatement
 import me.omico.elucidator.ktFile
 import me.omico.elucidator.receiver
+import me.omico.elucidator.returnStatement
 import me.omico.elucidator.writeTo
 import me.omico.gradm.GRADM_PACKAGE_NAME
 import me.omico.gradm.internal.YamlDocument
 import me.omico.gradm.internal.config.gradleBuildInRepositories
 import me.omico.gradm.internal.config.repositories
 import org.gradle.api.Project
+import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.initialization.Settings
 
 internal fun CodeGenerator.generateRepositoriesSourceFile() {
     ktFile(GRADM_PACKAGE_NAME, "Repositories") {
         addSuppressWarningTypes()
         addGradmComment()
-        addAddDeclaredRepositoriesForSettingsScope(gradmConfigurationDocument)
-        addAddDeclaredRepositoriesForProjectScope(gradmConfigurationDocument)
+        addAddDeclaredRepositoriesForRepositoryHandlerScope(gradmConfigurationDocument)
+        addAddDeclaredRepositoriesForSettingsScope()
+        addAddDeclaredRepositoriesForProjectScope()
         writeTo(generatedSourcesDirectory)
     }
 }
@@ -49,18 +51,19 @@ internal fun FunctionScope.addDeclaredRepositoryStatements(document: YamlDocumen
         }
     }
 
-private fun KtFileScope.addAddDeclaredRepositoriesForSettingsScope(document: YamlDocument): Unit =
-    addDeclaredRepositoryStatements<Settings> {
-        addLambdaStatement("pluginManagement.repositories") {
-            addDeclaredRepositoryStatements(document)
-        }
+private fun KtFileScope.addAddDeclaredRepositoriesForRepositoryHandlerScope(document: YamlDocument): Unit =
+    addDeclaredRepositoryStatements<RepositoryHandler> {
+        addDeclaredRepositoryStatements(document)
     }
 
-private fun KtFileScope.addAddDeclaredRepositoriesForProjectScope(document: YamlDocument): Unit =
+private fun KtFileScope.addAddDeclaredRepositoriesForSettingsScope(): Unit =
+    addDeclaredRepositoryStatements<Settings> {
+        returnStatement("pluginManagement.repositories.addDeclaredRepositories()")
+    }
+
+private fun KtFileScope.addAddDeclaredRepositoriesForProjectScope(): Unit =
     addDeclaredRepositoryStatements<Project> {
-        addLambdaStatement("%M", repositoriesMemberName) {
-            addDeclaredRepositoryStatements(document)
-        }
+        returnStatement("repositories.addDeclaredRepositories()")
     }
 
 private inline fun <reified T> KtFileScope.addDeclaredRepositoryStatements(crossinline block: FunctionScope.() -> Unit): Unit =
@@ -70,4 +73,3 @@ private inline fun <reified T> KtFileScope.addDeclaredRepositoryStatements(cross
     }
 
 private val mavenMemberName: MemberName = MemberName("org.gradle.kotlin.dsl", "maven")
-private val repositoriesMemberName: MemberName = MemberName("org.gradle.kotlin.dsl", "repositories")
