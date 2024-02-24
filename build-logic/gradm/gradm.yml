@@ -1,5 +1,5 @@
 versions:
-  consensus: "0.6.0"
+  consensus: "0.9.0"
   elucidator: "0.14.0"
   junit: "5.10.0"
   kotlin: "1.9.20"
