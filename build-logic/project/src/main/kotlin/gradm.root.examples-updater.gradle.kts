@@ -17,7 +17,7 @@ val syncExamples by tasks.registering {
                         .replacePluginVersions(
                             "me.omico.gradm" to properties["project.version"].toString(),
                             "me.omico.gradm.integration.github" to properties["project.version"].toString(),
-                            "com.gradle.enterprise" to versions.plugins.gradle.enterprise,
+                            "com.gradle.develocity" to versions.plugins.develocity,
                         )
                         .let(::appendLine)
                 }

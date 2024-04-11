@@ -1,12 +1,5 @@
-rootProject.name = "gradm-getting-started"
-
-pluginManagement {
-    includeBuild("gradm") // include Gradm here
-}
-
 plugins {
-    id("com.gradle.develocity") version "3.17.1"
-    id("gradm") // configured by GradmExtension
+    id("com.gradle.develocity")
 }
 
 develocity {

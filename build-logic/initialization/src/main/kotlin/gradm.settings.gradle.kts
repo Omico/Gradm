@@ -8,8 +8,8 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 addDeclaredRepositories()
 
 plugins {
+    id("gradm.develocity")
     id("gradm.gradm")
-    id("gradm.gradle-enterprise")
 }
 
 includeBuild("build-logic/project")

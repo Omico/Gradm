@@ -7,7 +7,7 @@ versions:
     coroutines: "1.8.0"
     serialization: "1.6.3"
   plugins:
-    gradle.enterprise: "3.16.2"
+    develocity: "3.17.1"
     spotless: "6.25.0"
   snakeyaml: "2.7"
 
@@ -21,7 +21,7 @@ repositories:
 plugins:
   gradlePluginPortal:
     com.diffplug.spotless: ${versions.plugins.spotless}
-    com.gradle.enterprise: ${versions.plugins.gradle.enterprise}
+    com.gradle.develocity: ${versions.plugins.develocity}
   omico:
     me.omico.consensus.api: ${versions.consensus}
     me.omico.consensus.git: ${versions.consensus}

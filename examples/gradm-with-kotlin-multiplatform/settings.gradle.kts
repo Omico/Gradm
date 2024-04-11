@@ -7,14 +7,17 @@ pluginManagement {
 }
 
 plugins {
-    id("com.gradle.enterprise") version "3.16.2"
+    id("com.gradle.develocity") version "3.17.1"
     id("gradm")
 }
 
-gradleEnterprise {
+develocity {
     buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
-        publishAlwaysIf(!gradle.startParameter.isOffline)
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
+        publishing {
+            val isOffline = providers.provider { gradle.startParameter.isOffline }
+            onlyIf { !isOffline.getOrElse(false) }
+        }
     }
 }
