@@ -2,7 +2,6 @@ versions:
   consensus: "0.9.0"
   elucidator: "0.14.0"
   junit: "5.10.2"
-  kotlin: "1.9.20"
   kotlinpoet: "1.16.0"
   kotlinx:
     coroutines: "1.8.0"
@@ -23,9 +22,6 @@ plugins:
   gradlePluginPortal:
     com.diffplug.spotless: ${versions.plugins.spotless}
     com.gradle.enterprise: ${versions.plugins.gradle.enterprise}
-  noUpdates:
-    org.jetbrains.kotlin.jvm: ${versions.kotlin}
-    org.jetbrains.kotlin.plugin.serialization: ${versions.kotlin}
   omico:
     me.omico.consensus.api: ${versions.consensus}
     me.omico.consensus.git: ${versions.consensus}

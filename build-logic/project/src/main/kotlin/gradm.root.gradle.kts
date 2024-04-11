@@ -16,12 +16,6 @@ consensus {
     }
 }
 
-afterEvaluate {
-    require(embeddedKotlinVersion == versions.kotlin) {
-        "The Kotlin version (${versions.kotlin}) used by Gradm must be the same as the embedded Kotlin version ($embeddedKotlinVersion)."
-    }
-}
-
 val wrapper: Wrapper by tasks.named<Wrapper>("wrapper") {
     gradleVersion = versions.gradle
     distributionType = Wrapper.DistributionType.BIN
