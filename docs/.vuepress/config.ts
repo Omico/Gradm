@@ -1,10 +1,13 @@
+import {viteBundler} from "@vuepress/bundler-vite"
 import {backToTopPlugin} from "@vuepress/plugin-back-to-top"
 import {gitPlugin} from "@vuepress/plugin-git"
-import {defaultTheme, defineUserConfig} from "vuepress"
+import {defaultTheme} from "@vuepress/theme-default"
+import {defineUserConfig} from "vuepress"
 import {sidebar_en_us, sidebar_zh_hans} from "./configs"
 
 export default defineUserConfig(
     {
+        bundler: viteBundler(),
         locales: {
             "/": {
                 lang: "en-US",

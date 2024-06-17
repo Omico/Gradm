@@ -1,6 +1,6 @@
-import type {SidebarConfig} from "@vuepress/theme-default"
+import type {SidebarOptions} from "@vuepress/theme-default"
 
-export const sidebar_zh_hans: SidebarConfig = {
+export const sidebar_zh_hans: SidebarOptions = {
     "/zh-Hans/": [
         {
             text: "指南",

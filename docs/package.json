@@ -8,9 +8,10 @@
     "docs:build": "vuepress build"
   },
   "devDependencies": {
-    "@vuepress/bundler-vite": "next",
+    "@vuepress/bundler-vite": "^2.0.0-rc.13",
     "@vuepress/plugin-back-to-top": "next",
     "@vuepress/plugin-git": "next",
+    "@vuepress/theme-default": "next",
     "vuepress": "next"
   }
 }
