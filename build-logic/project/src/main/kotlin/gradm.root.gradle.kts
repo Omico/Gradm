@@ -1,25 +1,14 @@
-import me.omico.consensus.dsl.requireRootProject
-
 plugins {
+    id("me.omico.consensus.root")
     id("gradm.gradm")
     id("gradm.root.examples-updater")
     id("gradm.root.git")
     id("gradm.root.spotless")
 }
 
-requireRootProject()
-
-consensus {
-    allprojects {
-        group = gradleProperty("project.group")
-        version = gradleProperty("project.version")
-    }
-}
-
 val wrapper: Wrapper by tasks.named<Wrapper>("wrapper") {
     gradleVersion = versions.gradle
     distributionType = Wrapper.DistributionType.BIN
-    finalizedBy(syncGradleWrapperForExamples)
 }
 
 val syncGradleWrapperForExamples by tasks.registering {

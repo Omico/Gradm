@@ -1,4 +1,4 @@
-import me.omico.consensus.dsl.requireRootProject
+import me.omico.consensus.api.dsl.requireRootProject
 import me.omico.gradm.project.internal.replacePluginVersions
 
 plugins {

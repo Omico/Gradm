@@ -1,5 +1,5 @@
-import me.omico.consensus.dsl.requireRootProject
-import me.omico.consensus.dsl.rootGradle
+import me.omico.consensus.api.dsl.requireRootProject
+import me.omico.consensus.api.dsl.rootGradle
 import me.omico.consensus.spotless.ConsensusSpotlessTokens
 
 plugins {

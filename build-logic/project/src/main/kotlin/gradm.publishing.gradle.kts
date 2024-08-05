@@ -1,5 +1,5 @@
-import me.omico.consensus.dsl.by
-import me.omico.consensus.dsl.isAutomatedPublishingGradlePlugin
+import me.omico.consensus.api.dsl.by
+import me.omico.consensus.api.dsl.isAutomatedPublishingGradlePlugin
 
 plugins {
     id("me.omico.consensus.publishing")
